@@ -1,7 +1,24 @@
 package com.ai.baas.omc.topoligy.core.bolt;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import backtype.storm.task.TopologyContext;
+import backtype.storm.topology.BasicOutputCollector;
+import backtype.storm.topology.OutputFieldsDeclarer;
+import backtype.storm.tuple.Fields;
+import backtype.storm.tuple.Tuple;
+import com.ai.baas.omc.topoligy.core.business.OmcCalProcessor;
+import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
+import com.ai.baas.omc.topoligy.core.dto.Dto4CreditCal;
+import com.ai.baas.omc.topoligy.core.dto.Dto4CreditNotice;
+import com.ai.baas.omc.topoligy.core.exception.OmcException;
+import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
+import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
+import com.ai.baas.omc.topoligy.core.pojo.RealTimeBalance;
+import com.ai.baas.omc.topoligy.core.pojo.SectionRule;
+import com.ai.baas.omc.topoligy.core.util.CacheClient;
+import com.ai.baas.omc.topoligy.core.util.OmcUtils;
+import com.ai.baas.omc.topoligy.core.util.UrlClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
@@ -15,22 +32,18 @@ import backtype.storm.tuple.Values;
  * 信用度计算
  * 
  */
-
 public class CreditCalBolt extends BaseBasicBolt {
-	
 	private static final long serialVersionUID = -9187935096684609671L;
 	private  static final Logger logger = LoggerFactory.getLogger(CreditCalBolt.class);
 	private ConfigContainer confContainer;
-	private JdbcProxy jdbcproxy;
 
 	/**
 	 * 用户在这里实现数量处理逻辑
 	 */
 	@Override
-	public void execute(StreamData adata) {
+	public void execute(Tuple tuple, BasicOutputCollector collector) {
 		try{
-			Dto4CreditCal indata = (Dto4CreditCal) adata.getValue(0);
-			
+			Dto4CreditCal indata = (Dto4CreditCal) tuple.getValue(0);
 			if (null == indata){
 				logger.error("本节点获取数据异常，数据为空");
 				return ;
@@ -86,10 +99,7 @@ public class CreditCalBolt extends BaseBasicBolt {
 			logger.debug("--dto4CreditNotice--DTO准备完毕：" + dto4CreditNotice.toString());
 
 			// 定义传给下一个bolt所需参数
-			List<StreamData> a = new ArrayList<StreamData>();
-			a.add(adata);
-			super.setValues(new Values(dto4CreditNotice));
-			super.ack();
+			collector.emit(new Values(dto4CreditNotice));
 		} catch (Exception e) {
 			logger.error("----------------------信控计算异常！" , e);
 		}
@@ -99,9 +109,9 @@ public class CreditCalBolt extends BaseBasicBolt {
 	/**
 	 * 用户在这里声明本处理过程输出的字段列表，由流程在执行过程中调用获取
 	 */
-//	@Override
-	public Fields getOutFields() {
-		return new Fields("dto4CreditNotice");
+	@Override
+	public void declareOutputFields(OutputFieldsDeclarer declarer) {
+		declarer.declare(new Fields("dto4CreditNotice"));
 	}
 
 	/**
@@ -109,17 +119,13 @@ public class CreditCalBolt extends BaseBasicBolt {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public void prepare(@SuppressWarnings("rawtypes") Map aConf, FlowContext aContext, ProcessorCollector collector) {
-		
+	public void prepare(Map stormConf, TopologyContext context) {
 		try {
-			JdbcProxy.loadresource(new JdbcParam(aConf));
-			JdbcProxy jdbcProxy = JdbcProxy.getInstance();
-			setJdbcproxy(jdbcProxy);
-			CacheClient.loadResource(aConf);
-			UrlClient.loadResource(aConf);
+			CacheClient.loadResource(stormConf);
+			UrlClient.loadResource(stormConf);
 			confContainer = new ConfigContainer();
 			confContainer.configObtain();
-			confContainer.setSysconfig(aConf);
+			confContainer.setSysconfig(stormConf);
 		} catch (OmcException e) {
 			logger.error("初始化异常",e);
 		}
@@ -131,19 +137,4 @@ public class CreditCalBolt extends BaseBasicBolt {
 	@Override
 	public void cleanup() {
 	}
-
-	@Override
-	public void buildLogger(Logger LOG) {
-//		Logger logger = LoggerFactory.getLogger(CreditCalProcesser.class);
-//		LOG = logger;
-	}
-
-	public JdbcProxy getJdbcproxy() {
-		return jdbcproxy;
-	}
-
-	public void setJdbcproxy(JdbcProxy jdbcproxy) {
-		this.jdbcproxy = jdbcproxy;
-	}
-	
 }

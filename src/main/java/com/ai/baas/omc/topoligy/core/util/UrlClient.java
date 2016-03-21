@@ -9,7 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import com.ai.baas.omc.topoligy.core.constant.OWERTYPE;
+import com.ai.baas.omc.topoligy.core.constant.OWNERTYPE;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
 import com.ai.baas.omc.topoligy.core.pojo.RealTimeBalance;
@@ -83,7 +83,7 @@ public final class UrlClient {
 		String output;
 		JsonObject jsonObject = new JsonObject();
 		String ownertype;
-		if (OWERTYPE.ACCT.equals(omcobj.getOwertype())){
+		if (OWNERTYPE.ACCT.equals(omcobj.getOwertype())){
 			ownertype = "1";
 		}else{
 			ownertype = "0";
@@ -172,9 +172,9 @@ public final class UrlClient {
 	
 			String newownertype;
 			if ("1".equals(owertype)){
-				newownertype = OWERTYPE.ACCT;
+				newownertype = OWNERTYPE.ACCT;
 			}else{
-				newownertype = OWERTYPE.SERV;
+				newownertype = OWNERTYPE.SERV;
 			}
 			realTimeBalance.setOwner(new OmcObj(tenantid,newownertype,owerid,StringUtils.upperCase(businesscode)));
 			

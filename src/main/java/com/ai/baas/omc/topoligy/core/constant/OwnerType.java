@@ -8,21 +8,21 @@ package com.ai.baas.omc.topoligy.core.constant;
 * @date 2015年10月28日 上午11:03:26 
 *
  */
-public interface OWERTYPE {
+public final class OWNERTYPE {
 	/**
 	 * 客户类型
 	 */
-	 String CUST = "/cust";
+	public static final String CUST = "/cust";
 	/**
 	 * 用户类型
 	 */
-	 String SERV = "/subs";
+	public static final String SERV = "/subs";
 	/**
 	 * 帐户类型
-	 */	
-	 String ACCT = "/acct";
+	 */
+	public static final String ACCT = "/acct";
 	/**
 	 * 群组类型
 	 */
-	 String GROUP = "/group";
+	public static final String GROUP = "/group";
 }

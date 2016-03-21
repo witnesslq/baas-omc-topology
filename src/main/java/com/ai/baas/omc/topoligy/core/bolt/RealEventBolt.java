@@ -6,11 +6,15 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseBasicBolt;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
+import backtype.storm.tuple.Values;
+import com.ai.baas.omc.topoligy.core.business.EventProcessor;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
 import com.ai.baas.omc.topoligy.core.dto.Dto4CreditCal;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
+import com.ai.baas.omc.topoligy.core.util.CacheClient;
+import com.ai.baas.omc.topoligy.core.util.db.JdbcParam;
 import com.ai.baas.omc.topoligy.core.util.db.JdbcProxy;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -24,28 +28,24 @@ import java.util.Map;
  * @author jackieliu
  */
 public class RealEventBolt extends BaseBasicBolt {
-
 	private static final long serialVersionUID = 5454304868861020989L;
 	private  static final Logger logger = LoggerFactory.getLogger(RealEventBolt.class);
 	private ConfigContainer confContainer;
-	private JdbcProxy jdbcproxy;
 
 	@Override
 	public void execute(Tuple tuple, BasicOutputCollector collector) {
 		try {
-			logger.error("adata = [" + tuple.getMessageId() + "]");
+			logger.info("adata = [" + tuple.getMessageId() + "]");
 			//获取输入数据
 			String data = tuple.getString(0);
 			logger.info("adata = [" + data + "]");
+
 			Gson gson = new Gson();
 			//对获取数据进行解析
 			JsonObject input = gson.fromJson(data, JsonObject.class);
-			//数量
-			String amount = input.get("amount").getAsString();
-			//acct:账户；cust:客户；subs:用户
-			String owner_type = input.get("owner_type").getAsString();
-			//数量的类型：
-			String amount_type = input.get("amount_type").getAsString();
+			String amount = input.get("amount").getAsString();//数量
+			String owner_type = input.get("owner_type").getAsString();//acct:账户；cust:客户；subs:用户
+			String amount_type = input.get("amount_type").getAsString();//数量的类型：
 			//事件类型：CASH主业务（按资料信控），VOICE 语音，SMS 短信，DATA 数据
 			String event_type = input.get("event_type").getAsString();
 			//数量的增减属性，包括PLUS(导致余额增加的，如缴费导致的)，MINUS(导致余额减少的，如业务使用导致的)
@@ -67,24 +67,24 @@ public class RealEventBolt extends BaseBasicBolt {
 				owner_type = "/" + owner_type;
 			}
 			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty(OmcCalKey.OMC_SYSTEM_ID, system_id);
+
+			//区分项目
+			//充电桩项目
+			/*
 			//获取配置信息
 			Map<String,String> syscfg =  confContainer.getSysconfig();
 			String projectname = syscfg.get(OmcCalKey.OMC_CFG_PROJECTNAME);
-			jsonObject.addProperty(OmcCalKey.OMC_SYSTEM_ID, system_id);
-			//区分项目
-			//充电桩项目
 			if (PROJECTNAME.CLC.equals(projectname)){
 				Validity validity = new ValidityClc();
 				validity.inputDateExpandedinfoCheck(source_type, expanded_info);
-				jsonObject.addProperty(OmcCalKey.OMC_CHARGING_STATION, "");
-				jsonObject.addProperty(OmcCalKey.OMC_CHARGING_PILE, "");
-				//车联网项目
+			//车联网项目
 			}else if(PROJECTNAME.VIV.equals(projectname)){
 				Validity validity = new ValidityVlv();
 				validity.inputDateExpandedinfoCheck(source_type, expanded_info);
-				jsonObject.addProperty(OmcCalKey.OMC_CHARGING_STATION, "");
-				jsonObject.addProperty(OmcCalKey.OMC_CHARGING_PILE, "");
-			}
+			}*/
+			jsonObject.addProperty(OmcCalKey.OMC_CHARGING_STATION, "");
+			jsonObject.addProperty(OmcCalKey.OMC_CHARGING_PILE, "");
 
 			logger.debug("策略、规则、参数信息获取......");
 			//信控对象
@@ -93,13 +93,12 @@ public class RealEventBolt extends BaseBasicBolt {
 			EventProcessor eventProcessor = new EventProcessor(confContainer, obj,jsonObject);
 			eventProcessor.process();
 			JsonObject evendata = eventProcessor.getOutput();
-//
+
 			//添加策略信息
 			jsonObject.add(eventProcessor.DF_POLICY, evendata.get(eventProcessor.DF_POLICY));
 			//添加策略对应所有规则信息
 			jsonObject.add(eventProcessor.DF_RULES, evendata.get(eventProcessor.DF_RULES));
 
-//
 			Dto4CreditCal dto4CreditCal = new Dto4CreditCal();
 			dto4CreditCal.setOwner(obj);
 			dto4CreditCal.setAmount(amount);
@@ -108,15 +107,9 @@ public class RealEventBolt extends BaseBasicBolt {
 			dto4CreditCal.setEventid(event_id);
 			dto4CreditCal.setEventtype(event_type);
 			dto4CreditCal.setExpanded_info(jsonObject.toString());
-
-
-			logger.error("--------------------------------传输给下一节点DTO：" + dto4CreditCal.toString());
+			logger.info("--------------------------------传输给下一节点DTO：" + dto4CreditCal.toString());
 			// 定义传给下一个bolt所需参数
-			List<StreamData> a = new ArrayList<StreamData>();
-			a.add(adata);
-			super.setValues(new Values(dto4CreditCal));
-			super.ack();
-
+			collector.emit(new Values(dto4CreditCal));
 		} catch(OmcException e){
 			logger.error("---------------------信控事件处理异常" ,e);
 		} catch (Exception e) {
@@ -136,6 +129,13 @@ public class RealEventBolt extends BaseBasicBolt {
      */
 	@Override
 	public void prepare(Map stormConf, TopologyContext context) {
-		super.prepare(stormConf, context);
+		try {
+			CacheClient.loadResource(stormConf);
+			confContainer = new ConfigContainer();
+			confContainer.configObtain();
+			confContainer.setSysconfig(stormConf);
+		} catch (OmcException e) {
+			logger.error("初始化异常",e);
+		}
 	}
 }

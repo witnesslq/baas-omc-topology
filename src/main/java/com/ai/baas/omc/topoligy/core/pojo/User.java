@@ -1,0 +1,163 @@
+package com.ai.baas.omc.topoligy.core.pojo;
+
+import java.sql.Timestamp;
+
+import org.apache.commons.lang.StringUtils;
+
+/**
+ * 用户信息
+ */
+public final class User{
+	private String	subsid;
+	private String	accountid;
+	private String	customerid;
+	private String	servicenum;
+	private String	substype;
+	private String	subsstatus;
+	private String	servicestatus;
+	private String	statuschgtype;
+	private String	basicorgid;
+	private String	provincecode;
+	private String	citycode;
+	private String  tenantid;
+	private String	systemid;
+	private String	servicetype;
+	private Timestamp activetime;
+	private Timestamp inactivetime;
+	private String factorcode;
+	
+	public String getSubsid() {
+		return subsid;
+	}
+	public void setSubsid(String subsid) {
+		this.subsid = subsid;
+	}
+	public String getAccountid() {
+		return accountid;
+	}
+	public void setAccountid(String accountid) {
+		this.accountid = accountid;
+	}
+	public String getCustomerid() {
+		return customerid;
+	}
+	public void setCustomerid(String customerid) {
+		this.customerid = customerid;
+	}
+	public String getServicenum() {
+		return servicenum;
+	}
+	public void setServicenum(String servicenum) {
+		this.servicenum = servicenum;
+	}
+	public String getSubstype() {
+		return substype;
+	}
+	public void setSubstype(String substype) {
+		this.substype = substype;
+	}
+	public String getSubsstatus() {
+		return subsstatus;
+	}
+	public void setSubsstatus(String subsstatus) {
+		this.subsstatus = subsstatus;
+	}
+	public String getServicestatus() {
+		return servicestatus;
+	}
+	public void setServicestatus(String servicestatus) {
+		this.servicestatus = servicestatus;
+	}
+	public String getStatuschgtype() {
+		return statuschgtype;
+	}
+	public void setStatuschgtype(String statuschgtype) {
+		this.statuschgtype = statuschgtype;
+	}
+
+	public String getBasicorgid() {
+		return basicorgid;
+	}
+	public void setBasicorgid(String basicorgid) {
+		this.basicorgid = basicorgid;
+	}
+	public String getProvincecode() {
+		return provincecode;
+	}
+	public void setProvincecode(String provincecode) {
+		this.provincecode = provincecode;
+	}
+	public String getCitycode() {
+		return citycode;
+	}
+	public void setCitycode(String citycode) {
+		this.citycode = citycode;
+	}
+	public String getTenantid() {
+		return tenantid;
+	}
+	public void setTenantid(String tenantid) {
+		this.tenantid = tenantid;
+	}
+	public String getSystemid() {
+		return systemid;
+	}
+	public void setSystemid(String systemid) {
+		this.systemid = systemid;
+	}
+	public String getServicetype() {
+		return StringUtils.isBlank(servicetype)?"0":servicetype;
+	}
+	public void setServicetype(String servicetype) {
+		this.servicetype = servicetype;
+	}
+	public Timestamp getActivetime() {
+		if(activetime != null){
+			return (Timestamp) activetime.clone();
+		}else{
+			return null;			
+		}
+	}
+	public void setActivetime(Timestamp activetime) {
+		
+		if(activetime != null){
+			this.activetime = (Timestamp) activetime.clone();
+		}else{
+			this.activetime = null;
+		}
+		
+	}
+	public Timestamp getInactivetime() {
+		if(inactivetime != null){
+			return (Timestamp) inactivetime.clone();
+		}else{
+			return null;			
+		}
+	}
+	public void setInactivetime(Timestamp inactivetime) {
+
+		if(inactivetime != null){
+			this.inactivetime = (Timestamp) inactivetime.clone();
+		}else{
+			this.inactivetime = null;
+		}
+	}
+	public String getFactorcode() {
+		return factorcode;
+	}
+	public void setFactorcode(String factorcode) {
+		this.factorcode = factorcode;
+	}
+	@Override
+	public String toString() {
+		return "User [subsid=" + subsid + ", accountid=" + accountid + ", customerid=" + customerid + ", servicenum="
+				+ servicenum + ", substype=" + substype + ", subsstatus=" + subsstatus + ", servicestatus="
+				+ servicestatus + ", statuschgtype=" + statuschgtype + ", basicorgid=" + basicorgid + ", provincecode="
+				+ provincecode + ", citycode=" + citycode + ", tenantid=" + tenantid + ", systemid=" + systemid
+				+ ", servicetype=" + servicetype + ", activetime=" + activetime + ", inactivetime=" + inactivetime
+				+ ", factorcode=" + factorcode + "]";
+	}
+
+
+
+}

@@ -7,7 +7,7 @@ package com.ai.baas.omc.topoligy.core.constant;
 * @date 2015年11月5日 下午5:55:01 
 *
  */
-public interface SUBSSTATUS {
+public interface SubsStatus {
 	/**
 	 * 1 正式开户
 	 */

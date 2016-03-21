@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 /**
- * 信控参数计算，策略计算
+ * 信控参数计算，策略和规则获取
  * @author jackieliu
  */
 public class RealEventBolt extends BaseBasicBolt {
@@ -68,27 +68,13 @@ public class RealEventBolt extends BaseBasicBolt {
 			}
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.addProperty(OmcCalKey.OMC_SYSTEM_ID, system_id);
-
-			//区分项目
-			//充电桩项目
-			/*
-			//获取配置信息
-			Map<String,String> syscfg =  confContainer.getSysconfig();
-			String projectname = syscfg.get(OmcCalKey.OMC_CFG_PROJECTNAME);
-			if (PROJECTNAME.CLC.equals(projectname)){
-				Validity validity = new ValidityClc();
-				validity.inputDateExpandedinfoCheck(source_type, expanded_info);
-			//车联网项目
-			}else if(PROJECTNAME.VIV.equals(projectname)){
-				Validity validity = new ValidityVlv();
-				validity.inputDateExpandedinfoCheck(source_type, expanded_info);
-			}*/
 			jsonObject.addProperty(OmcCalKey.OMC_CHARGING_STATION, "");
 			jsonObject.addProperty(OmcCalKey.OMC_CHARGING_PILE, "");
 
 			logger.debug("策略、规则、参数信息获取......");
 			//信控对象
 			OmcObj obj = new OmcObj(tenant_id, owner_type,owner_id,event_type);
+
 			//获取策略、规则
 			EventProcessor eventProcessor = new EventProcessor(confContainer, obj,jsonObject);
 			eventProcessor.process();

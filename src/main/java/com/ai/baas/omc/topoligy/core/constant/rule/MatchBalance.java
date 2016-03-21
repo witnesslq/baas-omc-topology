@@ -1,6 +1,6 @@
 package com.ai.baas.omc.topoligy.core.constant.rule;
 
-public interface MatchBalance {
-	String MATCH = YESNO.YES;
-	String NOTMATCH = YESNO.NO;
+public final class MatchBalance {
+	public static final String MATCH = YesNo.YES;
+	public static final String NOTMATCH = YesNo.NO;
 }

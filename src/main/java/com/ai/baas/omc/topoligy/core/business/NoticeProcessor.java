@@ -63,23 +63,23 @@ public final class NoticeProcessor extends BaseProcess {
 				continue;
 			}
 			//规则类型为stop
-			if (rule.getScouttype().equals(SCORULETYPE.STOP)) {
+			if (rule.getScouttype().equals(ScoRuleType.STOP)) {
 				stop(users, rule);
 			}
 
-			if (rule.getScouttype().equals(SCORULETYPE.HALFSTOP)) {
+			if (rule.getScouttype().equals(ScoRuleType.HALFSTOP)) {
 				halfstop(users, rule);
 			}
 
-			if (rule.getScouttype().equals(SCORULETYPE.START)) {
+			if (rule.getScouttype().equals(ScoRuleType.START)) {
 				start(users, rule);
 			}
 
-			if (rule.getScouttype().equals(SCORULETYPE.WARNING)) {
+			if (rule.getScouttype().equals(ScoRuleType.WARNING)) {
 				warning(info, rule, policyId);
 			}
 
-			if (rule.getScouttype().equals(SCORULETYPE.WARNOFF)) {
+			if (rule.getScouttype().equals(ScoRuleType.WARNOFF)) {
 				warnoff(info, rule, policyId);
 			}
 
@@ -108,15 +108,15 @@ public final class NoticeProcessor extends BaseProcess {
 		if (speUrgeStop == null){
 			return true;
 		}else{
-			if ((speUrgeStop.getSpeType().equals(AVOIDTYPE.AVOID_STOP))
-					||(speUrgeStop.getSpeType().equals(AVOIDTYPE.AVOID_STOPANDURGE))){
-				if ((sectionRules.getScouttype().equals(SCORULETYPE.HALFSTOP))
-						||(sectionRules.getScouttype().equals(SCORULETYPE.STOP))){
+			if ((speUrgeStop.getSpeType().equals(AvoidType.AVOID_STOP))
+					||(speUrgeStop.getSpeType().equals(AvoidType.AVOID_STOPANDURGE))){
+				if ((sectionRules.getScouttype().equals(ScoRuleType.HALFSTOP))
+						||(sectionRules.getScouttype().equals(ScoRuleType.STOP))){
 					return false;
 				}
-			}else if((speUrgeStop.getSpeType().equals(AVOIDTYPE.AVOID_URGE))
-					||(speUrgeStop.getSpeType().equals(AVOIDTYPE.AVOID_STOPANDURGE))){
-				if ((sectionRules.getScouttype().equals(SCORULETYPE.WARNING))){
+			}else if((speUrgeStop.getSpeType().equals(AvoidType.AVOID_URGE))
+					||(speUrgeStop.getSpeType().equals(AvoidType.AVOID_STOPANDURGE))){
+				if ((sectionRules.getScouttype().equals(ScoRuleType.WARNING))){
 					return false;
 				}
 			}
@@ -132,7 +132,7 @@ public final class NoticeProcessor extends BaseProcess {
 		ScoutActBmsExt scoutActBmsExt = new ScoutActBmsExt(this.getOmcobj(), this.getConfig(), this.realBalance,this.getInput());
 		for (User user:users){
 			//免催免停处理
-			if (!filterBySpeUrgeStop(OWNERTYPE.SERV,user.getSubsid(),sectionRule)){
+			if (!filterBySpeUrgeStop(OwnerType.SERV,user.getSubsid(),sectionRule)){
 				continue;
 			}
 			scoutActBmsExt.stop(user);
@@ -154,7 +154,7 @@ public final class NoticeProcessor extends BaseProcess {
 			scoLog.setLogid(0L);
 			scoLog.setOwner(this.getOmcobj());
 			scoLog.setRealTimeBalance(this.getRealBalance());
-			scoLog.setScostatus(SCORULETYPE.STOP);
+			scoLog.setScostatus(ScoRuleType.STOP);
 			scoLog.setSectionRules(sectionRule);
 			scoLog.setSourceType(sectionRule.getScouttype());
 		}
@@ -188,7 +188,7 @@ public final class NoticeProcessor extends BaseProcess {
 			scoLog.setLogid(0L);
 			scoLog.setOwner(this.getOmcobj());
 			scoLog.setRealTimeBalance(this.getRealBalance());
-			scoLog.setScostatus(SCORULETYPE.START);
+			scoLog.setScostatus(ScoRuleType.START);
 			scoLog.setSectionRules(sectionRule);
 			scoLog.setSourceType(sectionRule.getScouttype());
 		}
@@ -203,7 +203,7 @@ public final class NoticeProcessor extends BaseProcess {
 		ScoutActBmsExt scoutActBmsExt = new ScoutActBmsExt(this.getOmcobj(), this.getConfig(), this.realBalance,this.getInput());
 		for (User user:users){
 			//免催免停处理
-			if (!filterBySpeUrgeStop(OWNERTYPE.SERV,user.getSubsid(),sectionRule)){
+			if (!filterBySpeUrgeStop(OwnerType.SERV,user.getSubsid(),sectionRule)){
 				continue;
 			}
 			scoutActBmsExt.halfstop(user);
@@ -226,7 +226,7 @@ public final class NoticeProcessor extends BaseProcess {
 			scoLog.setLogid(0L);
 			scoLog.setOwner(this.getOmcobj());
 			scoLog.setRealTimeBalance(this.getRealBalance());
-			scoLog.setScostatus(SCORULETYPE.HALFSTOP);
+			scoLog.setScostatus(ScoRuleType.HALFSTOP);
 			scoLog.setSectionRules(sectionRule);
 			scoLog.setSourceType(sectionRule.getScouttype());
 		}
@@ -245,7 +245,7 @@ public final class NoticeProcessor extends BaseProcess {
 		
 		//缺省配置
 		if (StringUtils.isBlank(remindTarget)){
-			remindTarget = REMINDTARGET.TOSERV;
+			remindTarget = RemindTarget.TOSERV;
 		}
 
 		JsonObject jsonObject = new JsonObject();
@@ -254,15 +254,15 @@ public final class NoticeProcessor extends BaseProcess {
 		jsonObject.addProperty(OmcCalKey.OMC_POLICY_ID, policyid);
 		ScoutActSmsExt scoutActSmsExt = new ScoutActSmsExt(this.getOmcobj(),info,this.getConfig(),this.getRealBalance(),jsonObject);
 		//根据不同的配置进行处理
-        if (remindTarget.equals(REMINDTARGET.TOSERV)){
+        if (remindTarget.equals(RemindTarget.TOSERV)){
         	List<User> remindusers = info.getUsers();
     		for (User user:remindusers){
     			//免催免停处理
-    			if (!filterBySpeUrgeStop(OWNERTYPE.SERV,user.getSubsid(),sectionRule)){
+    			if (!filterBySpeUrgeStop(OwnerType.SERV,user.getSubsid(),sectionRule)){
     				continue;
     			}	
     			
-    			scoutActSmsExt.warning(OWNERTYPE.SERV,user.getSubsid());
+    			scoutActSmsExt.warning(OwnerType.SERV,user.getSubsid());
     			
     			if (scoutActSmsExt.getMyomcUrgeStatus()!=null){
     				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
@@ -272,14 +272,14 @@ public final class NoticeProcessor extends BaseProcess {
     			}
     		}
         	
-        }else if(remindTarget.equals(REMINDTARGET.TOACCT)){
+        }else if(remindTarget.equals(RemindTarget.TOACCT)){
         	List<Account> accounts = info.getAccounts();
     		for (Account account:accounts){
     			//免催免停处理
-    			if (!filterBySpeUrgeStop(OWNERTYPE.ACCT,account.getAccountId(),sectionRule)){
+    			if (!filterBySpeUrgeStop(OwnerType.ACCT,account.getAccountId(),sectionRule)){
     				continue;
     			}	
-    			scoutActSmsExt.warning(OWNERTYPE.ACCT,account.getAccountId());
+    			scoutActSmsExt.warning(OwnerType.ACCT,account.getAccountId());
     			
     			if (scoutActSmsExt.getMyomcUrgeStatus()!=null){
     				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
@@ -289,15 +289,15 @@ public final class NoticeProcessor extends BaseProcess {
     			}
     		}
         	
-        }else if(remindTarget.equals(REMINDTARGET.TOCUST)){
+        }else if(remindTarget.equals(RemindTarget.TOCUST)){
         	Customer customer = info.getCustomer();
 
 			//免催免停处理
-			if (!filterBySpeUrgeStop(OWNERTYPE.CUST,customer.getCustomerId(),sectionRule)){
+			if (!filterBySpeUrgeStop(OwnerType.CUST,customer.getCustomerId(),sectionRule)){
 				return;
 			}
 			
-			scoutActSmsExt.warning(OWNERTYPE.CUST,customer.getCustomerId());
+			scoutActSmsExt.warning(OwnerType.CUST,customer.getCustomerId());
 			if (scoutActSmsExt.getMyomcUrgeStatus()!=null){
 				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
 			}
@@ -312,7 +312,7 @@ public final class NoticeProcessor extends BaseProcess {
 			scoLog.setLogid(0L);
 			scoLog.setOwner(this.getOmcobj());
 			scoLog.setRealTimeBalance(this.getRealBalance());
-			scoLog.setScostatus(SCORULETYPE.WARNING);
+			scoLog.setScostatus(ScoRuleType.WARNING);
 			scoLog.setSectionRules(sectionRule);
 			scoLog.setSourceType(sectionRule.getScouttype());
 		}
@@ -332,7 +332,7 @@ public final class NoticeProcessor extends BaseProcess {
 		
 		//缺省配置
 		if (StringUtils.isBlank(remindTarget)){
-			remindTarget = REMINDTARGET.TOSERV;
+			remindTarget = RemindTarget.TOSERV;
 		}
 
 		JsonObject jsonObject = new JsonObject();
@@ -341,44 +341,44 @@ public final class NoticeProcessor extends BaseProcess {
 		jsonObject.addProperty(OmcCalKey.OMC_POLICY_ID, policyid);
 		ScoutActSmsExt scoutActSmsExt = new ScoutActSmsExt(this.getOmcobj(),info,this.getConfig(),this.getRealBalance(),jsonObject);
 		//根据不同的配置进行处理
-        if (remindTarget.equals(REMINDTARGET.TOSERV)){
+        if (remindTarget.equals(RemindTarget.TOSERV)){
         	List<User> remindusers = info.getUsers();
     		for (User user:remindusers){
     			//免催免停处理
-    			if (!filterBySpeUrgeStop(OWNERTYPE.SERV,user.getSubsid(),sectionRule)){
+    			if (!filterBySpeUrgeStop(OwnerType.SERV,user.getSubsid(),sectionRule)){
     				continue;
     			}	
     			
-    			scoutActSmsExt.warnoff(OWNERTYPE.SERV,user.getSubsid());
+    			scoutActSmsExt.warnoff(OwnerType.SERV,user.getSubsid());
     			
     			if (scoutActSmsExt.getMyomcUrgeStatus()!=null){
     				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
     			}
     		}
         	
-        }else if(remindTarget.equals(REMINDTARGET.TOACCT)){
+        }else if(remindTarget.equals(RemindTarget.TOACCT)){
         	List<Account> accounts = info.getAccounts();
     		for (Account account:accounts){
     			//免催免停处理
-    			if (!filterBySpeUrgeStop(OWNERTYPE.ACCT,account.getAccountId(),sectionRule)){
+    			if (!filterBySpeUrgeStop(OwnerType.ACCT,account.getAccountId(),sectionRule)){
     				continue;
     			}	
-    			scoutActSmsExt.warnoff(OWNERTYPE.ACCT,account.getAccountId());
+    			scoutActSmsExt.warnoff(OwnerType.ACCT,account.getAccountId());
     			
     			if (scoutActSmsExt.getMyomcUrgeStatus()!=null){
     				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
     			}
     		}
         	
-        }else if(remindTarget.equals(REMINDTARGET.TOCUST)){
+        }else if(remindTarget.equals(RemindTarget.TOCUST)){
         	Customer customer = info.getCustomer();
 
 			//免催免停处理
-			if (!filterBySpeUrgeStop(OWNERTYPE.CUST,customer.getCustomerId(),sectionRule)){
+			if (!filterBySpeUrgeStop(OwnerType.CUST,customer.getCustomerId(),sectionRule)){
 				return;
 			}
 			
-			scoutActSmsExt.warnoff(OWNERTYPE.CUST,customer.getCustomerId());
+			scoutActSmsExt.warnoff(OwnerType.CUST,customer.getCustomerId());
 			if (scoutActSmsExt.getMyomcUrgeStatus()!=null){
 				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
 			}
@@ -390,7 +390,7 @@ public final class NoticeProcessor extends BaseProcess {
 			scoLog.setLogid(0L);
 			scoLog.setOwner(this.getOmcobj());
 			scoLog.setRealTimeBalance(this.getRealBalance());
-			scoLog.setScostatus(SCORULETYPE.WARNOFF);
+			scoLog.setScostatus(ScoRuleType.WARNOFF);
 			scoLog.setSectionRules(sectionRule);
 			scoLog.setSourceType(sectionRule.getScouttype());
 		}

@@ -1,6 +1,6 @@
 package com.ai.baas.omc.topoligy.core.constant;
 
-public interface FEESOURCE {
+public interface FeeSource {
 	String FROMCHARGE = "CHARGE";
 	String FROMBALANCE = "BALANCE";	
 	String FROMCREDIT = "CREDIT";

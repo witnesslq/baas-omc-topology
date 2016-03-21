@@ -8,7 +8,7 @@ package com.ai.baas.omc.topoligy.core.constant;
 * @date 2015年10月28日 上午11:03:26 
 *
  */
-public final class OWNERTYPE {
+public final class OwnerType {
 	/**
 	 * 客户类型
 	 */

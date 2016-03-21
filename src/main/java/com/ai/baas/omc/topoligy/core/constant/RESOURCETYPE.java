@@ -1,6 +1,9 @@
 package com.ai.baas.omc.topoligy.core.constant;
 
-public interface RESOURCETYPE {
+/**
+ * 业务类型
+ */
+public interface ResourceType {
 	/**
 	 * 金额,单位:分
 	 */

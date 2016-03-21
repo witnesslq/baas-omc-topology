@@ -7,7 +7,7 @@ package com.ai.baas.omc.topoligy.core.constant;
 * @date 2015年11月14日 下午2:57:41 
 *
  */
-public interface REMINDTARGET {
+public interface RemindTarget {
 	/**
 	 * 提醒到账户
 	 */

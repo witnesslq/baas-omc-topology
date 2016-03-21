@@ -5,7 +5,7 @@ import java.util.Map;
 import com.ai.baas.omc.topoligy.core.business.base.BaseCalProcess;
 import com.ai.baas.omc.topoligy.core.constant.BalancecalModel;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
-import com.ai.baas.omc.topoligy.core.constant.OWNERTYPE;
+import com.ai.baas.omc.topoligy.core.constant.OwnerType;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
@@ -60,10 +60,10 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 			 throw new OmcException("BalanceCal", "获取余额计算参数【" + OmcCalKey.OMC_CFG_BALANCECALMODEL + "】失败，请检查配置或者设置缺省值:" + messageinfo.toString());
 		}
 		//用户余额模式
-		if ((balancemodel.equals(BalancecalModel.SUBSMODEL))&&(ownertype.equals(OWNERTYPE.SERV))){
+		if ((balancemodel.equals(BalancecalModel.SUBSMODEL))&&(ownertype.equals(OwnerType.SERV))){
 			builderResBalanceServ(info.getOmcobj(),extAmount);
 		//账户余额模式
-		}else if((balancemodel.equals(BalancecalModel.ACCTMODEL))&&(ownertype.equals(OWNERTYPE.ACCT))){
+		}else if((balancemodel.equals(BalancecalModel.ACCTMODEL))&&(ownertype.equals(OwnerType.ACCT))){
 			builderBalanceAcct(info.getOmcobj(),extAmount);
 		//
 		}else{

@@ -1,8 +1,8 @@
 package com.ai.baas.omc.topoligy.core.business.command;
 
 import com.ai.baas.omc.topoligy.core.business.InfomationProcessor;
-import com.ai.baas.omc.topoligy.core.constant.OWNERTYPE;
-import com.ai.baas.omc.topoligy.core.constant.SCOSTATUS;
+import com.ai.baas.omc.topoligy.core.constant.OwnerType;
+import com.ai.baas.omc.topoligy.core.constant.ScoStatus;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.pojo.*;
@@ -36,12 +36,12 @@ public class ScoutActSmsExt extends ScoutActSms {
 	
 
 		//根据本地信控状态判断是否需要预警，对于提醒到用户的需要判断用户资料的状态，提醒的账户和客户的不判断资料
-		if ((ownertype.equals(OWNERTYPE.SERV))){
+		if ((ownertype.equals(OwnerType.SERV))){
 			ScoutStatus scoutStatus = scoutStatusService.selectStatus(this.getOmcobj().getTenantid(),this.getOmcobj().getBusinesscode(),oid);
 			if (scoutStatus != null){
-				if ((scoutStatus.getStatus().equals(SCOSTATUS.STOP))||
-						(scoutStatus.getStatus().equals(SCOSTATUS.HALFSTOP ))||
-						(scoutStatus.getStatus().equals(SCOSTATUS.DELAYSTOP))){
+				if ((scoutStatus.getStatus().equals(ScoStatus.STOP))||
+						(scoutStatus.getStatus().equals(ScoStatus.HALFSTOP ))||
+						(scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP))){
 					logger.info("此对象已经停机，不再进行预警提醒"+"ownertype:["+ownertype+"] oid:["+ oid);
 					return 0;
 				}
@@ -49,7 +49,7 @@ public class ScoutActSmsExt extends ScoutActSms {
 		}
 		//获取当前预警状态
 		OmcUrgeStatus omcUrgeStatus = urgeStatusService.selectUrgeStatus(this.getOmcobj().getTenantid(),this.getOmcobj().getBusinesscode(), this.getSectionRule().getSectiontype() , ownertype, oid);
-		if ((omcUrgeStatus != null)&&(SCOSTATUS.WARNING.equals(omcUrgeStatus.getStatus()))){
+		if ((omcUrgeStatus != null)&&(ScoStatus.WARNING.equals(omcUrgeStatus.getStatus()))){
 			if (omcUrgeStatus.getNotifyTimes() > 0){
 				logger.info("此对象已经提醒过，不再重复提醒"+"ownertype:["+ownertype+"] oid:["+ oid);
 				return 0;
@@ -71,18 +71,18 @@ public class ScoutActSmsExt extends ScoutActSms {
 			
 			omcUrgeStatus.setNotifyType(sectionRule.getSectiontype());
 			omcUrgeStatus.setScoutInfo("后续处理");
-			omcUrgeStatus.setStatus(SCOSTATUS.WARNING);
+			omcUrgeStatus.setStatus(ScoStatus.WARNING);
 			omcUrgeStatus.setStatusTime(DateUtils.currTimeStamp());
-			omcUrgeStatus.setLastStatus(SCOSTATUS.WARNOFF);
+			omcUrgeStatus.setLastStatus(ScoStatus.WARNOFF);
 			omcUrgeStatus.setNotifyStatus("1");
 			omcUrgeStatus.setNotifyTime(DateUtils.currTimeStamp());
 			omcUrgeStatus.setNotifyTimes(1);
 		}else{
 			omcUrgeStatus.setNotifyType(sectionRule.getSectiontype());
 			omcUrgeStatus.setScoutInfo("后续处理");
-			omcUrgeStatus.setStatus(SCOSTATUS.WARNING);
+			omcUrgeStatus.setStatus(ScoStatus.WARNING);
 			omcUrgeStatus.setStatusTime(DateUtils.currTimeStamp());
-			omcUrgeStatus.setLastStatus(SCOSTATUS.WARNOFF);
+			omcUrgeStatus.setLastStatus(ScoStatus.WARNOFF);
 			omcUrgeStatus.setNotifyStatus("1");
 			omcUrgeStatus.setNotifyTime(DateUtils.currTimeStamp());
 			omcUrgeStatus.setNotifyTimes(1);
@@ -103,16 +103,16 @@ public class ScoutActSmsExt extends ScoutActSms {
 			return 0;
 		}
 		
-		if (SCOSTATUS.WARNOFF.equals(omcUrgeStatus.getStatus())){
+		if (ScoStatus.WARNOFF.equals(omcUrgeStatus.getStatus())){
 			return 0;
 		}
 		//获取当前信控状态
 		SectionRule sectionRule = this.getSectionRule();
 		omcUrgeStatus.setNotifyType(sectionRule.getSectiontype());
 		omcUrgeStatus.setScoutInfo("后续处理");
-		omcUrgeStatus.setStatus(SCOSTATUS.WARNOFF);
+		omcUrgeStatus.setStatus(ScoStatus.WARNOFF);
 		omcUrgeStatus.setStatusTime(DateUtils.currTimeStamp());
-		omcUrgeStatus.setLastStatus(SCOSTATUS.WARNING);
+		omcUrgeStatus.setLastStatus(ScoStatus.WARNING);
 		omcUrgeStatus.setNotifyStatus("1");
 		omcUrgeStatus.setNotifyTime(DateUtils.currTimeStamp());
 		omcUrgeStatus.setNotifyTimes(1);

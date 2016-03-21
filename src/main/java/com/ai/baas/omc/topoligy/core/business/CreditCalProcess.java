@@ -8,10 +8,10 @@ import java.util.List;
 
 import com.ai.baas.omc.topoligy.core.business.base.BaseCalProcess;
 import com.ai.baas.omc.topoligy.core.constant.BalancecalModel;
-import com.ai.baas.omc.topoligy.core.constant.FEESOURCE;
+import com.ai.baas.omc.topoligy.core.constant.FeeSource;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
-import com.ai.baas.omc.topoligy.core.constant.RESOURCETYPE;
-import com.ai.baas.omc.topoligy.core.constant.rule.CREDITLINECALMODEL;
+import com.ai.baas.omc.topoligy.core.constant.ResourceType;
+import com.ai.baas.omc.topoligy.core.constant.rule.CreditLineCalModel;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.manager.service.OmcCreditService;
@@ -35,8 +35,8 @@ public final class CreditCalProcess extends BaseCalProcess {
 	@Override
 	public void process() throws OmcException {
 		ConfigContainer cfg = this.getConfig();
-		
 		JsonObject inputData = this.getInput();
+
 		InfomationProcessor info = this.getInformation();
 		
 		String ownertype = info.getOmcobj().getOwertype();
@@ -70,15 +70,15 @@ public final class CreditCalProcess extends BaseCalProcess {
 		}
 
         //用户模式计算信用度,并且是账户余额模式
-		if ((creditcalmodel.equals(CREDITLINECALMODEL.SUM_USER))
+		if ((creditcalmodel.equals(CreditLineCalModel.SUM_USER))
 				&&(balcalmodel.equals(BalancecalModel.ACCTMODEL))){
             //获取金额业务类型的信用度
-			double creditline = getUserSum(info.getUsers(), RESOURCETYPE.CASH);
-			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FEESOURCE.FROMCREDIT));
+			double creditline = getUserSum(info.getUsers(), ResourceType.CASH);
+			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROMCREDIT));
 		}else{ 
 			//todo待处理
 			double creditline = 0.0;
-			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FEESOURCE.FROMCREDIT));
+			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROMCREDIT));
 			//throw new OmcException("CreditCalProcess", "有待实现的模式" + OmcCalKey.OMC_CFG_CREDITLINE_CALMODEL + "[" + creditcalmodel +"]"+ OmcCalKey.OMC_CFG_BALANCECALMODEL +"["+ balcalmodel);
 		}
 	}

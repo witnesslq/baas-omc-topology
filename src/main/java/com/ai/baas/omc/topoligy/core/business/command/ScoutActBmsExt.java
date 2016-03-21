@@ -4,9 +4,9 @@ import java.sql.Timestamp;
 
 import com.ai.baas.omc.topoligy.core.business.command.rule.ActionRule;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
-import com.ai.baas.omc.topoligy.core.constant.SCORULETYPE;
-import com.ai.baas.omc.topoligy.core.constant.SCOSTATUS;
-import com.ai.baas.omc.topoligy.core.constant.rule.YESNO;
+import com.ai.baas.omc.topoligy.core.constant.ScoRuleType;
+import com.ai.baas.omc.topoligy.core.constant.ScoStatus;
+import com.ai.baas.omc.topoligy.core.constant.rule.YesNo;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
@@ -28,13 +28,13 @@ public class ScoutActBmsExt extends ScoutActBms {
 	public int stop(User user)  throws OmcException {
 
 		//资料类判断
-		if (!ActionRule.canAction(SCORULETYPE.STOP, user,this.getConfig())){
+		if (!ActionRule.canAction(ScoRuleType.STOP, user,this.getConfig())){
 			return 0;
 		}
 		//获取信控状态
 		ScoutStatus scoutStatus = scoutStatusService.selectStatus(user.getTenantid(), this.getOmcobj().getBusinesscode(), user.getSubsid()) ;
 		
-		if ((scoutStatus != null)&&(scoutStatus.getStatus().equals(SCOSTATUS.STOP))){
+		if ((scoutStatus != null)&&(scoutStatus.getStatus().equals(ScoStatus.STOP))){
 			return 1;
 		}
 		//判断非延迟停机配置的直接进入停机处理
@@ -46,10 +46,10 @@ public class ScoutActBmsExt extends ScoutActBms {
 		if ( delayTimes <= 0 ){
 			//todo 待添加单停处理
 			if (scoutStatus == null){
-				String currStatus = SCOSTATUS.STOP;
+				String currStatus = ScoStatus.STOP;
 				myscoutStatus = this.newScoStatus(user, currStatus);
 			}else{
-				String currStatus = SCOSTATUS.STOP;
+				String currStatus = ScoStatus.STOP;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 			}
 			
@@ -58,23 +58,23 @@ public class ScoutActBmsExt extends ScoutActBms {
 		}
 		
 		//存在延迟停机
-		if ((scoutStatus == null)||(!scoutStatus.getStatus().equals(SCOSTATUS.DELAYSTOP))){
+		if ((scoutStatus == null)||(!scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP))){
 			if (scoutStatus == null){
-				String currStatus = SCOSTATUS.DELAYSTOP;
+				String currStatus = ScoStatus.DELAYSTOP;
 				myscoutStatus = this.newScoStatus(user, currStatus);
 
 			}else{
-				String currStatus = SCOSTATUS.DELAYSTOP;
+				String currStatus = ScoStatus.DELAYSTOP;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 			}
 			return 1;
-		}else if(scoutStatus.getStatus().equals(SCOSTATUS.DELAYSTOP)){
+		}else if(scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP)){
 			//todo双停判断
 			Timestamp lastTime = scoutStatus.getStatusTime();
 			Timestamp currTime = DateUtils.currTimeStamp();
 			final long SECONDS_PER_MINUS = 1l * 1000 * 60;
 			if ((currTime.getTime() - lastTime.getTime()) <= (delayTimes * SECONDS_PER_MINUS)){
-				String currStatus = SCOSTATUS.DELAYSTOP;
+				String currStatus = ScoStatus.DELAYSTOP;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 				return super.stop(user);
 			}
@@ -85,7 +85,7 @@ public class ScoutActBmsExt extends ScoutActBms {
 	@Override
 	public int start(User user)  throws OmcException {
 		//判断资料是否可以开机
-		if (!ActionRule.canAction(SCORULETYPE.START, user,this.getConfig())){
+		if (!ActionRule.canAction(ScoRuleType.START, user,this.getConfig())){
 			return 0;
 		}
 		//根据信控信控状态判断是否可以开机（为避免资料同步延迟，对于资料正常开机的不再判断资料）
@@ -95,10 +95,10 @@ public class ScoutActBmsExt extends ScoutActBms {
 		if (scoutStatus == null){
 			return 1;
 		}else{
-			if (SCOSTATUS.START.equals(scoutStatus.getStatus())){
+			if (ScoStatus.START.equals(scoutStatus.getStatus())){
 				return 1;
 			}else{
-				String currStatus = SCOSTATUS.START;
+				String currStatus = ScoStatus.START;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 			}
 		}
@@ -107,7 +107,7 @@ public class ScoutActBmsExt extends ScoutActBms {
 
 	@Override
 	public int halfstop(User user)  throws OmcException {
-		if (!ActionRule.canAction(SCORULETYPE.HALFSTOP, user,this.getConfig())){
+		if (!ActionRule.canAction(ScoRuleType.HALFSTOP, user,this.getConfig())){
 			return 0;
 		}
 		
@@ -117,9 +117,9 @@ public class ScoutActBmsExt extends ScoutActBms {
 		ScoutStatus scoutStatus = scoutStatusService.selectStatus(user.getTenantid(),this.getOmcobj().getBusinesscode(), user.getSubsid());
 
 		//对于已经停机 单停 双缓的用户不再进行后续操作
-		if ((scoutStatus != null)&&((scoutStatus.getStatus().equals(SCOSTATUS.STOP))||
-									(scoutStatus.getStatus().equals(SCOSTATUS.HALFSTOP ))||
-									(scoutStatus.getStatus().equals(SCOSTATUS.DELAYSTOP)))){
+		if ((scoutStatus != null)&&((scoutStatus.getStatus().equals(ScoStatus.STOP))||
+									(scoutStatus.getStatus().equals(ScoStatus.HALFSTOP ))||
+									(scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP)))){
 			return 0;
 		}
 
@@ -127,34 +127,34 @@ public class ScoutActBmsExt extends ScoutActBms {
 		if ( delayTimes <=0 ){
 			//todo 待添加单停处理
 			if (scoutStatus == null){
-				String currStatus = SCOSTATUS.HALFSTOP;
+				String currStatus = ScoStatus.HALFSTOP;
 				myscoutStatus = this.newScoStatus(user, currStatus);
 
 			}else{
-				String currStatus = SCOSTATUS.HALFSTOP;
+				String currStatus = ScoStatus.HALFSTOP;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 			}
 			return super.halfstop(user);
 		}
 		
 		//存在延迟停机
-		if ((scoutStatus == null)||(!scoutStatus.getStatus().equals(SCOSTATUS.DELAYHALFSTOP))){
+		if ((scoutStatus == null)||(!scoutStatus.getStatus().equals(ScoStatus.DELAYHALFSTOP))){
 			if (scoutStatus == null){
-				String currStatus = SCOSTATUS.DELAYSTOP;
+				String currStatus = ScoStatus.DELAYSTOP;
 				myscoutStatus = this.newScoStatus(user, currStatus);
 
 			}else{
-				String currStatus = SCOSTATUS.DELAYSTOP;
+				String currStatus = ScoStatus.DELAYSTOP;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 			}
 			return 1;
-		}else if(scoutStatus.getStatus().equals(SCOSTATUS.DELAYHALFSTOP)){
+		}else if(scoutStatus.getStatus().equals(ScoStatus.DELAYHALFSTOP)){
 			//todo双停判断
 			Timestamp lastTime = scoutStatus.getStatusTime();
 			Timestamp currTime = DateUtils.currTimeStamp();
 			final long SECONDS_PER_MINUS = 1l * 1000 * 60;
 			if ((currTime.getTime() - lastTime.getTime()) <= (delayTimes * SECONDS_PER_MINUS)){
-				String currStatus = SCOSTATUS.DELAYHALFSTOP;
+				String currStatus = ScoStatus.DELAYHALFSTOP;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 				return super.halfstop(user);
 			}
@@ -176,7 +176,7 @@ public class ScoutActBmsExt extends ScoutActBms {
 	* @throws
 	 */
 	public int warning(User user) throws OmcException {
-		if (!ActionRule.canAction(SCORULETYPE.WARNING, user,this.getConfig())){
+		if (!ActionRule.canAction(ScoRuleType.WARNING, user,this.getConfig())){
 			return 0;
 		}
 		
@@ -185,9 +185,9 @@ public class ScoutActBmsExt extends ScoutActBms {
 		ScoutStatus scoutStatus = scoutStatusService.selectStatus(user.getTenantid(),this.getOmcobj().getBusinesscode(), user.getSubsid());
 
 		//对于已经停机 单停 双缓的用户不再进行后续操作
-		if ((scoutStatus != null)&&((scoutStatus.getStatus().equals(SCOSTATUS.STOP))||
-									(scoutStatus.getStatus().equals(SCOSTATUS.HALFSTOP ))||
-									(scoutStatus.getStatus().equals(SCOSTATUS.DELAYSTOP)))){
+		if ((scoutStatus != null)&&((scoutStatus.getStatus().equals(ScoStatus.STOP))||
+									(scoutStatus.getStatus().equals(ScoStatus.HALFSTOP ))||
+									(scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP)))){
 			return 0;
 		}
 		//查找指定号码
@@ -195,11 +195,11 @@ public class ScoutActBmsExt extends ScoutActBms {
 		
 		//todo:: 待添加催缴的处理
 			if (scoutStatus == null){
-				String currStatus = SCOSTATUS.WARNING;
+				String currStatus = ScoStatus.WARNING;
 				myscoutStatus = this.newScoStatus(user, currStatus);
 
 			}else{
-				String currStatus = SCOSTATUS.WARNING;
+				String currStatus = ScoStatus.WARNING;
 				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
 			}
 			//查看是否可以催缴号码
@@ -230,9 +230,9 @@ public class ScoutActBmsExt extends ScoutActBms {
 		String delaystop = cfg.getCfgPara(delaytype, this.getOmcobj().getTenantid(), policyId, "0");
 		//配置为空
 		if (StringUtils.isBlank(delaystop)){
-			delaystop = YESNO.NO;
+			delaystop = YesNo.NO;
 		}
-		if (delaystop.equals(YESNO.NO)){
+		if (delaystop.equals(YesNo.NO)){
 			return 0;
 		}
 		
@@ -257,7 +257,7 @@ public class ScoutActBmsExt extends ScoutActBms {
 			ndelaystoptimes = Integer.parseInt(delaystoptimes);
 		}
 		
-		if ((delaystop.equals(YESNO.YES))&&(ndelaystoptimes<=0)){
+		if ((delaystop.equals(YesNo.YES))&&(ndelaystoptimes<=0)){
 			throw new OmcException("OMC_checkStopDelay", "延迟停机时间长度配置错误" + delaystoptimes);
 		}
 

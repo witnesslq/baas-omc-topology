@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.ai.baas.omc.topoligy.core.business.base.BaseProcess;
-import com.ai.baas.omc.topoligy.core.constant.FEESOURCE;
+import com.ai.baas.omc.topoligy.core.constant.FeeSource;
 import com.ai.baas.omc.topoligy.core.constant.rule.*;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
-import com.ai.baas.omc.topoligy.core.constant.SCORULETYPE;
+import com.ai.baas.omc.topoligy.core.constant.ScoRuleType;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.pojo.Customer;
@@ -172,25 +172,25 @@ public final class OmcCalProcessor extends BaseProcess {
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = (SectionRule) iterator.next();
 				//匹配余额
-				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getBalancefloor(), FEESOURCE.FROMNOTSOURCE);
-				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getBalanceceil(), FEESOURCE.FROMNOTSOURCE);
+				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getBalancefloor(), FeeSource.FROMNOTSOURCE);
+				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getBalanceceil(), FeeSource.FROMNOTSOURCE);
 				//用户余额
 				BigDecimal realbalance = balance.getRealBalance();
 				//监控规则类型
-				if (sectionRule.getScouttype().equals(SCORULETYPE.HALFSTOP)||
-					sectionRule.getScouttype().equals(SCORULETYPE.STOP)){
-					if (stopaddcredit.equals(YESNO.YES)){
+				if (sectionRule.getScouttype().equals(ScoRuleType.HALFSTOP)||
+					sectionRule.getScouttype().equals(ScoRuleType.STOP)){
+					if (stopaddcredit.equals(YesNo.YES)){
 						realbalance = realbalance.add(balance.getCreditline());
 					}
 				}
-				if (sectionRule.getScouttype().equals(SCORULETYPE.START)){
-					if (startaddcredit.equals(YESNO.YES)){
+				if (sectionRule.getScouttype().equals(ScoRuleType.START)){
+					if (startaddcredit.equals(YesNo.YES)){
 						realbalance = realbalance.add(balance.getCreditline());
 					}
 				}
-				if (sectionRule.getScouttype().equals(SCORULETYPE.WARNING)||
-					sectionRule.getScouttype().equals(SCORULETYPE.WARNOFF)){
-					if (warnaddcredit.equals(YESNO.YES)){
+				if (sectionRule.getScouttype().equals(ScoRuleType.WARNING)||
+					sectionRule.getScouttype().equals(ScoRuleType.WARNOFF)){
+					if (warnaddcredit.equals(YesNo.YES)){
 						realbalance = realbalance.add(balance.getCreditline());
 					}
 				}
@@ -224,15 +224,15 @@ public final class OmcCalProcessor extends BaseProcess {
 		String  matchcharge = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_CHARGE,this.getOmcobj().getTenantid(),policyid,""); 
 	
 		if (StringUtils.isBlank(matchcharge)){
-			matchcharge = MATCHCHARGE.NOTMATCH;
+			matchcharge = MatchCharge.NOTMATCH;
 		}
 		
-		if (matchcharge.equals(MATCHCHARGE.MATCH)){
+		if (matchcharge.equals(MatchCharge.MATCH)){
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = (SectionRule) iterator.next();
 				//匹配余额 大于费用最小金额,小于费用最大金额
-				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getChargefloor(), FEESOURCE.FROMCREDIT);
-				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getChargeceil(), FEESOURCE.FROMCREDIT);
+				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getChargefloor(), FeeSource.FROMCREDIT);
+				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getChargeceil(), FeeSource.FROMCREDIT);
 			    if ((balance.getRealBill().compareTo(floor)>0)&&(balance.getRealBill().compareTo(ceil)<=0)){
 			    	sRules.add(sectionRule);
 			    }
@@ -262,10 +262,10 @@ public final class OmcCalProcessor extends BaseProcess {
 		String  matchowners = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_OWNERS,this.getOmcobj().getTenantid(),policyid,""); 
 		
 		if (StringUtils.isBlank(matchowners)){
-			matchowners = MATCHOWNERS.NOTMATCH;
+			matchowners = MatchOwners.NOTMATCH;
 		}
 		
-		if (matchowners.equals(MATCHOWNERS.MATCH)){
+		if (matchowners.equals(MatchOwners.MATCH)){
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = (SectionRule) iterator.next();
 				//匹配余额 大于最小天数,小于最大天数
@@ -296,10 +296,10 @@ public final class OmcCalProcessor extends BaseProcess {
 		List<SectionRule> midRules = new ArrayList<SectionRule>();
 		
 		if (StringUtils.isBlank(matchcreditlevel)){
-			matchcreditlevel = MATCHCREDITLEVEL.NOTMATCH;
+			matchcreditlevel = MatchCreditLevel.NOTMATCH;
 		}
 
-		if (matchcreditlevel.equals(MATCHCREDITLEVEL.MATCH)){
+		if (matchcreditlevel.equals(MatchCreditLevel.MATCH)){
 			if (StringUtils.isBlank(customer.getCustLevel())){
 				throw new OmcException("matchCreditLevel", "客户信控级别为空" + customer);
 			}

@@ -3,7 +3,7 @@ package com.ai.baas.omc.topoligy.core.constant;
 /**
  * 信控状态表中信控状态
  */
-public final class SCOSTATUS {
+public final class ScoStatus {
 	public static final String  STOP = "28";
 	public static final String  HALFSTOP = "27";
 	public static final String  DELAYHALFSTOP = "17";

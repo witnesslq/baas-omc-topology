@@ -1,11 +1,3 @@
-/**   
-* @Title: ConfigContainer.java 
-* @Package com.ai.runner.center.omc.scout.cal.manager.container 
-* @Description: 配置参数，规则容器
-* @author lvsj
-* @date 2015年12月24日 下午3:16:20 
-* @version V1.0   
-*/
 package com.ai.baas.omc.topoligy.core.manager.container;
 
 import java.util.ArrayList;
@@ -29,24 +21,26 @@ import com.ai.baas.omc.topoligy.core.pojo.SectionRule;
 import com.google.gson.JsonObject;
 
 /**
+ * 完成参数加载，匹配功能
  * @ClassName: ConfigContainer
- * @Description: 完成参数加载，匹配功能
  * @author lvsj
  * @date 2015年12月24日 下午3:16:20
  * 
  */
 public final class ConfigContainer {
-	// private static final Logger logger =
-	// LoggerFactory.getLogger(ConfigContainer.class);
+	// private static final Logger logger = LoggerFactory.getLogger(ConfigContainer.class);
 	private IConfigObtain configObtainService;
+	//信控策略集合
 	private Map<PolicyKey, Policy> policyMap;
+	//信控策略集合
 	private Map<String, Policy> policyIdMap;
 	//信控租户参数
 	private Map<OmcCalConfKey, OmcCalConf> omcCalConfMap;
 	//信控策略参数
 	private Map<PolicyConfKey, PolicyConf> policyConfMap;
-
+	//信控规则参数
 	private Map<PolicyKey, List<SectionRule>> policyForRuleMap;
+	//信控规则集合
 	private Map<Integer, SectionRule> ruleMap;
 	private List<OmcScoutActionDefine> actionDefines;
 	private Map<String, String> sysconfig;
@@ -56,7 +50,6 @@ public final class ConfigContainer {
 	}
 
 	public void configObtain() throws OmcException {
-
 		List<OmcCalConf> omcCalConfs = configObtainService.selectOmcCfgAll();
 		List<PolicyConf> policyConfs = configObtainService.selectPolicyCfgAll();
 		List<Policy> policies = configObtainService.selectPolicyAll();
@@ -64,9 +57,7 @@ public final class ConfigContainer {
 		List<OmcScoutActionDefine> omcScoutActionDefines = configObtainService.selectActionAll();
 
 		routePolicyAndRule(policies, sectionRules);
-
 		routeOmcCalConf(omcCalConfs);
-
 		routePolicyConf(policyConfs);
 
 		if (omcScoutActionDefines != null) {
@@ -94,7 +85,6 @@ public final class ConfigContainer {
 		}
 		for (Iterator<Policy> iterator = list.iterator(); iterator.hasNext();) {
 			Policy policy = (Policy) iterator.next();
-
 			PolicyKey policyKey = policy.getPolicyKey();
 
 			if (policyMap.get(policyKey) == null) {
@@ -148,9 +138,7 @@ public final class ConfigContainer {
 	 * 设定文件 @return void 返回类型 @throws
 	 */
 	private void routeOmcCalConf(List<OmcCalConf> list) {
-
 		omcCalConfMap = new HashMap<OmcCalConfKey, OmcCalConf>();
-
 		if ((list == null) || (list.isEmpty())) {
 			return;
 		}
@@ -159,7 +147,6 @@ public final class ConfigContainer {
 			OmcCalConf omcCalConf = (OmcCalConf) iterator.next();
 
 			OmcCalConfKey omcCalConfKey = new OmcCalConfKey();
-
 			omcCalConfKey.setTenantid(omcCalConf.getConfkey().getTenantid());
 			omcCalConfKey.setConfkey(omcCalConf.getConfkey().getConfkey());
 
@@ -176,7 +163,6 @@ public final class ConfigContainer {
 	 * 设定文件 @return void 返回类型 @throws
 	 */
 	private void routePolicyConf(List<PolicyConf> list) {
-
 		policyConfMap = new HashMap<PolicyConfKey, PolicyConf>();
 
 		if ((list == null) || (list.isEmpty())) {
@@ -209,9 +195,7 @@ public final class ConfigContainer {
 	}
 
 	public Policy getPolicyById(String policyId) {
-
 		return policyIdMap.get(policyId);
-
 	}
 	/**
 	 * 获取指定信控策略的信控规则
@@ -219,12 +203,10 @@ public final class ConfigContainer {
 	 * @return
 	 */
 	public List<SectionRule> getSectionRules(PolicyKey policyKey) {
-
 		return policyForRuleMap.get(policyKey);
 	}
 
 	public SectionRule getSectionRule(Integer ruleid) {
-
 		return ruleMap.get(ruleid);
 	}
 

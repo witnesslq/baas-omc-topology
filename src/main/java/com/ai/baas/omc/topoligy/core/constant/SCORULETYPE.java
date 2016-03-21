@@ -7,7 +7,7 @@ package com.ai.baas.omc.topoligy.core.constant;
 * @date 2015年11月4日 上午11:28:15 
 *
  */
-public final class SCORULETYPE {
+public final class ScoRuleType {
 	public static final String STOP = "stop";
 	public static final String START = "start";
 	public static final String HALFSTOP = "half_stop";

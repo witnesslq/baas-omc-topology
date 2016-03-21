@@ -1,6 +1,6 @@
 package com.ai.baas.omc.topoligy.core.constant;
 
-public interface STATUSCHGTYPE {
+public interface StatusChgType {
 	/**
 	 *	0	新装 
 	 */

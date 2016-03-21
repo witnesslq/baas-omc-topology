@@ -1,10 +1,10 @@
 package com.ai.baas.omc.topoligy.core.business.command.rule;
 
-import com.ai.baas.omc.topoligy.core.constant.SCORULETYPE;
-import com.ai.baas.omc.topoligy.core.constant.SERVICESTATUS;
-import com.ai.baas.omc.topoligy.core.constant.STATUSCHGTYPE;
-import com.ai.baas.omc.topoligy.core.constant.SUBSSTATUS;
-import com.ai.baas.omc.topoligy.core.constant.rule.MATCHUSER;
+import com.ai.baas.omc.topoligy.core.constant.ScoRuleType;
+import com.ai.baas.omc.topoligy.core.constant.ServiceStatus;
+import com.ai.baas.omc.topoligy.core.constant.StatusChgType;
+import com.ai.baas.omc.topoligy.core.constant.SubsStatus;
+import com.ai.baas.omc.topoligy.core.constant.rule.MatchUser;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.pojo.User;
 
@@ -28,17 +28,17 @@ public final  class ActionRule {
 		if ( 1==1 ){
 			return true;
 		}
-		if ((matchUser != null)&&(matchUser.equals(MATCHUSER.NOTMATCH))){
+		if ((matchUser != null)&&(matchUser.equals(MatchUser.NOTMATCH))){
 			return true;
 		}
 		
-		if (action.equals(SCORULETYPE.STOP)){
-			if (user.getServicestatus().equals(SERVICESTATUS.STOPSERVED)){  //停机
+		if (action.equals(ScoRuleType.STOP)){
+			if (user.getServicestatus().equals(ServiceStatus.STOPSERVED)){  //停机
 				return false;
 			}
 			
-			if (user.getServicestatus().equals(SERVICESTATUS.SERVED)){
-				if (STATUSCHGTYPE.FORCESTART.equals(user.getStatuschgtype())){ //挂失
+			if (user.getServicestatus().equals(ServiceStatus.SERVED)){
+				if (StatusChgType.FORCESTART.equals(user.getStatuschgtype())){ //挂失
 					return false;
 				}
 			}
@@ -47,38 +47,38 @@ public final  class ActionRule {
 		/**
 		 * 开机过滤判断
 		 */
-		if (action.equals(SCORULETYPE.START)){
+		if (action.equals(ScoRuleType.START)){
 			
-			if (user.getServicestatus().equals(SERVICESTATUS.STOPSERVED)){
-				if (STATUSCHGTYPE.FORCESTOP.equals(user.getStatuschgtype())){	// 强停
+			if (user.getServicestatus().equals(ServiceStatus.STOPSERVED)){
+				if (StatusChgType.FORCESTOP.equals(user.getStatuschgtype())){	// 强停
 					return false;
 				}
-				if (STATUSCHGTYPE.REPORTLOST.equals(user.getStatuschgtype())){ //挂失
+				if (StatusChgType.REPORTLOST.equals(user.getStatuschgtype())){ //挂失
 					return false;
 				}
-				if (STATUSCHGTYPE.STOPTOPROTECT.equals(user.getStatuschgtype())){ //停机保号
+				if (StatusChgType.STOPTOPROTECT.equals(user.getStatuschgtype())){ //停机保号
 					return false;
 				}
 			}
 			
-			if (user.getSubsstatus().equals(SUBSSTATUS.ADVANCEREMOVE)){ //预销户
+			if (user.getSubsstatus().equals(SubsStatus.ADVANCEREMOVE)){ //预销户
 				return false;
 			}
 
 		}
-		if (action.equals(SCORULETYPE.HALFSTOP)){
-			if (user.getServicestatus().equals(SERVICESTATUS.STOPSERVED)){  //停机
+		if (action.equals(ScoRuleType.HALFSTOP)){
+			if (user.getServicestatus().equals(ServiceStatus.STOPSERVED)){  //停机
 				return false;
 			}
-			if (user.getServicestatus().equals(SERVICESTATUS.lIMITSERVED)){  //单停
+			if (user.getServicestatus().equals(ServiceStatus.lIMITSERVED)){  //单停
 				return false;
 			}
 		}
-		if (action.equals(SCORULETYPE.WARNING)){
-			if (user.getServicestatus().equals(SERVICESTATUS.STOPSERVED)){  //停机
+		if (action.equals(ScoRuleType.WARNING)){
+			if (user.getServicestatus().equals(ServiceStatus.STOPSERVED)){  //停机
 				return false;
 			}
-			if (user.getServicestatus().equals(SERVICESTATUS.lIMITSERVED)){  //单停
+			if (user.getServicestatus().equals(ServiceStatus.lIMITSERVED)){  //单停
 				return false;
 			}
 		}

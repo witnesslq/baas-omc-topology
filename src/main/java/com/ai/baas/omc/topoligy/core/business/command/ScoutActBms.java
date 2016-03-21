@@ -1,7 +1,7 @@
 package com.ai.baas.omc.topoligy.core.business.command;
 
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
-import com.ai.baas.omc.topoligy.core.constant.SCORULETYPE;
+import com.ai.baas.omc.topoligy.core.constant.ScoRuleType;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.manager.parameters.entity.OmcScoutActionDefine;
@@ -52,12 +52,12 @@ public class ScoutActBms {
 		ConfigContainer cfg = this.getConfig();
 		OmcObj actionObj = this.getOmcobj();
 		
-		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1",SCORULETYPE.STOP);
+		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1", ScoRuleType.STOP);
 		//添加短信支持
-		sendmsg(user, SCORULETYPE.STOP,action.getSmsTemplate());
+		sendmsg(user, ScoRuleType.STOP,action.getSmsTemplate());
 		//获取停机指令	
 		String actionType = action.getInfCommond();
-		omcBmsInterface = builderinf(user,SCORULETYPE.STOP,actionType);
+		omcBmsInterface = builderinf(user, ScoRuleType.STOP,actionType);
 		return 1;
 	}
 	/**
@@ -72,14 +72,14 @@ public class ScoutActBms {
 		ConfigContainer cfg = getConfig();
 		OmcObj actionObj = getOmcobj();
 		//获取指定定义
-		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1",SCORULETYPE.START);
+		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1", ScoRuleType.START);
 		
 		//添加短信支持
-		sendmsg(user,SCORULETYPE.START,action.getSmsTemplate());
+		sendmsg(user, ScoRuleType.START,action.getSmsTemplate());
 		//获取信控指令	
 		String actionType = action.getInfCommond();
 
-		omcBmsInterface = builderinf(user,SCORULETYPE.START,actionType);
+		omcBmsInterface = builderinf(user, ScoRuleType.START,actionType);
 		
 		return 1;
 	}
@@ -89,14 +89,14 @@ public class ScoutActBms {
 		ConfigContainer cfg = this.getConfig();
 		OmcObj actionObj = this.getOmcobj();
 		//获取指定定义
-		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1",SCORULETYPE.HALFSTOP);
+		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1", ScoRuleType.HALFSTOP);
 		
 		//添加短信支持
-		sendmsg(user,SCORULETYPE.HALFSTOP,action.getSmsTemplate());
+		sendmsg(user, ScoRuleType.HALFSTOP,action.getSmsTemplate());
 		//获取信控指令	
 		String actionType = action.getInfCommond();
 		
-		omcBmsInterface = builderinf(user,SCORULETYPE.HALFSTOP,actionType);
+		omcBmsInterface = builderinf(user, ScoRuleType.HALFSTOP,actionType);
 		
 		return 1;
 	}
@@ -167,7 +167,7 @@ public class ScoutActBms {
 
 		
 		String bmsdata = getbmsData(user,scouttype);
-		String infdata = getinfData(user,SCORULETYPE.HALFSTOP,commonid);
+		String infdata = getinfData(user, ScoRuleType.HALFSTOP,commonid);
 		bmsinf.setSerialNo(0L);  //统一赋值
 		bmsinf.setTenantId(user.getTenantid());
 		bmsinf.setSystemId(user.getSystemid());

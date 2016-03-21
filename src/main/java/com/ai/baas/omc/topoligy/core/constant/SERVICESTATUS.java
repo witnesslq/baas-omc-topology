@@ -7,7 +7,7 @@ package com.ai.baas.omc.topoligy.core.constant;
 * @date 2015年10月27日 上午4:02:15 
 *
  */
-public interface SERVICESTATUS {
+public interface ServiceStatus {
 	/**
 	 * 失效 0
 	 */

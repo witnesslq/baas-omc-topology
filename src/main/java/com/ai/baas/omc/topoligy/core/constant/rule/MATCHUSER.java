@@ -1,13 +1,10 @@
 package com.ai.baas.omc.topoligy.core.constant.rule;
+
 /**
- * 
-* @ClassName: MATCHUSER 
-* @Description: 是否匹配资料
-* @author lvsj
-* @date 2015年12月17日 下午3:01:39 
-*
+ * 是否匹配资料
+ * @author liutong
  */
-public interface MATCHUSER {
-	 String MATCH = YESNO.YES;
-	 String NOTMATCH = YESNO.NO;
+public final class MatchUser {
+    public static final String MATCH = YesNo.YES;
+    public static final String NOTMATCH = YesNo.NO;
 }

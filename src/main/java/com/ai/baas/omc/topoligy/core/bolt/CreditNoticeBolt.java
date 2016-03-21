@@ -24,7 +24,7 @@ import backtype.storm.topology.base.BaseBasicBolt;
 /**
  * 信用通知
  * 
- * @author guofei
+ * @author liutong
  */
 
 public class CreditNoticeBolt extends BaseBasicBolt{
@@ -74,7 +74,6 @@ public class CreditNoticeBolt extends BaseBasicBolt{
 		try {
 			//加载缓存资源
 			CacheClient.loadResource(stormConf);
-			
 			confContainer = new ConfigContainer();
 			confContainer.configObtain();
 			confContainer.setSysconfig(stormConf);

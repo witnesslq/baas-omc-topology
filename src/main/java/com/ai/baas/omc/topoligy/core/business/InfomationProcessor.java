@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.ai.baas.omc.topoligy.core.business.base.BaseProcess;
 import com.ai.baas.omc.topoligy.core.business.command.rule.ResourceCheck;
-import com.ai.baas.omc.topoligy.core.constant.OWNERTYPE;
+import com.ai.baas.omc.topoligy.core.constant.OwnerType;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
@@ -60,15 +60,15 @@ public final class InfomationProcessor extends BaseProcess {
 		
 		check(tenantid,ownertype,policyId);
 		//账户
-		if (OWNERTYPE.ACCT.equals(ownertype)){
+		if (OwnerType.ACCT.equals(ownertype)){
 			infoBuilerByAcct(tenantid,ownertype,ownerid);
 		}
 		//客户
-		if (OWNERTYPE.CUST.equals(ownertype)){
+		if (OwnerType.CUST.equals(ownertype)){
 			infoBuilerByCust(tenantid,ownertype,ownerid);
 		}
 		//用户
-		if (OWNERTYPE.SERV.equals(ownertype)){
+		if (OwnerType.SERV.equals(ownertype)){
 			infoBuilerByUser(tenantid,ownertype,ownerid);
 		}
 
@@ -80,9 +80,9 @@ public final class InfomationProcessor extends BaseProcess {
 			throw new OmcException("Information","信控对象类型不能为空");
 		}
 		
-		if (!(OWNERTYPE.ACCT.equals(ownertype))&&
-			!(OWNERTYPE.CUST.equals(ownertype)) &&
-			!(OWNERTYPE.SERV.equals(ownertype))){
+		if (!(OwnerType.ACCT.equals(ownertype))&&
+			!(OwnerType.CUST.equals(ownertype)) &&
+			!(OwnerType.SERV.equals(ownertype))){
 			throw new OmcException("Information","不支持的信控对象类型:" + ownertype);
 		}
 		//根据余额模式检测 owner_type的正确性

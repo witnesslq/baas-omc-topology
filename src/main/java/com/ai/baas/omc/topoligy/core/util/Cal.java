@@ -1,6 +1,6 @@
 package com.ai.baas.omc.topoligy.core.util;
 
-import com.ai.baas.omc.topoligy.core.constant.FEESOURCE;
+import com.ai.baas.omc.topoligy.core.constant.FeeSource;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,14 +12,14 @@ public final class Cal {
 	public static final BigDecimal bigDecimalFromDouble(Double value,String resourcetype){
 		BigDecimal bigDecimal = BigDecimal.valueOf(value);
 
-		if (resourcetype.equals(FEESOURCE.FROMCHARGE)){
+		if (resourcetype.equals(FeeSource.FROMCHARGE)){
 			BigDecimal divisor = new BigDecimal(1000000);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);
 
-		} else if(resourcetype.equals(FEESOURCE.FROMBALANCE)){
+		} else if(resourcetype.equals(FeeSource.FROMBALANCE)){
 			BigDecimal divisor = new BigDecimal(1000);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);
-		}else if(resourcetype.equals(FEESOURCE.FROMCREDIT)){
+		}else if(resourcetype.equals(FeeSource.FROMCREDIT)){
 			BigDecimal divisor = new BigDecimal(100);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);
 		}else{

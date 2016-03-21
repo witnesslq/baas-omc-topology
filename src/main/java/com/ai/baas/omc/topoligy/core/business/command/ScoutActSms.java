@@ -2,8 +2,8 @@ package com.ai.baas.omc.topoligy.core.business.command;
 
 import com.ai.baas.omc.topoligy.core.business.InfomationProcessor;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
-import com.ai.baas.omc.topoligy.core.constant.SCORULETYPE;
-import com.ai.baas.omc.topoligy.core.constant.rule.REMINDSPENBR;
+import com.ai.baas.omc.topoligy.core.constant.ScoRuleType;
+import com.ai.baas.omc.topoligy.core.constant.rule.RemindSpend;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.manager.parameters.entity.OmcScoutActionDefine;
@@ -67,17 +67,16 @@ public class ScoutActSms {
 	public int warning(String ownertype,String oid)  throws OmcException {
 
 		OmcScoutActionDefine omcScoutActionDefine = config.getActionDefine(this.getOmcobj().getTenantid(),
-				this.getOmcobj().getBusinesscode(),Integer.toString(this.sectionRule.getScoutruleid()) , SCORULETYPE.WARNING);
+				this.getOmcobj().getBusinesscode(),Integer.toString(this.sectionRule.getScoutruleid()) , ScoRuleType.WARNING);
 		 
       
 		String speremind = this.getConfig().getCfgPara(OmcCalKey.OMC_CFG_REMINDSPENBR, omcobj.getTenantid(), policyid, Integer.toString(sectionRule.getScoutruleid()));
 		if (StringUtils.isBlank(speremind)){
-			speremind = REMINDSPENBR.NOSPENBR;
+			speremind = RemindSpend.NOSPENBR;
 		}
 		
 		//提醒到本用户号码
 		 String remindnbr = this.getInfomation().getRemindNbr(speremind,omcobj.getTenantid(), ownertype, oid);
-
 		if (StringUtils.isBlank(remindnbr)){
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.addProperty(OmcCalKey.OMC_CFG_REMINDSPENBR, remindnbr);
@@ -87,7 +86,7 @@ public class ScoutActSms {
 			
 			throw new OmcException("ScoutActSms.warning", "获取提醒号码异常" + jsonObject.toString());
 		}
-		Sendmsg(remindnbr,SCORULETYPE.WARNING,omcScoutActionDefine.getInfCommond(),omcScoutActionDefine.getSmsTemplate());
+		Sendmsg(remindnbr, ScoRuleType.WARNING,omcScoutActionDefine.getInfCommond(),omcScoutActionDefine.getSmsTemplate());
 		return 1;
 	}
 	

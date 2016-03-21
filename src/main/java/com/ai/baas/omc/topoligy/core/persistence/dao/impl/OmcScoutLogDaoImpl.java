@@ -10,7 +10,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-
+/**
+ * 信控日志操作
+ */
 public class OmcScoutLogDaoImpl implements OmcScoutLogDao {
 
 	@Override
@@ -28,15 +30,12 @@ public class OmcScoutLogDaoImpl implements OmcScoutLogDao {
 		Object[] params = convert(record);
 
 		try{
-
 			return JdbcTemplate.update(connection,sql.toString(),params);
-		
 		}catch(SQLException e){
 			throw new OmcException("信控日志记录异常",sql.toString() + Arrays.toString(params),e);
 		}
 	}
 	private Object[] convert(OmcScoutLog record){
-
 		Object[] params = new Object[13];
 		params[0] = record.getLogid();
 		params[1] = record.getSourcetype();

@@ -18,47 +18,38 @@ public final class AccountServiceImplShm implements AccountService {
 	
 	@Override
 	public Account selectById(String tenantid, String acctId) throws OmcException {
-		
 		try{
 			StringBuilder table = new StringBuilder();
 			table.append("BL_ACCTINFO");
-			
+
 			Map<String, String> params = new TreeMap<String, String>();
 			params.put("ACCT_ID",acctId);
 			params.put("TENANT_ID",tenantid);
 
 			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","BL_ACCTINFO表没有找到账户信息!");
 			}
-			
 			return getAccounts(result).get(0);
-			
 		}catch (Exception e){
 			throw new OmcException("OMC-SUBS0001B",e);
 		}
 	}
 	@Override
 	public List<Account> selectBycustId(String tenantid, String custId) throws OmcException {
-		
 		try{
 			StringBuilder table = new StringBuilder();
-			
 			table.append("BL_ACCTINFO");
-			
+
 			Map<String, String> params = new HashMap<String, String>();
-			
 			params.put("cust_id",custId);
 			params.put("TENANT_ID",tenantid);
+
 			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","BL_ACCTINFO表没有找到账户信息!");
 			}
-			
 			return getAccounts(result);
-
 		}catch (Exception e){
 			throw new OmcException("OMC-SUBS0001B",e);
 		}

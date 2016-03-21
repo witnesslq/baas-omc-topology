@@ -14,6 +14,9 @@ import com.ai.baas.omc.topoligy.core.util.DateUtils;
 import com.ai.baas.omc.topoligy.core.util.db.JdbcTemplate;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 
+/**
+ * 催缴状态操作
+ */
 public final class OmcUrgeStatusDaoImpl implements OmcUrgeStatusDao {
 	
 	@Override

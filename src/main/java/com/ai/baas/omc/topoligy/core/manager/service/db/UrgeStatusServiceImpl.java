@@ -19,23 +19,15 @@ public class UrgeStatusServiceImpl implements UrgeStatusService {
 	private static final Logger logger = LoggerFactory.getLogger(UrgeStatusServiceImpl.class);
 	@Override
 	public int modifyUrgeStatus(Connection connection,OmcUrgeStatus omcUrgeStatus) throws OmcException {
-
-		int nUpdateCnt = 0;
 		int nInsertCnt = 0;
-
 		OmcUrgeStatusDao omcUrgeStatusDao = new OmcUrgeStatusDaoImpl();
-		
-		nUpdateCnt = omcUrgeStatusDao.update(connection, omcUrgeStatus);
-		
+		int nUpdateCnt = omcUrgeStatusDao.update(connection, omcUrgeStatus);
 		if (nUpdateCnt == 0){
-
 			nInsertCnt = omcUrgeStatusDao.insert(connection, omcUrgeStatus);
 		}
 		
 		if ((nUpdateCnt == 0)&&(nInsertCnt == 0)){
-		
 			logger.error("***omcScoutStatus更新失败【" + omcUrgeStatus.toString() + "】");
-        	
 			throw new OmcException("UPDATE","omcScoutStatus更新失败");
 		}
 		
@@ -45,7 +37,6 @@ public class UrgeStatusServiceImpl implements UrgeStatusService {
 	@Override
 	public OmcUrgeStatus selectUrgeStatus(String tenantId, String businessCode, String urgeType, String ownerType,
 			String ownerId)  throws OmcException {
-		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(OmcCalKey.OMC_TENANT_ID, tenantId);
 		params.put(OmcCalKey.OMC_OWNER_ID, ownerId);

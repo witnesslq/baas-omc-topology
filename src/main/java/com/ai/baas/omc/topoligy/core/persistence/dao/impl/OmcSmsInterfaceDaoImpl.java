@@ -9,7 +9,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-
+/**
+ * 信控短信接口
+ */
 public class OmcSmsInterfaceDaoImpl implements OmcSmsInterfaceDao {
 
 	@Override

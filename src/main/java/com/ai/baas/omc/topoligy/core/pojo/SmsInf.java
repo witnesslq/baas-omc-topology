@@ -2,6 +2,9 @@ package com.ai.baas.omc.topoligy.core.pojo;
 
 import java.sql.Timestamp;
 
+/**
+ * 短信信息接口
+ */
 public final class SmsInf  {
 	private long serialno;
 	private String tenantid;

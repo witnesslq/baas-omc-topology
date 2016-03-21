@@ -14,7 +14,6 @@ public class ScoutLogServiceImpl implements ScoutLogService {
 	@Override
 	public int insertScoutLog(Connection connection,ScoutLog scoutLog) throws OmcException {
 		OmcScoutLog omcScoutlog = new OmcScoutLog();
-		
 		omcScoutlog.setLogid(scoutLog.getLogid());
 		omcScoutlog.setBalanceinfo(scoutLog.getRealTimeBalance().toString());
 		omcScoutlog.setBusinessCode(scoutLog.getOwner().getBusinesscode());

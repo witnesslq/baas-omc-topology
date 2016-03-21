@@ -42,9 +42,7 @@ public final class SysSequence implements ISysSequenceCredit {
 
         try{
 	        SysSequenceCreditDao sysSequenceCreditDao = new SysSequenceCreditDaoImpl();
-	        
 	        Connection conn = dbproxy.getConnection();
-	        
 	        SysSequenceCredit sequence = sysSequenceCreditDao.selectByKey(conn, name);
 	        
 	        if (sequence==null){

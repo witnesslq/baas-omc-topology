@@ -172,8 +172,8 @@ public final class OmcCalProcessor extends BaseProcess {
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = (SectionRule) iterator.next();
 				//匹配余额
-				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getBalancefloor(), FeeSource.FROMNOTSOURCE);
-				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getBalanceceil(), FeeSource.FROMNOTSOURCE);
+				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getBalancefloor(), FeeSource.FROM_NO_SOURCE);
+				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getBalanceceil(), FeeSource.FROM_NO_SOURCE);
 				//用户余额
 				BigDecimal realbalance = balance.getRealBalance();
 				//监控规则类型
@@ -231,8 +231,8 @@ public final class OmcCalProcessor extends BaseProcess {
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = (SectionRule) iterator.next();
 				//匹配余额 大于费用最小金额,小于费用最大金额
-				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getChargefloor(), FeeSource.FROMCREDIT);
-				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getChargeceil(), FeeSource.FROMCREDIT);
+				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getChargefloor(), FeeSource.FROM_CREDIT);
+				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getChargeceil(), FeeSource.FROM_CREDIT);
 			    if ((balance.getRealBill().compareTo(floor)>0)&&(balance.getRealBill().compareTo(ceil)<=0)){
 			    	sRules.add(sectionRule);
 			    }

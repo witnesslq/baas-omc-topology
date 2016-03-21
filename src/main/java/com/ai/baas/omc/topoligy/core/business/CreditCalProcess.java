@@ -74,11 +74,11 @@ public final class CreditCalProcess extends BaseCalProcess {
 				&&(balcalmodel.equals(BalancecalModel.ACCTMODEL))){
             //获取金额业务类型的信用度
 			double creditline = getUserSum(info.getUsers(), ResourceType.CASH);
-			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROMCREDIT));
+			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROM_CREDIT));
 		}else{ 
 			//todo待处理
 			double creditline = 0.0;
-			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROMCREDIT));
+			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROM_CREDIT));
 			//throw new OmcException("CreditCalProcess", "有待实现的模式" + OmcCalKey.OMC_CFG_CREDITLINE_CALMODEL + "[" + creditcalmodel +"]"+ OmcCalKey.OMC_CFG_BALANCECALMODEL +"["+ balcalmodel);
 		}
 	}

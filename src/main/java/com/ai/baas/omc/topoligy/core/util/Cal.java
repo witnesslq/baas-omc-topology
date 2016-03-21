@@ -12,14 +12,14 @@ public final class Cal {
 	public static final BigDecimal bigDecimalFromDouble(Double value,String resourcetype){
 		BigDecimal bigDecimal = BigDecimal.valueOf(value);
 
-		if (resourcetype.equals(FeeSource.FROMCHARGE)){
+		if (resourcetype.equals(FeeSource.FROM_CHARGE)){
 			BigDecimal divisor = new BigDecimal(1000000);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);
 
-		} else if(resourcetype.equals(FeeSource.FROMBALANCE)){
+		} else if(resourcetype.equals(FeeSource.FROM_BALANCE)){
 			BigDecimal divisor = new BigDecimal(1000);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);
-		}else if(resourcetype.equals(FeeSource.FROMCREDIT)){
+		}else if(resourcetype.equals(FeeSource.FROM_CREDIT)){
 			BigDecimal divisor = new BigDecimal(100);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);
 		}else{

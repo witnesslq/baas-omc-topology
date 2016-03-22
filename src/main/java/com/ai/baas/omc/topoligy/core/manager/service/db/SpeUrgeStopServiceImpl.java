@@ -20,22 +20,18 @@ import org.slf4j.LoggerFactory;
 public class SpeUrgeStopServiceImpl implements SpeUrgeStopService {
 	
 	private  static final Logger logger = LoggerFactory.getLogger(SpeUrgeStopServiceImpl.class);
-	
 	private static final JdbcProxy dbproxy = JdbcProxy.getInstance();
-
 
 	@Override
 	public SpeUrgeStop selectById(String tenantid, String ownertype, String ownerid) throws OmcException {
-		
+		SpeUrgeStop speUrgeStop = null;
 		try {
-			StringBuilder sql = new StringBuilder("");
+			StringBuilder sql = new StringBuilder();
 			String tableName ="omc_avoidscout";
-			String ownertype_ = "";
+			String ownerType1 = ownertype;
 			
 			if (StringUtils.startsWith(ownertype, "/")){
-				ownertype_ = StringUtils.substring(ownertype, 1);
-			}else{
-				ownertype_ = ownertype;
+				ownerType1 = StringUtils.substring(ownertype, 1);
 			}
 			
 			sql.append("select avoid_seq, spe_type, eff_date,exp_date from ");
@@ -45,39 +41,27 @@ public class SpeUrgeStopServiceImpl implements SpeUrgeStopService {
 			sql.append(" and  now() between eff_date and exp_date");
 
 			Object[] para = new Object[3];
-			
-			para[0] = ownertype_;
+			para[0] = ownerType1;
 			para[1] = ownerid;
 			para[2] = tenantid;
 			
 			Connection connection = dbproxy.getConnection();
-			
    		    List<Map<String,Object>> rows =  JdbcTemplate.query(connection, sql.toString(), new MapListHandler(), para);
-   		    
    		    if ((rows == null)||(rows.isEmpty())){
 				logger.info("免催停没获得数据【omc_avoidscout】");
-				return null;
+				return speUrgeStop;
    		    }
-   		    
-   		    List<SpeUrgeStop>  speUrgeStops = new ArrayList<SpeUrgeStop>();
-
-	    	for (Map<String, Object> map : rows) {
-	    		
-	    		SpeUrgeStop speUrgeStop  = new SpeUrgeStop();
-	    		speUrgeStop.setOwnerid(ownerid);
-	    		speUrgeStop.setOwnertype(ownertype);
-	    		speUrgeStop.setTenantid(tenantid);
-	    		speUrgeStop.setSpeType(map.get("spe_type").toString());
-	    		speUrgeStop.setEffDate(DateUtils.getTimestamp(map.get("eff_date").toString(), "yyyy-MM-dd HH:mm:ss"));
-	    		speUrgeStop.setExpDate(DateUtils.getTimestamp(map.get("exp_date").toString(), "yyyy-MM-dd HH:mm:ss"));
-	    		
-	    		speUrgeStops.add(speUrgeStop);
-
-			}
-	    	return speUrgeStops.get(0);
-
+			Map<String, Object> map = rows.get(0);
+			speUrgeStop = new SpeUrgeStop();
+			speUrgeStop.setOwnerid(ownerid);
+			speUrgeStop.setOwnertype(ownertype);
+			speUrgeStop.setTenantid(tenantid);
+			speUrgeStop.setSpeType(map.get("spe_type").toString());
+			speUrgeStop.setEffDate(DateUtils.getTimestamp(map.get("eff_date").toString(), "yyyy-MM-dd HH:mm:ss"));
+			speUrgeStop.setExpDate(DateUtils.getTimestamp(map.get("exp_date").toString(), "yyyy-MM-dd HH:mm:ss"));
 		} catch (Exception e) {
 			throw new OmcException("SpeUrgeStopServiceImpl",e);
 		}
+		return speUrgeStop;
 	}
 }

@@ -43,10 +43,7 @@ public class UrgeStatusServiceImpl implements UrgeStatusService {
 		params.put(OmcCalKey.OMC_OWNER_TYPE, ownerType);
 		params.put(OmcCalKey.OMC_URGE_TYPE, urgeType);
 		params.put(OmcCalKey.OMC_BUSINESS_CODE, businessCode);
-		
-		JdbcProxy dbproxy = JdbcProxy.getInstance();
-		Connection connection = dbproxy.getConnection();
-		
+		Connection connection = JdbcProxy.getInstance().getConnection();
 		OmcUrgeStatusDao omcUrgeStatusDao = new OmcUrgeStatusDaoImpl();
 		return omcUrgeStatusDao.selectByparam(connection, params);
 

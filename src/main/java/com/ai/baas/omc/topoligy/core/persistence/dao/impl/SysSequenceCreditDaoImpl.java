@@ -13,7 +13,9 @@ import com.ai.baas.omc.topoligy.core.pojo.SysSequenceCredit;
 import com.ai.baas.omc.topoligy.core.util.db.JdbcTemplate;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 
-
+/**
+ * 系统序列号
+ */
 public class SysSequenceCreditDaoImpl implements SysSequenceCreditDao {
 	
 	@Override

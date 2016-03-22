@@ -34,16 +34,12 @@ public class ScoutStatusServiceImpl implements ScoutStatusService {
 
 	@Override
 	public ScoutStatus selectStatus(String tenantId,String businessCode, String subsId) throws OmcException {
-		
-		JdbcProxy dbproxy = JdbcProxy.getInstance();
-		Connection connection = dbproxy.getConnection();
-
+		Connection connection = JdbcProxy.getInstance().getConnection();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put(OmcCalKey.OMC_TENANT_ID, tenantId);
 		params.put(OmcCalKey.OMC_SUBS_ID, subsId);
 		params.put(OmcCalKey.OMC_BUSINESS_CODE, businessCode);
 		OmcScoutStatusDao omcScoutStatusDao = new OmcScoutStatusDaoImpl();				
-		
 		return getValue(omcScoutStatusDao.selectByparam(connection, params));
 	}
 	

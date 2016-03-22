@@ -12,7 +12,6 @@ import java.sql.Connection;
 public class SgipSrcGsmServiceImpl implements SgipSrcGsmService {
 	@Override
 	public int insertMsg(Connection connection,SmsInf smsInf) throws OmcException {
-
 		OmcSmsInterfaceDao omcSmsInterfaceDao = new OmcSmsInterfaceDaoImpl();
 		return omcSmsInterfaceDao.insert(connection, smsInf);
 	}

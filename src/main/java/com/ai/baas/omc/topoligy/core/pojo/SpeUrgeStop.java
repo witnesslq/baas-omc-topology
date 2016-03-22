@@ -7,7 +7,7 @@ import java.util.Date;
  */
 public final class SpeUrgeStop  {
 	private String tenantid;
-	private String  ownertype;
+	private String ownertype;
 	private String ownerid;
 	private String speType;
 	private Date effDate;

@@ -1,0 +1,19 @@
+#distributed or local
+storm.cluster.mode: "local"
+topology.name: "baas-omc"
+#topology.spout.parallel: 2
+
+# kafka spout params
+kafka.spout.consumer.addr: "node01:2181,node02:2181"
+kafka.spout.topic: "ltkafka"
+kafka.spout.zk.server: "node01,node02,node03"
+kafka.spout.zk.port: 2181
+kafka.spout.parallel.num: 1
+
+# dshm rmi params
+omc.flow.cache.ip:
+omc.flow.cache.port:
+
+# db params
+omc.environment.db.driver: ""
+omc.environment.db.url: ""

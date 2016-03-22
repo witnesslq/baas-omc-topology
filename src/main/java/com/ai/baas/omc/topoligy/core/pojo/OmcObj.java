@@ -31,12 +31,11 @@ public final class OmcObj implements Serializable {
 	public OmcObj(String json){
 		Gson gson = new Gson();
 		JsonObject jObject = gson.fromJson(json, JsonObject.class);
-		
+
 		this.tenantid = jObject.get(OmcCalKey.OMC_TENANT_ID).getAsString();
 		this.owertype = jObject.get(OmcCalKey.OMC_OWNER_TYPE).getAsString();
 		this.owerid = jObject.get(OmcCalKey.OMC_OWNER_ID).getAsString();
 		this.businesscode = jObject.get(OmcCalKey.OMC_BUSINESS_CODE).getAsString();
-		
 	}
 	
 	public String getTenantid() {
@@ -53,12 +52,7 @@ public final class OmcObj implements Serializable {
 	}
 	@Override
 	public String toString() {
-		JsonObject jObject = new JsonObject();
-		jObject.addProperty(OmcCalKey.OMC_TENANT_ID, tenantid);
-		jObject.addProperty(OmcCalKey.OMC_OWNER_TYPE, owertype);
-		jObject.addProperty(OmcCalKey.OMC_OWNER_ID, owerid);
-		jObject.addProperty(OmcCalKey.OMC_BUSINESS_CODE, businesscode);
-		return jObject.toString();
+		return toJson().toString();
 	}
 	public JsonObject toJson() {
 		JsonObject jObject = new JsonObject();

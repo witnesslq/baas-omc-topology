@@ -12,10 +12,8 @@ import com.zaxxer.hikari.HikariDataSource;
 public final class JdbcProxy {
 
 	private static final Logger logger = LoggerFactory.getLogger(JdbcProxy.class);
-
  	private HikariDataSource datasource;
-
-	private  static JdbcProxy instance;
+	private static JdbcProxy instance;
 	
 	private JdbcProxy(){
 	}
@@ -29,10 +27,6 @@ public final class JdbcProxy {
 
 	public synchronized static void loadresource(JdbcParam jdbcParam) throws OmcException {
 		try{
-			if (instance == null){
-				instance = new JdbcProxy();
-			}
-		
 		    HikariConfig config = new HikariConfig();
 	        config.setDriverClassName(jdbcParam.getJdbcDriver());
 	        config.setJdbcUrl(jdbcParam.getDbUrl());
@@ -40,7 +34,6 @@ public final class JdbcProxy {
 	        config.addDataSourceProperty("prepStmtCacheSize", 500);
 	        config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
 	        config.setConnectionTestQuery("SELECT 1");
-
 	        config.setAutoCommit(true);
 	        //池中最小空闲链接数量
 	        config.setMinimumIdle(jdbcParam.getInitialConnections());
@@ -49,6 +42,9 @@ public final class JdbcProxy {
 	         
 	        HikariDataSource ds = new HikariDataSource(config);
 	        //设置数据源
+			if (instance == null){
+				instance = new JdbcProxy();
+			}
 			instance.setdatabase(ds);
 		}catch(Exception e){
 			throw new OmcException("初始化连接池异常",e);
@@ -58,10 +54,7 @@ public final class JdbcProxy {
 	public Connection getConnection() throws OmcException {
 		try{
 			return datasource.getConnection();
-		}catch(SQLException e){
-			logger.error("",e);
-			throw new OmcException("获得连接异常",e);
-		}catch(Exception e){
+		} catch(Exception e){
 			logger.error("",e);
 			throw new OmcException("获得连接异常",e);
 		}

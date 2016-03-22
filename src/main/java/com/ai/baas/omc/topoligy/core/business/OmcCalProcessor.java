@@ -28,7 +28,7 @@ public final class OmcCalProcessor extends BaseProcess {
 
 	private  static final Logger logger = LoggerFactory.getLogger(OmcCalProcessor.class);	
 	private RealTimeBalance realTimeBalance;
-	private InfomationProcessor info ;
+	private InformationProcessor info ;
 	
 	public OmcCalProcessor(ConfigContainer cfg, OmcObj obj, JsonObject data) throws OmcException {
 		super(cfg, obj, data);
@@ -36,19 +36,16 @@ public final class OmcCalProcessor extends BaseProcess {
 
 	@Override
 	public void process() throws OmcException {
-		ConfigContainer cfgContainer = this.getConfig();
-		
 		JsonObject jsonObject = this.getInput();
-
 //		String extAmount = jsonObject.get(OmcCalKey.OMC_EXT_AMOUNT).getAsString();
 		//信控规则
 		String rules = jsonObject.get(OmcCalKey.OMC_RULE_ID_LIST).toString();
 		//信控策略
 		String policyId = jsonObject.get(OmcCalKey.OMC_POLICY_ID).getAsString();
 		//信控规则字符串转换为信控规则对象
-		List<SectionRule> sectionRules = OmcUtils.toSectionRules(cfgContainer,rules);
+		List<SectionRule> sectionRules = OmcUtils.toSectionRules(this.getConfig(),rules);
 		//准备资料 获取三户信息
-		info = new InfomationProcessor(this.getConfig(),this.getOmcobj(),jsonObject);
+		info = new InformationProcessor(this.getConfig(),this.getOmcobj(),jsonObject);
 		info.process();
 		this.setInfo(info);
 		
@@ -68,8 +65,7 @@ public final class OmcCalProcessor extends BaseProcess {
 		//匹配规则		
 		JsonArray jsonArray = new JsonArray();
 		if (( selectedRules != null)&&(!selectedRules.isEmpty())){
-			for (Iterator<SectionRule> iterator = selectedRules.iterator(); iterator.hasNext();) {
-				SectionRule sectionRule = (SectionRule) iterator.next();
+			for (SectionRule sectionRule:selectedRules) {
 				JsonObject obj = new JsonObject();
 				obj.addProperty(OmcCalKey.OMC_RULE_ID, sectionRule.getScoutruleid());
 				jsonArray.add(obj);
@@ -89,27 +85,22 @@ public final class OmcCalProcessor extends BaseProcess {
 	* @throws
 	 */
 	private List<SectionRule>  meetRule(List<SectionRule> matchRule,String policyid) throws OmcException{
-		RealTimeBalance balance =  this.getRealTimeBalance();
 		//获取客户信息
 		Customer customer =  this.getInfo().getCustomer();
 		logger.info("客户信息："+customer.toString());
 		//首先资料级别匹配 资料匹配没有优先级，需要全量匹配，现金提供客户等级
 		//客户等级匹配的规则
 		List<SectionRule> sectionRules = matchCreditLevel(customer,matchRule,policyid);
-		
 		if ((sectionRules==null)||(sectionRules.isEmpty())){
 			return sectionRules;
 		}
 		//阀值类匹配，阀值类匹配 包括欠费，高额，余额等，优先级依次降低
-		logger.info("余额信息：" + balance.toString());
+		logger.info("余额信息：" + realTimeBalance.toString());
 		logger.info("开始匹配规则");
 		//首先判断欠费
 		//其次判断高额
 		//最后判断余额
-		List<SectionRule> sRules = thresholdMatch(balance,sectionRules,policyid);
-		
-		return sRules;
-
+		return thresholdMatch(realTimeBalance,sectionRules,policyid);
 	}
 	/**
 	 * @throws OmcException 
@@ -124,17 +115,17 @@ public final class OmcCalProcessor extends BaseProcess {
 	 */
 	private List<SectionRule> thresholdMatch(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		//欠费天数
-		List<SectionRule> matchownersrules = matchowners( balance, sectionRules,policyid);
+		List<SectionRule> matchownersrules = matchOwners( balance, sectionRules,policyid);
 		if ((matchownersrules!=null)&&(!matchownersrules.isEmpty())){
 			return matchownersrules;
 		}
 		//费用匹配
-		List<SectionRule> matchchargerules = matchcharge( balance, sectionRules,policyid);
+		List<SectionRule> matchchargerules = matchCharge( balance, sectionRules,policyid);
 		if ((matchchargerules!=null)&&(!matchchargerules.isEmpty())){
 			return matchchargerules;
 		}
 		//余额匹配
-		List<SectionRule> matchbalancerules = matchbalance( balance, sectionRules,policyid);
+		List<SectionRule> matchbalancerules = matchBalance( balance, sectionRules,policyid);
 		if ((matchbalancerules!=null)&&(!matchbalancerules.isEmpty())){
 			return matchbalancerules;
 		}
@@ -153,24 +144,17 @@ public final class OmcCalProcessor extends BaseProcess {
 	* @throws
 	 */
 	
-	private List<SectionRule> matchbalance(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
-
+	private List<SectionRule> matchBalance(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		List<SectionRule> sRules = new ArrayList<SectionRule>();
-		
 		ConfigContainer cfg = this.getConfig();
-		
-		String  matchbalance = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_BALANCE,this.getOmcobj().getTenantid(),policyid,""); 
+		String  matchbalance = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_BALANCE,this.getOmcobj().getTenantid(),policyid,"");
 		String  stopaddcredit = cfg.getCfgPara(OmcCalKey.OMC_CFG_STOP_ADDCREDITLINE,this.getOmcobj().getTenantid(),policyid,"");
 		String  startaddcredit = cfg.getCfgPara(OmcCalKey.OMC_CFG_START_ADDCREDITLINE,this.getOmcobj().getTenantid(),policyid,"");
 		String  warnaddcredit = cfg.getCfgPara(OmcCalKey.OMC_CFG_WARN_ADDCREDITLINE,this.getOmcobj().getTenantid(),policyid,"");
-	
-		if (StringUtils.isBlank(matchbalance)){
-			matchbalance = MatchBalance.NOTMATCH;
-		}
-		
-		if (matchbalance.equals(MatchBalance.MATCH)){
+
+		if (MatchBalance.MATCH.equals(matchbalance)){
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
-				SectionRule sectionRule = (SectionRule) iterator.next();
+				SectionRule sectionRule = iterator.next();
 				//匹配余额
 				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getBalancefloor(), FeeSource.FROM_NO_SOURCE);
 				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getBalanceceil(), FeeSource.FROM_NO_SOURCE);
@@ -215,25 +199,19 @@ public final class OmcCalProcessor extends BaseProcess {
 	* @throws
 	 */
 
-	private List<SectionRule> matchcharge(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
-		
+	private List<SectionRule> matchCharge(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		List<SectionRule> sRules = new ArrayList<SectionRule>();
-		
 		ConfigContainer cfg = this.getConfig();
-		
-		String  matchcharge = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_CHARGE,this.getOmcobj().getTenantid(),policyid,""); 
-	
-		if (StringUtils.isBlank(matchcharge)){
-			matchcharge = MatchCharge.NOTMATCH;
-		}
-		
-		if (matchcharge.equals(MatchCharge.MATCH)){
+		String  matchcharge = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_CHARGE,this.getOmcobj().getTenantid(),policyid,"");
+
+		if (MatchCharge.MATCH.equals(matchcharge)){
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = (SectionRule) iterator.next();
 				//匹配余额 大于费用最小金额,小于费用最大金额
 				BigDecimal floor = Cal.bigDecimalFromLong(sectionRule.getChargefloor(), FeeSource.FROM_CREDIT);
 				BigDecimal ceil = Cal.bigDecimalFromLong(sectionRule.getChargeceil(), FeeSource.FROM_CREDIT);
-			    if ((balance.getRealBill().compareTo(floor)>0)&&(balance.getRealBill().compareTo(ceil)<=0)){
+			    if ((balance.getRealBill().compareTo(floor)>0)
+						&&(balance.getRealBill().compareTo(ceil)<=0)){
 			    	sRules.add(sectionRule);
 			    }
 			}
@@ -253,23 +231,16 @@ public final class OmcCalProcessor extends BaseProcess {
 	* @throws
 	 */
 	
-	private List<SectionRule> matchowners(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
-		
+	private List<SectionRule> matchOwners(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		List<SectionRule> sRules = new ArrayList<SectionRule>();
-		
 		ConfigContainer cfg = this.getConfig();
-		
-		String  matchowners = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_OWNERS,this.getOmcobj().getTenantid(),policyid,""); 
-		
-		if (StringUtils.isBlank(matchowners)){
-			matchowners = MatchOwners.NOTMATCH;
-		}
-		
-		if (matchowners.equals(MatchOwners.MATCH)){
+		String  matchowners = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_OWNERS,this.getOmcobj().getTenantid(),policyid,"");
+		if (MatchOwners.MATCH.equals(matchowners)){
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = (SectionRule) iterator.next();
 				//匹配余额 大于最小天数,小于最大天数
-			    if ((balance.getUnsettleMons()>sectionRule.getOwemindays())&&(balance.getUnsettleMons()<=sectionRule.getOwemaxdays())){
+			    if ((balance.getUnsettleMons()>sectionRule.getOwemindays())
+						&&(balance.getUnsettleMons()<=sectionRule.getOwemaxdays())){
 			    	sRules.add(sectionRule);
 			    }
 			}
@@ -291,22 +262,16 @@ public final class OmcCalProcessor extends BaseProcess {
 	 */
 	private List<SectionRule> matchCreditLevel(Customer customer,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		ConfigContainer cfg = this.getConfig();
-		
-		String  matchcreditlevel = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_CREDITLEVEL,this.getOmcobj().getTenantid(),policyid,""); 
+		String  matchcreditlevel = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_CREDITLEVEL,this.getOmcobj().getTenantid(),policyid,"");
 		List<SectionRule> midRules = new ArrayList<SectionRule>();
 		
-		if (StringUtils.isBlank(matchcreditlevel)){
-			matchcreditlevel = MatchCreditLevel.NOTMATCH;
-		}
-
-		if (matchcreditlevel.equals(MatchCreditLevel.MATCH)){
+		if (MatchCreditLevel.MATCH.equals(matchcreditlevel)){
 			if (StringUtils.isBlank(customer.getCustLevel())){
 				throw new OmcException("matchCreditLevel", "客户信控级别为空" + customer);
 			}
 			
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
-				SectionRule sectionRule = (SectionRule) iterator.next();
-				
+				SectionRule sectionRule = iterator.next();
 				if (StringUtils.isBlank(sectionRule.getCustlevel())){
 					throw new OmcException("matchCreditLevel", "信控规则客户等级为空" + sectionRule.toString());
 				}
@@ -330,11 +295,11 @@ public final class OmcCalProcessor extends BaseProcess {
 		this.realTimeBalance = realTimeBalance;
 	}
 
-	public InfomationProcessor getInfo() {
+	public InformationProcessor getInfo() {
 		return info;
 	}
 
-	public void setInfo(InfomationProcessor info) {
+	public void setInfo(InformationProcessor info) {
 		this.info = info;
 	}
 

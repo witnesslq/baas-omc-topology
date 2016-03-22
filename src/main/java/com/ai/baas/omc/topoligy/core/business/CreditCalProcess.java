@@ -17,6 +17,7 @@ import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.manager.service.OmcCreditService;
 import com.ai.baas.omc.topoligy.core.manager.service.db.OmcCreditServiceImpl;
 import com.ai.baas.omc.topoligy.core.pojo.OmcCredit;
+import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
 import com.ai.baas.omc.topoligy.core.pojo.User;
 import com.ai.baas.omc.topoligy.core.util.Cal;
 import com.ai.baas.omc.topoligy.core.util.DateUtils;
@@ -28,7 +29,7 @@ public final class CreditCalProcess extends BaseCalProcess {
 	private OmcCreditService omcCreditService;
 	private BigDecimal creditline;
 	
-	public CreditCalProcess(ConfigContainer cfg, InfomationProcessor info, JsonObject data) {
+	public CreditCalProcess(ConfigContainer cfg, InformationProcessor info, JsonObject data) {
 		super(cfg, info, data);
 	}
 
@@ -37,48 +38,36 @@ public final class CreditCalProcess extends BaseCalProcess {
 		ConfigContainer cfg = this.getConfig();
 		JsonObject inputData = this.getInput();
 
-		InfomationProcessor info = this.getInformation();
-		
-		String ownertype = info.getOmcobj().getOwertype();
-		String ownerid = info.getOmcobj().getOwerid();
-		String tenantid = info.getOmcobj().getTenantid();
-		String busicode = info.getOmcobj().getBusinesscode();
-		String policyid = inputData.get(OmcCalKey.OMC_POLICY_ID).getAsString();
+		OmcObj omcObj = this.getInformation().getOmcobj();
+		String tenantId = omcObj.getTenantid();
+		String policyId = inputData.get(OmcCalKey.OMC_POLICY_ID).getAsString();
 		
 		//信用度计算模式
-		String  creditcalmodel =  cfg.getCfgPara(OmcCalKey.OMC_CFG_CREDITLINE_CALMODEL, tenantid, policyid,"");
+		String  creditcalmodel =  cfg.getCfgPara(OmcCalKey.OMC_CFG_CREDITLINE_CALMODEL, tenantId, policyId,"");
 		if (StringUtils.isBlank(creditcalmodel)){
-			 JsonObject messageinfo = new  JsonObject();
-			messageinfo.addProperty(OmcCalKey.OMC_POLICY_ID, policyid);
-			messageinfo.addProperty(OmcCalKey.OMC_TENANT_ID, tenantid);
-			messageinfo.addProperty(OmcCalKey.OMC_OWNER_TYPE, ownertype);
-			messageinfo.addProperty(OmcCalKey.OMC_OWNER_ID, ownerid);
-			messageinfo.addProperty(OmcCalKey.OMC_BUSINESS_CODE, busicode);
-			 throw new OmcException("BalanceCal", "获取信用度计算参数【" + OmcCalKey.OMC_CFG_CREDITLINE_CALMODEL + "】失败，请检查配置或者设置缺省值:" + messageinfo.toString());
+			 throw new OmcException("BalanceCal",
+					 "获取信用度计算参数【" + OmcCalKey.OMC_CFG_CREDITLINE_CALMODEL + "】失败，请检查配置或者设置缺省值:"
+							 + msgInfo(policyId,tenantId,omcObj.getOwertype(),omcObj.getOwerid(),omcObj.getBusinesscode()));
 		}
 		
 		//余额计算模式
-		String  balcalmodel =  cfg.getCfgPara(OmcCalKey.OMC_CFG_BALANCECALMODEL, tenantid, policyid,"");
+		String  balcalmodel =  cfg.getCfgPara(OmcCalKey.OMC_CFG_BALANCECALMODEL, tenantId, policyId,"");
 		if (StringUtils.isBlank(balcalmodel)){
-			 JsonObject messageinfo = new  JsonObject();
-			messageinfo.addProperty(OmcCalKey.OMC_POLICY_ID, policyid);
-			messageinfo.addProperty(OmcCalKey.OMC_TENANT_ID, tenantid);
-			messageinfo.addProperty(OmcCalKey.OMC_OWNER_TYPE, ownertype);
-			messageinfo.addProperty(OmcCalKey.OMC_OWNER_ID, ownerid);
-			messageinfo.addProperty(OmcCalKey.OMC_BUSINESS_CODE, busicode);
-			 throw new OmcException("BalanceCal", "获取信用度计算参数【" + OmcCalKey.OMC_CFG_BALANCECALMODEL + "】失败，请检查配置或者设置缺省值:" + messageinfo.toString());
+			 throw new OmcException("BalanceCal",
+					 "获取信用度计算参数【" + OmcCalKey.OMC_CFG_BALANCECALMODEL + "】失败，请检查配置或者设置缺省值:"
+							 + msgInfo(policyId,tenantId,omcObj.getOwertype(),omcObj.getOwerid(),omcObj.getBusinesscode()));
 		}
-
+		//默认信用度为0
+		double creditLine = 0.0;
         //用户模式计算信用度,并且是账户余额模式
 		if ((creditcalmodel.equals(CreditLineCalModel.SUM_USER))
 				&&(balcalmodel.equals(BalancecalModel.ACCTMODEL))){
             //获取金额业务类型的信用度
-			double creditline = getUserSum(info.getUsers(), ResourceType.CASH);
-			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROM_CREDIT));
+			creditLine = getUserSum(this.getInformation().getUsers(), ResourceType.CASH);
+			this.setCreditline(Cal.bigDecimalFromDouble(creditLine, FeeSource.FROM_CREDIT));
 		}else{ 
 			//todo待处理
-			double creditline = 0.0;
-			this.setCreditline(Cal.bigDecimalFromDouble(creditline, FeeSource.FROM_CREDIT));
+			this.setCreditline(Cal.bigDecimalFromDouble(creditLine, FeeSource.FROM_CREDIT));
 			//throw new OmcException("CreditCalProcess", "有待实现的模式" + OmcCalKey.OMC_CFG_CREDITLINE_CALMODEL + "[" + creditcalmodel +"]"+ OmcCalKey.OMC_CFG_BALANCECALMODEL +"["+ balcalmodel);
 		}
 	}
@@ -86,24 +75,26 @@ public final class CreditCalProcess extends BaseCalProcess {
     /**
      * 获取用户总的信用度
      * @param users 用户集合
-     * @param resourcecode 业务类型
+     * @param resourceCode 业务类型
      * @return
      * @throws OmcException
      */
-	private double getUserSum(List<User> users, String resourcecode) throws OmcException{
-		double creditline = 0.0;
+	private double getUserSum(List<User> users, String resourceCode) throws OmcException {
+		double creditLine = 0.0;
+		if (users==null || users.isEmpty())
+			return creditLine;
 		//对每个用户进行计算
-		for (Iterator<User> iterator = users.iterator(); iterator.hasNext();) {
-			User user = (User) iterator.next();
-			 List<OmcCredit> omcCredits = getfromdb(user,resourcecode);
-			 if ((omcCredits!=null)&&(!omcCredits.isEmpty())){
-				 for (Iterator<OmcCredit> iter = omcCredits.iterator(); iter.hasNext();) {
-					OmcCredit omcCredit = (OmcCredit) iter.next();
-					creditline = creditline + omcCredit.getCreditline();
-				}
-			 }
-		}	
-		return creditline;
+		for (User user:users) {
+			List<OmcCredit> omcCredits = getCreditFromDB(user, resourceCode);
+			//如果信用度为空,则直接进行下一用户查询
+			if (omcCredits == null || omcCredits.isEmpty())
+				continue;
+
+			for (OmcCredit omcCredit:omcCredits){
+				creditLine += omcCredit.getCreditline();
+			}
+		}
+		return creditLine;
 	}
 
 	/**
@@ -113,7 +104,7 @@ public final class CreditCalProcess extends BaseCalProcess {
 	 * @return
 	 * @throws OmcException
      */
-	private List<OmcCredit> getfromdb(User user,String resourcecode) throws OmcException{
+	private List<OmcCredit> getCreditFromDB(User user,String resourcecode) throws OmcException{
 		//获取用户信用度 subs 用户 acct 账户  cust 客户
 		List<OmcCredit> omcCredits = omcCreditService.getAllCredit(user.getTenantid(),"SUBS", user.getSubsid(),resourcecode);
 		if ((omcCredits==null)||(omcCredits.isEmpty())){
@@ -135,8 +126,7 @@ public final class CreditCalProcess extends BaseCalProcess {
 	}
 
 	public BigDecimal getCreditline() {
-
-			return (creditline == null)?new BigDecimal("0.00"):creditline;
+		return (creditline == null)?new BigDecimal("0.00"):creditline;
 	}
 
 	public void setCreditline(BigDecimal creditline) {
@@ -146,7 +136,6 @@ public final class CreditCalProcess extends BaseCalProcess {
 	@Override
 	public void prepare(JsonObject data) throws OmcException {
 		omcCreditService = new OmcCreditServiceImpl();
-		
 	}
 
 	@Override
@@ -155,5 +144,13 @@ public final class CreditCalProcess extends BaseCalProcess {
 		
 	}
 		
-	
+	private String msgInfo(String policyid,String tenantid,String ownertype,String ownerid,String busicode){
+		JsonObject messageinfo = new  JsonObject();
+		messageinfo.addProperty(OmcCalKey.OMC_POLICY_ID, policyid);
+		messageinfo.addProperty(OmcCalKey.OMC_TENANT_ID, tenantid);
+		messageinfo.addProperty(OmcCalKey.OMC_OWNER_TYPE, ownertype);
+		messageinfo.addProperty(OmcCalKey.OMC_OWNER_ID, ownerid);
+		messageinfo.addProperty(OmcCalKey.OMC_BUSINESS_CODE, busicode);
+		return messageinfo.toString();
+	}
 }

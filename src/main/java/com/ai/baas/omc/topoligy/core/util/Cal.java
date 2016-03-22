@@ -15,7 +15,6 @@ public final class Cal {
 		if (resourcetype.equals(FeeSource.FROM_CHARGE)){
 			BigDecimal divisor = new BigDecimal(1000000);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);
-
 		} else if(resourcetype.equals(FeeSource.FROM_BALANCE)){
 			BigDecimal divisor = new BigDecimal(1000);
 			return bigDecimal.divide(divisor,2, RoundingMode.HALF_UP);

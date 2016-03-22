@@ -116,7 +116,12 @@ public class RealEventBolt extends BaseBasicBolt {
 	@Override
 	public void prepare(Map stormConf, TopologyContext context) {
 		try {
+			//产生jdbcProxy
+			JdbcProxy.loadresource(new JdbcParam(stormConf));
+			JdbcProxy.getInstance();
+//			setJdbcproxy(JdbcProxy.getInstance());
 			CacheClient.loadResource(stormConf);
+
 			confContainer = new ConfigContainer();
 			confContainer.configObtain();
 			confContainer.setSysconfig(stormConf);

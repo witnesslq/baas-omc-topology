@@ -28,9 +28,9 @@ import com.google.gson.JsonObject;
 /**
  * 三户信息
  */
-public final class InfomationProcessor extends BaseProcess {
+public final class InformationProcessor extends BaseProcess {
 	
-	private static final Logger logger = LoggerFactory.getLogger(InfomationProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(InformationProcessor.class);
 	
 	private SubsUserService subsUserService;
 	private AccountService accountService;
@@ -40,9 +40,8 @@ public final class InfomationProcessor extends BaseProcess {
 	private List<User> users = new ArrayList<User>() ;
 	private List<Account> accounts = new ArrayList<Account>();	
 
-	public InfomationProcessor(ConfigContainer cfg, OmcObj obj, JsonObject data) throws OmcException {
+	public InformationProcessor(ConfigContainer cfg, OmcObj obj, JsonObject data) throws OmcException {
 		super(cfg, obj, data);
-
 	}
 
 
@@ -80,9 +79,9 @@ public final class InfomationProcessor extends BaseProcess {
 			throw new OmcException("Information","信控对象类型不能为空");
 		}
 		
-		if (!(OwnerType.ACCT.equals(ownertype))&&
-			!(OwnerType.CUST.equals(ownertype)) &&
-			!(OwnerType.SERV.equals(ownertype))){
+		if (!(OwnerType.ACCT.equals(ownertype))
+				&& !(OwnerType.CUST.equals(ownertype))
+				&& !(OwnerType.SERV.equals(ownertype))){
 			throw new OmcException("Information","不支持的信控对象类型:" + ownertype);
 		}
 		//根据余额模式检测 owner_type的正确性

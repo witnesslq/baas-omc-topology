@@ -27,22 +27,18 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 	
 	private RealTimeBalance realBalance = null;
 
-	public BalanceCalProcessor(ConfigContainer cfg, InfomationProcessor info, JsonObject data) {
+	public BalanceCalProcessor(ConfigContainer cfg, InformationProcessor info, JsonObject data) {
 		super(cfg, info, data);
 	}
 
 	@Override
 	public void process() throws OmcException {
-		
-		ConfigContainer cfg = this.getConfig();
-		
 		JsonObject inputData = this.getInput();
-		InfomationProcessor info = this.getInformation();
-		
-		String ownertype = info.getOmcobj().getOwertype();
-		String ownerid = info.getOmcobj().getOwerid();
-		String tenantid = info.getOmcobj().getTenantid();
-		String busicode = info.getOmcobj().getBusinesscode();
+		OmcObj omcObj = this.getInformation().getOmcobj();
+		String ownertype = omcObj.getOwertype();
+		String ownerid = omcObj.getOwerid();
+		String tenantid = omcObj.getTenantid();
+		String busicode = omcObj.getBusinesscode();
 		
 		String policyid = inputData.get(OmcCalKey.OMC_POLICY_ID).getAsString();
 		String extAmount = inputData.get(OmcCalKey.OMC_EXT_AMOUNT).getAsString();
@@ -54,18 +50,18 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 		messageinfo.addProperty(OmcCalKey.OMC_OWNER_ID, ownerid);
 		messageinfo.addProperty(OmcCalKey.OMC_BUSINESS_CODE, busicode);
 		
-		String  balancemodel =  cfg.getCfgPara(OmcCalKey.OMC_CFG_BALANCECALMODEL, tenantid, policyid,"");
+		String  balancemodel =  this.getConfig().getCfgPara(OmcCalKey.OMC_CFG_BALANCECALMODEL, tenantid, policyid,"");
 		
 		if (StringUtils.isBlank(balancemodel)){
 			 throw new OmcException("BalanceCal", "获取余额计算参数【" + OmcCalKey.OMC_CFG_BALANCECALMODEL + "】失败，请检查配置或者设置缺省值:" + messageinfo.toString());
 		}
 		//用户余额模式
-		if ((balancemodel.equals(BalancecalModel.SUBSMODEL))&&(ownertype.equals(OwnerType.SERV))){
-			builderResBalanceServ(info.getOmcobj(),extAmount);
+		if ((BalancecalModel.SUBSMODEL.equals(balancemodel))&&(OwnerType.SERV.equals(ownertype))){
+			builderResBalanceServ(omcObj,extAmount);
 		//账户余额模式
-		}else if((balancemodel.equals(BalancecalModel.ACCTMODEL))&&(ownertype.equals(OwnerType.ACCT))){
-			builderBalanceAcct(info.getOmcobj(),extAmount);
-		//
+		}else if((BalancecalModel.ACCTMODEL.equals(balancemodel))&&(OwnerType.ACCT.equals(ownertype))){
+			builderBalanceAcct(omcObj,extAmount);
+		//不支持模式
 		}else{
 			messageinfo.addProperty(OmcCalKey.OMC_CFG_BALANCECALMODEL, balancemodel);
 			throw new OmcException("BalanceCal", "获取余额信息:余额模式与OwnerType不一致，请修改配置。" + balancemodel  + messageinfo.toString());
@@ -83,10 +79,7 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 	 * @throws OmcException
 	 */
 	private void builderResBalanceServ(OmcObj owner, String extinfo) throws OmcException{
-		ConfigContainer cfg = this.getConfig();
-		Map<String,String> syscfg =  cfg.getSysconfig();
-		String appname = syscfg.get(OmcCalKey.OMC_CFG_ENVIRONMENT_APP);
-		
+		String appname = this.getConfig().getSysconfig().get(OmcCalKey.OMC_CFG_ENVIRONMENT_APP);
 		RealTimeBalance realTimeBalance = urlClient.doQuery(appname, owner);
 //		RealTimeBalance realTimeBalance = new RealTimeBalance();
 //		realTimeBalance.setOwner(owner);
@@ -100,9 +93,7 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 //		realTimeBalance.setUnIntoBill(new BigDecimal("0"));
 //		realTimeBalance.setUnSettleBill(new BigDecimal("0"));
 //		realTimeBalance.setUnsettleMons(0);
-		
 		realBalance = realTimeBalance;
-		return;
 	}
 
 	/**
@@ -112,11 +103,9 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 	 * @throws OmcException
 	 */
 	private void builderBalanceAcct(OmcObj owner,String extinfo) throws OmcException{
-		ConfigContainer cfg = this.getConfig();
-		Map<String,String> syscfg =  cfg.getSysconfig();
+		Map<String,String> syscfg =  this.getConfig().getSysconfig();
 		String appname = syscfg.get(OmcCalKey.OMC_CFG_ENVIRONMENT_APP);
-		RealTimeBalance realTimeBalance = urlClient.doQuery(appname, owner);
-		realBalance = realTimeBalance;
+		realBalance = urlClient.doQuery(appname, owner);
 	}
 
 	@Override

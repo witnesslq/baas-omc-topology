@@ -42,9 +42,7 @@ public final class EventProcessor extends BaseProcess {
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty(OmcCalKey.OMC_POLICY_ID, policy.getPolicyId());
 		JsonArray jsonArray = new  JsonArray();
-		for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
-			SectionRule sectionRule = iterator.next();
-			
+		for (SectionRule sectionRule:sectionRules) {
 			JsonObject jsonobj = new JsonObject();
 			jsonobj.addProperty(OmcCalKey.OMC_RULE_ID, sectionRule.getScoutruleid());
 			jsonArray.add(jsonobj);

@@ -1,6 +1,6 @@
 package com.ai.baas.omc.topoligy.core.business.command;
 
-import com.ai.baas.omc.topoligy.core.business.InfomationProcessor;
+import com.ai.baas.omc.topoligy.core.business.InformationProcessor;
 import com.ai.baas.omc.topoligy.core.constant.OwnerType;
 import com.ai.baas.omc.topoligy.core.constant.ScoStatus;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 
 public class ScoutActSmsExt extends ScoutActSms {
 
-	public ScoutActSmsExt(OmcObj owner, InfomationProcessor info, ConfigContainer cfg, RealTimeBalance balance, JsonObject data){
+	public ScoutActSmsExt(OmcObj owner, InformationProcessor info, ConfigContainer cfg, RealTimeBalance balance, JsonObject data){
 		super(owner,info,cfg,balance,data);
 	}
 	

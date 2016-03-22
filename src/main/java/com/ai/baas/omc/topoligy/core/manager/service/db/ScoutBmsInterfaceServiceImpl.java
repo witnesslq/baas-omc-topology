@@ -19,10 +19,7 @@ import java.sql.Connection;
 public class ScoutBmsInterfaceServiceImpl implements ScoutBmsInterfaceService {
 	@Override
 	public int addInterFace(Connection connection,OmcBmsInterface omcBmsInterface) throws OmcException {
-		
 		OmcBmsInterfaceDao omcBmsInterfaceDao = new OmcBmsInterfaceDaoImpl();
-		
 		return omcBmsInterfaceDao.insert(connection, omcBmsInterface);
-		
 	}
 }

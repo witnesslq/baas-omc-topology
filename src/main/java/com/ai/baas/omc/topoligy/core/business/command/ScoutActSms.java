@@ -1,6 +1,6 @@
 package com.ai.baas.omc.topoligy.core.business.command;
 
-import com.ai.baas.omc.topoligy.core.business.InfomationProcessor;
+import com.ai.baas.omc.topoligy.core.business.InformationProcessor;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
 import com.ai.baas.omc.topoligy.core.constant.ScoRuleType;
 import com.ai.baas.omc.topoligy.core.constant.rule.RemindSpend;
@@ -38,7 +38,7 @@ public class ScoutActSms {
 	final private ConfigContainer config;
 	final private OmcObj omcobj;
 	final private JsonObject indata;
-	final private InfomationProcessor infomation;
+	final private InformationProcessor infomation;
 	final private RealTimeBalance realtimeBalance;
 	/**
 	 * 
@@ -48,7 +48,7 @@ public class ScoutActSms {
 	* @return int    返回类型 
 	* @throws
 	 */
-	public ScoutActSms(OmcObj owner,InfomationProcessor info,ConfigContainer cfg,RealTimeBalance balance,JsonObject data){
+	public ScoutActSms(OmcObj owner, InformationProcessor info, ConfigContainer cfg, RealTimeBalance balance, JsonObject data){
 		super();
 		this.config = cfg;
 		this.omcobj = owner;
@@ -171,7 +171,7 @@ public class ScoutActSms {
 		return realtimeBalance;
 	}
 
-	public InfomationProcessor getInfomation() {
+	public InformationProcessor getInfomation() {
 		return infomation;
 	}
 

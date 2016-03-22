@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import com.google.gson.JsonObject;
 
 public final class NoticeProcessor extends BaseProcess {
-	
 	private SpeUrgeStopService speUrgeStopService;
 	private ScoutStatusService scoutStatusService;
 	private UrgeStatusService urgeStatusService;
@@ -27,7 +26,7 @@ public final class NoticeProcessor extends BaseProcess {
 	private SgipSrcGsmService sgipSrcGsmService;
 	private   ScoutLogService scoutLogService;
 	
-	private InfomationProcessor info = null;
+	private InformationProcessor info = null;
 	private RealTimeBalance realBalance;
 	
 	public NoticeProcessor(ConfigContainer cfg, OmcObj obj, JsonObject data, RealTimeBalance balance) throws OmcException {
@@ -38,27 +37,23 @@ public final class NoticeProcessor extends BaseProcess {
 
 	@Override
 	public void process() throws OmcException {
-		
-		ConfigContainer cfgContainer = this.getConfig();
-		
 		JsonObject jsonObject = this.getInput();
 		//规则id列表
 		String rules = jsonObject.get(OmcCalKey.OMC_RULE_ID_LIST).toString();
 		//策略id
 		String policyId = jsonObject.get(OmcCalKey.OMC_POLICY_ID).getAsString();
-		//获取规则详细信息列表
-		List<SectionRule> sectionRules = OmcUtils.toSectionRules(cfgContainer,rules);
+		//规则详细信息列表
+		List<SectionRule> sectionRules = OmcUtils.toSectionRules(this.getConfig(),rules);
 		
 		//设置信控对象
-		info = new InfomationProcessor(this.getConfig(),this.getOmcobj(),jsonObject);
+		info = new InformationProcessor(this.getConfig(),this.getOmcobj(),jsonObject);
 		//获取三户资料
 		info.process();
 		
 		List<User> users = info.getUsers();
-
 		//逐条进行处理 信控操作进行处理
 		for (SectionRule rule:sectionRules){
-			//时段过滤
+			//时间过滤
 			if (!filterByTime(rule)){
 				continue;
 			}
@@ -85,10 +80,9 @@ public final class NoticeProcessor extends BaseProcess {
 
 		}
 		
-		//按照用户提醒  是否提醒到其他号码      可以本号码  可以其他号码    用户级余额  账户级余额  客户级余额
+		//按照用户提醒  是否提醒到其他号码  可以本号码/其他号码    用户级余额  账户级余额  客户级余额
 		//按照客户提醒  是否提醒到其他号码  账户提醒 默认提醒到其他号码
 		//按照账户提醒  是否提醒到其他号码  客户提醒 默认提醒到其他号码
-	
 	}
 
 	/**
@@ -104,26 +98,25 @@ public final class NoticeProcessor extends BaseProcess {
 	 */
 	private boolean filterBySpeUrgeStop(String ownertype,String ownerid,SectionRule sectionRules) throws OmcException{
 		SpeUrgeStop speUrgeStop = speUrgeStopService.selectById(this.getOmcobj().getTenantid(), ownertype, ownerid);
-		
-		if (speUrgeStop == null){
-			return true;
-		}else{
+		boolean ret = true;
+		if (speUrgeStop != null){
 			if ((speUrgeStop.getSpeType().equals(AvoidType.AVOID_STOP))
 					||(speUrgeStop.getSpeType().equals(AvoidType.AVOID_STOPANDURGE))){
 				if ((sectionRules.getScouttype().equals(ScoRuleType.HALFSTOP))
 						||(sectionRules.getScouttype().equals(ScoRuleType.STOP))){
-					return false;
+					ret = false;
 				}
 			}else if((speUrgeStop.getSpeType().equals(AvoidType.AVOID_URGE))
 					||(speUrgeStop.getSpeType().equals(AvoidType.AVOID_STOPANDURGE))){
 				if ((sectionRules.getScouttype().equals(ScoRuleType.WARNING))){
-					return false;
+					ret = false;
 				}
 			}
 		}
-		return true;
+		return ret;
 		
 	}
+
 	private void stop(List<User> users,SectionRule sectionRule)  throws OmcException {
 		List<OmcBmsInterface> omcBmsInterfaces = new ArrayList<OmcBmsInterface>();
 		List<SmsInf> smsInfs = new ArrayList<SmsInf>();
@@ -233,7 +226,7 @@ public final class NoticeProcessor extends BaseProcess {
 	
 		sendCommon(omcBmsInterfaces,smsInfs,scoutStatus,omcUrgeStatus,scoLog);
 	}	
-	private void warning(InfomationProcessor info,SectionRule sectionRule,String policyid)  throws OmcException {
+	private void warning(InformationProcessor info, SectionRule sectionRule, String policyid)  throws OmcException {
 		List<OmcBmsInterface> omcBmsInterfaces = new ArrayList<OmcBmsInterface>();
 		List<SmsInf> smsInfs = new ArrayList<SmsInf>();
 		List<ScoutStatus> scoutStatus = new ArrayList<ScoutStatus>();
@@ -320,7 +313,7 @@ public final class NoticeProcessor extends BaseProcess {
 		sendCommon(omcBmsInterfaces,smsInfs,scoutStatus,omcUrgeStatus,scoLog);
 	}
 	
-	private void warnoff(InfomationProcessor info,SectionRule sectionRule,String policyid)  throws OmcException {
+	private void warnoff(InformationProcessor info, SectionRule sectionRule, String policyid)  throws OmcException {
 		List<OmcBmsInterface> omcBmsInterfaces = new ArrayList<OmcBmsInterface>();
 		List<SmsInf> smsInfs = new ArrayList<SmsInf>();
 		List<ScoutStatus> scoutStatus = new ArrayList<ScoutStatus>();
@@ -410,8 +403,9 @@ public final class NoticeProcessor extends BaseProcess {
 		return true;
 	}
 
-	private void sendCommon(List<OmcBmsInterface> bmsinfs,List<SmsInf> smsinfs,List<ScoutStatus> scoutStatus,
-							List<OmcUrgeStatus> omcurgeStatus,ScoutLog scoutLog) throws OmcException{
+	private void sendCommon(
+			List<OmcBmsInterface> bmsinfs,List<SmsInf> smsinfs,List<ScoutStatus> scoutStatus,
+			List<OmcUrgeStatus> omcurgeStatus,ScoutLog scoutLog) throws OmcException{
 		
 			JdbcProxy dbproxy = JdbcProxy.getInstance();
 			Connection connection = dbproxy.getConnection();
@@ -462,7 +456,6 @@ public final class NoticeProcessor extends BaseProcess {
 		
 		for (OmcBmsInterface inf:bmsinfs){
 			inf.setSerialNo(SysSequence.getInstance().getSequence("SCOUT_BMS_INTERFACE_SEQ"));
-
 			if (scoutBmsInterfaceService.addInterFace(connection,inf) <= 0){
 				throw new OmcException(breakpoint, "更新停开机接口表异常");							
 			}
@@ -515,7 +508,13 @@ public final class NoticeProcessor extends BaseProcess {
 			}
 		}
 	}
-	
+
+	/**
+	 * 发送信控状态
+	 * @param connection
+	 * @param scoutStatus
+	 * @throws OmcException
+     */
 	private void sendScoStatus(Connection connection,List<ScoutStatus> scoutStatus) throws OmcException{
 		if ((scoutStatus == null)||(scoutStatus.isEmpty())){
 			return;
@@ -533,7 +532,13 @@ public final class NoticeProcessor extends BaseProcess {
 				}
 		}
 	}
-	
+
+	/**
+	 * 发送信控日志
+	 * @param connection
+	 * @param scoutLog
+	 * @throws OmcException
+     */
 	private void sendScoLog(Connection connection,ScoutLog scoutLog) throws OmcException{
 		if ((scoutLog == null)){
 			return;
@@ -541,8 +546,7 @@ public final class NoticeProcessor extends BaseProcess {
 		
 		String breakpoint = "sendCommon.omcurgeStatus";
 		scoutLog.setLogid(SysSequence.getInstance().getSequence("SCO_SQUENCE"));
-		String    scucess = "1";
-		scoutLog.setScostatus(scucess);
+		scoutLog.setScostatus("1");
 		if (scoutLogService.insertScoutLog(connection,scoutLog) <= 0){
 			throw new OmcException(breakpoint, "更新信控日志表异常");
 		}

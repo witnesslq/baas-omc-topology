@@ -1,6 +1,6 @@
 package com.ai.baas.omc.topoligy.core.business.base;
 
-import com.ai.baas.omc.topoligy.core.business.InfomationProcessor;
+import com.ai.baas.omc.topoligy.core.business.InformationProcessor;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.google.gson.JsonObject;
@@ -8,11 +8,11 @@ import com.google.gson.JsonObject;
 public abstract class BaseCalProcess {
 
 	private ConfigContainer config;
-	private InfomationProcessor information ;
+	private InformationProcessor information ;
 	private JsonObject input;
 	private JsonObject output;
 
-	public  BaseCalProcess(ConfigContainer cfg,InfomationProcessor info,JsonObject data){
+	public  BaseCalProcess(ConfigContainer cfg, InformationProcessor info, JsonObject data){
 		this.setConfig(cfg);
 		this.setInformation(info);
 		this.setInput(data);
@@ -42,7 +42,7 @@ public abstract class BaseCalProcess {
 		this.config = config;
 	}
 
-	public void setInformation(InfomationProcessor information) {
+	public void setInformation(InformationProcessor information) {
 		this.information = information;
 	}
 	
@@ -50,7 +50,7 @@ public abstract class BaseCalProcess {
 		return config;
 	}
 
-	public InfomationProcessor getInformation() {
+	public InformationProcessor getInformation() {
 		return information;
 	}
 	

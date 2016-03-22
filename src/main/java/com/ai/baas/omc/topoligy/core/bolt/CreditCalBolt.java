@@ -19,6 +19,8 @@ import com.ai.baas.omc.topoligy.core.pojo.SectionRule;
 import com.ai.baas.omc.topoligy.core.util.CacheClient;
 import com.ai.baas.omc.topoligy.core.util.OmcUtils;
 import com.ai.baas.omc.topoligy.core.util.UrlClient;
+import com.ai.baas.omc.topoligy.core.util.db.JdbcParam;
+import com.ai.baas.omc.topoligy.core.util.db.JdbcProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
@@ -69,11 +71,11 @@ public class CreditCalBolt extends BaseBasicBolt {
 			JsonObject caldata = omcCalProcessor.getOutput();
 			//获取信控计算后的余额信息
 			RealTimeBalance realTimeBalance = omcCalProcessor.getRealTimeBalance();
-			//根据匹配后的规则列表判断是否需要通知
+
+			//根据匹配后的规则列表
 			String rules = caldata.get(OmcCalKey.OMC_RULE_ID_LIST).toString();
 //			caldata.get(OmcCalKey.OMC_RULE_ID_LIST);
 			List<SectionRule> sectionRules = OmcUtils.toSectionRules(confContainer, rules);
-
 			if ((null == sectionRules)||sectionRules.isEmpty()){
 				logger.debug("没取到对应的规则，无法信控");
 				return ;
@@ -83,7 +85,6 @@ public class CreditCalBolt extends BaseBasicBolt {
 	
 			//准备信控计算后输出
 			JsonObject outdata  = new JsonObject();
-			//TODO准备数据
 			outdata.addProperty(OmcCalKey.OMC_CHARGING_STATION, chargingStation);
 			outdata.addProperty(OmcCalKey.OMC_CHARGING_PILE, chargingPile);
 			outdata.addProperty(OmcCalKey.OMC_POLICY_ID, policyId);
@@ -95,9 +96,7 @@ public class CreditCalBolt extends BaseBasicBolt {
 			dto4CreditNotice.setRealTimeBalance(realTimeBalance);
 			dto4CreditNotice.setExtInfo(outdata.toString());
 
-			
 			logger.debug("--dto4CreditNotice--DTO准备完毕：" + dto4CreditNotice.toString());
-
 			// 定义传给下一个bolt所需参数
 			collector.emit(new Values(dto4CreditNotice));
 		} catch (Exception e) {
@@ -121,7 +120,11 @@ public class CreditCalBolt extends BaseBasicBolt {
 	@Override
 	public void prepare(Map stormConf, TopologyContext context) {
 		try {
+			//产生jdbcProxy
+			JdbcProxy.loadresource(new JdbcParam(stormConf));
+			JdbcProxy.getInstance();
 			CacheClient.loadResource(stormConf);
+
 			UrlClient.loadResource(stormConf);
 			confContainer = new ConfigContainer();
 			confContainer.configObtain();

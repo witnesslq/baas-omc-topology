@@ -14,10 +14,16 @@ public final class OmcUtils {
 	private OmcUtils(){
 		
 	}
+
+	/**
+	 * 根据规则id获取规则实例
+	 * @param cfgContainer
+	 * @param data
+     * @return
+     */
 	public static final List<SectionRule> toSectionRules(ConfigContainer cfgContainer, String data){
 		Gson gson = new Gson();
-
-		JsonArray Rules = (JsonArray) gson.fromJson(data, JsonArray.class);
+		JsonArray Rules = gson.fromJson(data, JsonArray.class);
 		List<SectionRule> sectionRules = new ArrayList<SectionRule>();
 		for (JsonElement jsonElement : Rules) {
 			String rule = jsonElement.getAsJsonObject().get(OmcCalKey.OMC_RULE_ID).getAsString();

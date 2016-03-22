@@ -121,10 +121,8 @@ public class DateUtils {
 		return (nsecyyyy - nfstyyyy)*12 + nMonth;
 	}
 
-	public static java.sql.Date getNowDate()
-	{
-		Date date = new Date();
-		return new java.sql.Date(date.getTime());
+	public static java.sql.Date getNowDate() {
+		return new java.sql.Date(new Date().getTime());
 	}
 	
 	

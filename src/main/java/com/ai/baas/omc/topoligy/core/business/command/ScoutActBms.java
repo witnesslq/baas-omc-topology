@@ -154,7 +154,7 @@ public class ScoutActBms {
 		jsonObject.addProperty("balance", realtimeBalance.getRealBalance());
 		jsonObject.add("pileid", this.getIndata().get(OmcCalKey.OMC_CHARGING_PILE));
 		jsonObject.add("statid", this.getIndata().get(OmcCalKey.OMC_CHARGING_STATION));
-		jsonObject.addProperty("iccid", user.getServicenum());
+		jsonObject.addProperty("iccid", user.getServiceId());
 		jsonObject.addProperty("subs_id", user.getSubsid());
 		jsonObject.addProperty("scout_type", scouttype);
 		jsonObject.addProperty("commanid", commonid);
@@ -164,8 +164,6 @@ public class ScoutActBms {
 	}
 	private OmcBmsInterface builderinf(User user,String scouttype,String commonid){
 		OmcBmsInterface bmsinf = new OmcBmsInterface();
-
-		
 		String bmsdata = getbmsData(user,scouttype);
 		String infdata = getinfData(user, ScoRuleType.HALFSTOP,commonid);
 		bmsinf.setSerialNo(0L);  //统一赋值

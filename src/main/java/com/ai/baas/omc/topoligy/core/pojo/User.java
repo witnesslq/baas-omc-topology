@@ -11,12 +11,11 @@ public final class User{
 	private String	subsid;
 	private String	accountid;
 	private String	customerid;
-	private String	servicenum;
+	private String	serviceId;
 	private String	substype;
 	private String	subsstatus;
 	private String	servicestatus;
 	private String	statuschgtype;
-	private String	basicorgid;
 	private String	provincecode;
 	private String	citycode;
 	private String  tenantid;
@@ -44,11 +43,11 @@ public final class User{
 	public void setCustomerid(String customerid) {
 		this.customerid = customerid;
 	}
-	public String getServicenum() {
-		return servicenum;
+	public String getServiceId() {
+		return serviceId;
 	}
-	public void setServicenum(String servicenum) {
-		this.servicenum = servicenum;
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
 	}
 	public String getSubstype() {
 		return substype;
@@ -75,12 +74,6 @@ public final class User{
 		this.statuschgtype = statuschgtype;
 	}
 
-	public String getBasicorgid() {
-		return basicorgid;
-	}
-	public void setBasicorgid(String basicorgid) {
-		this.basicorgid = basicorgid;
-	}
 	public String getProvincecode() {
 		return provincecode;
 	}
@@ -150,9 +143,9 @@ public final class User{
 	}
 	@Override
 	public String toString() {
-		return "User [subsid=" + subsid + ", accountid=" + accountid + ", customerid=" + customerid + ", servicenum="
-				+ servicenum + ", substype=" + substype + ", subsstatus=" + subsstatus + ", servicestatus="
-				+ servicestatus + ", statuschgtype=" + statuschgtype + ", basicorgid=" + basicorgid + ", provincecode="
+		return "User [subsid=" + subsid + ", accountid=" + accountid + ", customerid=" + customerid + ", serviceId="
+				+ serviceId + ", substype=" + substype + ", subsstatus=" + subsstatus + ", servicestatus="
+				+ servicestatus + ", statuschgtype=" + statuschgtype + ", provincecode="
 				+ provincecode + ", citycode=" + citycode + ", tenantid=" + tenantid + ", systemid=" + systemid
 				+ ", servicetype=" + servicetype + ", activetime=" + activetime + ", inactivetime=" + inactivetime
 				+ ", factorcode=" + factorcode + "]";

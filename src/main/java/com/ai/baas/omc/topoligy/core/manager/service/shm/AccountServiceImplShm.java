@@ -12,6 +12,9 @@ import com.ai.baas.omc.topoligy.core.pojo.Account;
 import com.ai.baas.omc.topoligy.core.util.CacheClient;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * 获取账户资料信息
+ */
 public final class AccountServiceImplShm implements AccountService {
 
 	private  static final CacheClient cacheClient = CacheClient.getInstance();
@@ -27,7 +30,7 @@ public final class AccountServiceImplShm implements AccountService {
 			params.put("TENANT_ID",tenantid);
 
 			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			if(result == null || result.size()==0){
+			if(result == null || result.isEmpty()){
 				throw new OmcException("OMC-SUBS0001B","BL_ACCTINFO表没有找到账户信息!");
 			}
 			return getAccounts(result).get(0);
@@ -59,18 +62,18 @@ public final class AccountServiceImplShm implements AccountService {
 		String[] acctid =	StringUtils.split(result.get(0).get("acct_id"),"#");
 		String[] accttype =	StringUtils.split(result.get(0).get("acct_type"),"#");
 		String[] custid =	StringUtils.split(result.get(0).get("cust_id"),"#");
+		String[] ownerTypes = StringUtils.split(result.get(0).get("owner_type"),"#");
+		String[] ownerIds =	StringUtils.split(result.get(0).get("owner_id"),"#");
 		String[] tenantid = StringUtils.split(result.get(0).get("tenant_id"),"#");
-		String[] systemid = StringUtils.split(result.get(0).get("system_id"),"#");
 
 		List<Account> accounts = new ArrayList<Account>();
 		for (int i = 0; i < acctid.length; i++) {
 			Account account = new Account();
 			account.setAccountId(acctid[i]);
-			account.setCustomerId(custid[i]);
+			account.setOwnerType(ownerTypes[i]);
+			account.setOwnerId(ownerIds[i]);
 			account.setAcctType(accttype[i]);
-			account.setSystemId(systemid[i]);
 			account.setTenantId(tenantid[i]);
-			
 			accounts.add(account);
 		}
 		return accounts;

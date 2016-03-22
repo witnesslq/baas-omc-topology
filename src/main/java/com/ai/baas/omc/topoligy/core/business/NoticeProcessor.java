@@ -258,7 +258,7 @@ public final class NoticeProcessor extends BaseProcess {
     			//免催免停处理
     			if (!filterBySpeUrgeStop(OwnerType.SERV,user.getSubsid(),sectionRule)){
     				continue;
-    			}	
+    			}
     			
     			scoutActSmsExt.warning(OwnerType.SERV,user.getSubsid());
     			

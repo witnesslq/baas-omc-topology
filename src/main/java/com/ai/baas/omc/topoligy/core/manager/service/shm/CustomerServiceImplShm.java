@@ -11,6 +11,9 @@ import com.ai.baas.omc.topoligy.core.pojo.Customer;
 import com.ai.baas.omc.topoligy.core.util.CacheClient;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * 获取客户资料信息
+ */
 public final class CustomerServiceImplShm implements CustomerService {
 	
 	private  static final CacheClient cacheClient = CacheClient.getInstance();
@@ -42,21 +45,17 @@ public final class CustomerServiceImplShm implements CustomerService {
 	}
 	
 	private List<Customer> getCustomers(List<Map<String, String>> result){
-		
 		String[] custid =	StringUtils.split(result.get(0).get("cust_id"),"#");
 		String[] custleve =	StringUtils.split(result.get(0).get("cust_grade"),"#");
 		String[] custtype =	StringUtils.split(result.get(0).get("cust_type"),"#");
 		String[] tenantid = StringUtils.split(result.get(0).get("tenant_id"),"#");
-		String[] systemid = StringUtils.split(result.get(0).get("system_id"),"#");
-		   
+
 		List<Customer> customers = new ArrayList<Customer>();
-		
 		for (int i = 0; i < custid.length; i++) {
 			Customer customer = new Customer();
 			customer.setCustomerId(custid[i]);
 			customer.setCustType(custtype[i]);
 			customer.setCustLevel(custleve[i]);
-			customer.setSystemId(systemid[i]);
 			customer.setTenantId(tenantid[i]);
 			customers.add(customer);
 		}

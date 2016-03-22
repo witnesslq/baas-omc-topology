@@ -8,7 +8,6 @@ public final class Customer {
 	private String	custLevel;
 	private String	custType;
 	private String  tenantId;
-	private String	systemId;
 	public String getCustomerId() {
 		return customerId;
 	}
@@ -33,17 +32,9 @@ public final class Customer {
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
-	public String getSystemId() {
-		return systemId;
-	}
-	public void setSystemId(String systemId) {
-		this.systemId = systemId;
-	}
 	@Override
 	public String toString() {
 		return "Customer [customerId=" + customerId + ", custLevel=" + custLevel + ", custType=" + custType
-				+ ", tenantId=" + tenantId + ", systemId=" + systemId + "]";
+				+ ", tenantId=" + tenantId + "]";
 	}
-
-
 }

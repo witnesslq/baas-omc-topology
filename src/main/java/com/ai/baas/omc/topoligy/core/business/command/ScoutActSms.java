@@ -76,7 +76,7 @@ public class ScoutActSms {
 		}
 		
 		//提醒到本用户号码
-		 String remindnbr = this.getInfomation().getRemindNbr(speremind,omcobj.getTenantid(), ownertype, oid);
+		String remindnbr = this.getInfomation().getRemindNbr(speremind,omcobj.getTenantid(), ownertype, oid);
 		if (StringUtils.isBlank(remindnbr)){
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.addProperty(OmcCalKey.OMC_CFG_REMINDSPENBR, remindnbr);

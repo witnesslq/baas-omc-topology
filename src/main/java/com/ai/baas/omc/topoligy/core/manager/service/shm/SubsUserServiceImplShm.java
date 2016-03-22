@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * 
 * @ClassName: SubsUserServiceImpl 
-* @Description: 获取资料信息 
+* @Description: 获取用户资料信息
 * @author lvsj
 * @date 2015年11月24日 下午5:16:23 
 *
@@ -52,6 +52,13 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 		}
 	}
 
+	/**
+	 * 根据账户id查询用户列表
+	 * @param tenantid
+	 * @param id
+	 * @return
+	 * @throws OmcException
+     */
 	@Override
 	public List<User> selectByAcctId(String tenantid, String id)  throws OmcException{
 		
@@ -79,6 +86,13 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 		}
 	}
 
+	/**
+	 * 通过客户id查询用户列表
+	 * @param tenantid
+	 * @param id
+	 * @return
+	 * @throws OmcException
+     */
 	@Override
 	public List<User> selectByCustId(String tenantid,  String id)  throws OmcException{
 		try{
@@ -139,37 +153,34 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 		String[] custid =	StringUtils.split(result.get(0).get("cust_id"),"#");
 		String[] acctid =	StringUtils.split(result.get(0).get("acct_id"),"#");
 		String[] tenantid =	StringUtils.split(result.get(0).get("tenant_id"),"#");
-		String[] systemId =	StringUtils.split(result.get(0).get("system_id"),"#");		
-		String[] servicenum =	StringUtils.split(result.get(0).get("service_num"),"#");
-		String[] basicorgid =	StringUtils.split(result.get(0).get("basic_org_id"),"#");
+		//service_id由service_num变化来
+		String[] serviceIds =	StringUtils.split(result.get(0).get("service_id"),"#");
 		String[] provincecode =	StringUtils.split(result.get(0).get("province_code"),"#");
 		String[] citycode =	StringUtils.split(result.get(0).get("city_code"),"#");
 		String[] activetime =	StringUtils.split(result.get(0).get("active_time"),"#");
 		String[] inactivetime =	StringUtils.split(result.get(0).get("inactive_time"),"#");
 		String[] factorcode =	StringUtils.split(result.get(0).get("factor_code"),"#");
-		
-		  
-		
+
 		List<User> users = new ArrayList<User>();
-		
 		for (int i = 0; i < subsid.length; i++) {
 			User user = new User();
 			user.setAccountid(acctid[i]);
-			user.setBasicorgid(basicorgid[i]);
 			user.setCitycode(citycode[i]);
 			user.setCustomerid(custid[i]);
 			user.setProvincecode(provincecode[i]);
-			user.setServicenum(servicenum[i]);
+			user.setServiceId(serviceIds[i]);
 			user.setSubsid(subsid[i]);
-			user.setSystemid(systemId[i]);
+			/*
+			 * 此属性已取消,为兼容原数据设计,将此项设置为常量
+			 * updateDate 2016-03-22
+			 */
+			user.setSystemid("1");
 			user.setTenantid(tenantid[i]);
 			user.setFactorcode(factorcode[i]);
-
 			String s2 = StringUtils.isBlank(activetime[i])?"1900-01-01 00:00:00.000":activetime[i];
 			user.setActivetime(Timestamp.valueOf(s2));
 			String s3 = StringUtils.isBlank(inactivetime[i])?"1900-01-01 00:00:00.000":inactivetime[i];
 			user.setInactivetime(Timestamp.valueOf(s3));
-		
 			users.add(user);
 		}
 		

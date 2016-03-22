@@ -18,8 +18,6 @@ public abstract class BaseCalProcess {
 		this.setInput(data);
 	}
 	
-
-
 	public abstract void process() throws OmcException;
 
 	public JsonObject getInput() {
@@ -53,7 +51,8 @@ public abstract class BaseCalProcess {
 	public InformationProcessor getInformation() {
 		return information;
 	}
-	
+
 	public abstract void prepare(JsonObject data) throws OmcException;
+
 	public abstract void prepare(String cfg) throws OmcException;
 }

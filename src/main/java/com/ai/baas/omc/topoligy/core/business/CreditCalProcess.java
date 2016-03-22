@@ -31,6 +31,7 @@ public final class CreditCalProcess extends BaseCalProcess {
 	
 	public CreditCalProcess(ConfigContainer cfg, InformationProcessor info, JsonObject data) {
 		super(cfg, info, data);
+		omcCreditService = new OmcCreditServiceImpl();
 	}
 
 	@Override
@@ -135,15 +136,14 @@ public final class CreditCalProcess extends BaseCalProcess {
 
 	@Override
 	public void prepare(JsonObject data) throws OmcException {
-		omcCreditService = new OmcCreditServiceImpl();
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void prepare(String cfg) throws OmcException {
 		// TODO Auto-generated method stub
-		
 	}
-		
+
 	private String msgInfo(String policyid,String tenantid,String ownertype,String ownerid,String busicode){
 		JsonObject messageinfo = new  JsonObject();
 		messageinfo.addProperty(OmcCalKey.OMC_POLICY_ID, policyid);

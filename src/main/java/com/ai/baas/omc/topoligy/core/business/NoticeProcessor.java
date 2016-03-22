@@ -24,7 +24,7 @@ public final class NoticeProcessor extends BaseProcess {
 	private UrgeStatusService urgeStatusService;
 	private ScoutBmsInterfaceService scoutBmsInterfaceService;
 	private SgipSrcGsmService sgipSrcGsmService;
-	private   ScoutLogService scoutLogService;
+	private ScoutLogService scoutLogService;
 	
 	private InformationProcessor info = null;
 	private RealTimeBalance realBalance;
@@ -32,7 +32,12 @@ public final class NoticeProcessor extends BaseProcess {
 	public NoticeProcessor(ConfigContainer cfg, OmcObj obj, JsonObject data, RealTimeBalance balance) throws OmcException {
 		super(cfg, obj, data);
 		this.realBalance = balance;
-		prepare(data);
+		speUrgeStopService = new SpeUrgeStopServiceImpl();
+		scoutStatusService = new ScoutStatusServiceImpl();
+		urgeStatusService = new UrgeStatusServiceImpl();
+		scoutBmsInterfaceService = new ScoutBmsInterfaceServiceImpl();
+		sgipSrcGsmService = new SgipSrcGsmServiceImpl();
+		scoutLogService = new ScoutLogServiceImpl();
 	}
 
 	@Override
@@ -554,12 +559,7 @@ public final class NoticeProcessor extends BaseProcess {
 	
 	@Override
 	public void prepare(JsonObject data) throws OmcException {
-		 speUrgeStopService = new SpeUrgeStopServiceImpl();
-		 scoutStatusService = new ScoutStatusServiceImpl();
-		 urgeStatusService = new UrgeStatusServiceImpl();
-		 scoutBmsInterfaceService = new ScoutBmsInterfaceServiceImpl();
-		 sgipSrcGsmService = new SgipSrcGsmServiceImpl();
-		 scoutLogService = new ScoutLogServiceImpl();
+		// TODO Auto-generated method stub
 	}
 
 	public RealTimeBalance getRealBalance() {
@@ -573,7 +573,6 @@ public final class NoticeProcessor extends BaseProcess {
 	@Override
 	public void prepare(String cfg) throws OmcException {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

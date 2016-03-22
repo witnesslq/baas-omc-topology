@@ -1,6 +1,5 @@
 package com.ai.baas.omc.topoligy.core.business;
 
-import java.util.Iterator;
 import java.util.List;
 import com.ai.baas.omc.topoligy.core.business.base.BaseProcess;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
@@ -55,14 +54,11 @@ public final class EventProcessor extends BaseProcess {
 	@Override
 	public void prepare(JsonObject data) throws OmcException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void prepare(String cfg) throws OmcException {
 		// TODO Auto-generated method stub
-		
 	}
-	
 
 }

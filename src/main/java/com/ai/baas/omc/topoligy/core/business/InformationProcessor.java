@@ -42,6 +42,9 @@ public final class InformationProcessor extends BaseProcess {
 
 	public InformationProcessor(ConfigContainer cfg, OmcObj obj, JsonObject data) throws OmcException {
 		super(cfg, obj, data);
+		subsUserService = new SubsUserServiceImplShm();
+		accountService = new AccountServiceImplShm();
+		customerService = new CustomerServiceImplShm();
 	}
 
 
@@ -180,7 +183,7 @@ public final class InformationProcessor extends BaseProcess {
 		return accounts;
 	}
 	public String getRemindNbr(String remintype,String tenantid,String ownertype,String ownerid) throws OmcException{
-		
+
 		User user = subsUserService.selectById(tenantid, ownerid);
 		if (user == null){
 			throw new OmcException("Information","获取提醒号码异常:userid：" + ownerid );
@@ -193,13 +196,10 @@ public final class InformationProcessor extends BaseProcess {
 	@Override
 	public void prepare(JsonObject data) throws OmcException {
 		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void prepare(String cfg) throws OmcException {
-		subsUserService = new SubsUserServiceImplShm();
-		accountService = new AccountServiceImplShm();
-		customerService = new CustomerServiceImplShm();
+		// TODO Auto-generated method stub
 	}
 
 	private String paramsString(String tenantid,String ownertype,String ownerid){

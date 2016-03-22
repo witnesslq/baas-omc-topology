@@ -115,21 +115,16 @@ public final class OmcCalProcessor extends BaseProcess {
 	 */
 	private List<SectionRule> thresholdMatch(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		//欠费天数
-		List<SectionRule> matchownersrules = matchOwners( balance, sectionRules,policyid);
-		if ((matchownersrules!=null)&&(!matchownersrules.isEmpty())){
-			return matchownersrules;
+		List<SectionRule> matchRules = matchOwners( balance, sectionRules,policyid);
+		//若欠费天数匹配规则为空,则进行费用匹配规则
+		if (matchRules==null || matchRules.isEmpty()){
+			matchRules = matchCharge( balance, sectionRules,policyid);
 		}
-		//费用匹配
-		List<SectionRule> matchchargerules = matchCharge( balance, sectionRules,policyid);
-		if ((matchchargerules!=null)&&(!matchchargerules.isEmpty())){
-			return matchchargerules;
+		//若欠费天数匹配规则和费用匹配规则均为空,则进行余额匹配
+		if (matchRules==null || matchRules.isEmpty()){
+			matchRules = matchBalance( balance, sectionRules,policyid);
 		}
-		//余额匹配
-		List<SectionRule> matchbalancerules = matchBalance( balance, sectionRules,policyid);
-		if ((matchbalancerules!=null)&&(!matchbalancerules.isEmpty())){
-			return matchbalancerules;
-		}
-		return matchownersrules;
+		return matchRules;
 	}
 	
 	/**
@@ -198,7 +193,6 @@ public final class OmcCalProcessor extends BaseProcess {
 	* @return boolean    返回类型 
 	* @throws
 	 */
-
 	private List<SectionRule> matchCharge(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		List<SectionRule> sRules = new ArrayList<SectionRule>();
 		ConfigContainer cfg = this.getConfig();
@@ -306,13 +300,11 @@ public final class OmcCalProcessor extends BaseProcess {
 	@Override
 	public void prepare(JsonObject data) throws OmcException {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void prepare(String cfg) throws OmcException {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

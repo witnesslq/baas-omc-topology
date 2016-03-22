@@ -67,7 +67,17 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 			throw new OmcException("BalanceCal", "获取余额信息:余额模式与OwnerType不一致，请修改配置。" + balancemodel  + messageinfo.toString());
 		}
 	}
-	
+
+	@Override
+	public void prepare(JsonObject data) throws OmcException {
+		//TODO...
+	}
+
+	@Override
+	public void prepare(String cfg) throws OmcException {
+		//TODO...
+	}
+
 	public RealTimeBalance getBalance(){
 		return realBalance;
 	}
@@ -107,18 +117,4 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 		String appname = syscfg.get(OmcCalKey.OMC_CFG_ENVIRONMENT_APP);
 		realBalance = urlClient.doQuery(appname, owner);
 	}
-
-	@Override
-	public void prepare(JsonObject data) throws OmcException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void prepare(String cfg) throws OmcException {
-		// TODO Auto-generated method stub
-		
-	}
-	
-
 }

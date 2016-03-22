@@ -18,8 +18,7 @@ public abstract class BaseProcess {
 		this.omcobj = obj;
 		this.input = data;
 	}
-	
-	
+
 	public abstract void prepare(JsonObject data) throws OmcException;
 	public abstract void prepare(String cfg) throws OmcException;
 	

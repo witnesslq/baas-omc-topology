@@ -36,6 +36,24 @@ dependencies{
     provided 'org.apache.storm:storm-core:0.9.6'
 }
 
+jar {
+    dependsOn configurations.runtime
+    from {
+        (configurations.runtime - configurations.provided).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+            {
+                exclude "META-INF/*.SF"
+                exclude "META-INF/*.DSA" //余额库查询
+                exclude "META-INF/*.RSA"
+                exclude "META-INF/spring.handlers"
+                exclude "META-INF/spring.schemas"
+                exclude "META-INF/spring.tooling"
+            }
+
+}
+
 sourceSets {
     main {
         java { srcDirs = ['src/main/java']}

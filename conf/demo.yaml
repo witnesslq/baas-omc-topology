@@ -17,11 +17,11 @@ omc.flow.cache.port: "8686"
 
 ### databases params
 omc.environment.db.driver: "com.mysql.jdbc.Driver"
-omc.environment.db.url: "jdbc:mysql://127.0.0.1:3306/baas-omc1?user=root&password=password"
+omc.environment.db.url: "jdbc:mysql://10.1.235.245:31306/dev_baas_omc1?user=omcusr01&password=omcusr01_123"
 # databases connections pool initial connections num (Optional)
 omc.environment.db.init.conn: "5"
 # databases connections pool max connections num (Optiona)
 omc.environment.db.max.conn: "20"
 
 ### virtual-deduct rest url
-omc.bwo.url: ""
+omc.bwo.url: "http://127.0.0.1:8080/virtualdeduct/cancelAccountProcess"

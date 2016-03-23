@@ -1,19 +1,27 @@
+### topology base params
 #distributed or local
 storm.cluster.mode: "local"
 topology.name: "baas-omc"
 #topology.spout.parallel: 2
 
-# kafka spout params
-kafka.spout.consumer.addr: "node01:2181,node02:2181"
-kafka.spout.topic: "ltkafka"
-kafka.spout.zk.server: "node01,node02,node03"
-kafka.spout.zk.port: 2181
+### kafka spout params
+kafka.spout.consumer.addr: "10.1.130.84:39091,10.1.130.85:39091,10.1.236.122:39091"
+kafka.spout.topic: "omckafka"
+kafka.spout.zk.server: "10.1.130.84,10.1.130.85,10.1.236.122"
+kafka.spout.zk.port: "49181"
 kafka.spout.parallel.num: 1
 
-# dshm rmi params
-omc.flow.cache.ip:
-omc.flow.cache.port:
+### dshm rmi params
+omc.flow.cache.ip: "10.1.241.37"
+omc.flow.cache.port: "8686"
 
-# db params
-omc.environment.db.driver: ""
-omc.environment.db.url: ""
+### databases params
+omc.environment.db.driver: "com.mysql.jdbc.Driver"
+omc.environment.db.url: "jdbc:mysql://127.0.0.1:3306/baas-omc1?user=root&password=password"
+# databases connections pool initial connections num (Optional)
+omc.environment.db.init.conn: "5"
+# databases connections pool max connections num (Optiona)
+omc.environment.db.max.conn: "20"
+
+### virtual-deduct rest url
+omc.bwo.url: ""

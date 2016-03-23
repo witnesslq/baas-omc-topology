@@ -20,28 +20,25 @@ public final class CustomerServiceImplShm implements CustomerService {
 	
 	@Override
 	public Customer getCustomer(String tenantid, String custId) throws OmcException {
+		Customer customer = null;
 		try{
 			StringBuilder table = new StringBuilder();
-			
 			table.append("bl_custinfo");
-			
 			Map<String, String> params = new TreeMap<String, String>();
-			
 			params.put("CUST_ID",custId);
 			params.put("TENANT_ID",tenantid);
 
-
 			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","bl_custinfo表没有找到客户信息!" + params.toString());
 			}
-			
-		   return  getCustomers(result).get(0);
-
+			List<Customer> customerList = getCustomers(result);
+			if (customerList!=null && customerList.size()>0)
+				customer = customerList.get(0);
 		}catch (Exception e){
 			throw new OmcException("OMC-SUBS0001B",e);
 		}
+		return customer;
 	}
 	
 	private List<Customer> getCustomers(List<Map<String, String>> result){

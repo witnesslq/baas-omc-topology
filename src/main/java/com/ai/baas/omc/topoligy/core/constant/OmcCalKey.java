@@ -31,7 +31,9 @@ public final class OmcCalKey {
 	public static final String OMC_CFG_ENVIRONMENT_DB_URL = "omc.environment.db.url";
 	public static final String OMC_CFG_ENVIRONMENT_DB_USR = "omc.environment.db.usr";
 	public static final String OMC_CFG_ENVIRONMENT_DB_PASSWD = "omc.environment.db.passwd";
-	
+	public static final String OMC_CFG_ENVIRONMENT_DB_INIT_CONN = "omc.environment.db.init.conn";
+	public static final String OMC_CFG_ENVIRONMENT_DB_MAX_CONN = "omc.environment.db.max.conn";
+
 	public static final String OMC_CFG_BALANCECALMODEL = "BALANCECALMODEL";
 	public static final String OMC_CFG_MATCH_BALANCE = "MATCHBALANCE";
 	public static final String OMC_CFG_MATCH_CHARGE = "MATCHCHARGE";

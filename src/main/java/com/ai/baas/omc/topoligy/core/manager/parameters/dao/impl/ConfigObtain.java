@@ -38,9 +38,10 @@ public final class ConfigObtain implements IConfigObtain {
 
 		try {
 			StringBuilder sql = new StringBuilder("");
-			String tableName ="omc_tenant_para";
+//			String tableName ="omc_tenant_para";
 			sql.append("select tenant_id, para_type, para_value, para_name from ");
-			sql.append(tableName).append(" where ");
+			//设置表名
+			sql.append("omc_tenant_para").append(" where ");
 			sql.append(" 1 =").append("1");
 			Connection connection = dbproxy.getConnection();
    		    List<Map<String,Object>> rows =  JdbcTemplate.query(sql.toString(), connection, new MapListHandler());
@@ -51,9 +52,7 @@ public final class ConfigObtain implements IConfigObtain {
    		    }
    		    
    		    List<OmcCalConf> omcCalConfs = new ArrayList<OmcCalConf>();
-
 	    	for (Map<String, Object> map : rows) {
-	    		
 	    		OmcCalConf omcCalConf = new OmcCalConf();
 	    		OmcCalConfKey omcCalConfKey = new OmcCalConfKey();
 	    		omcCalConfKey.setTenantid(map.get("tenant_id").toString());
@@ -79,9 +78,9 @@ public final class ConfigObtain implements IConfigObtain {
 	public List<PolicyConf> selectPolicyCfgAll() throws OmcException{
 		try {
 			StringBuilder sql = new StringBuilder("");
-			String tableName ="omc_policy_para";
+//			String tableName ="omc_policy_para";
 			sql.append("select tenant_id,policyId, para_type, para_value, para_name from ");
-			sql.append(tableName).append(" where ");
+			sql.append("omc_policy_para").append(" where ");
 			sql.append(" 1 =").append("1");
 
 			Connection connection = dbproxy.getConnection();
@@ -95,18 +94,14 @@ public final class ConfigObtain implements IConfigObtain {
    		    List<PolicyConf> policyConfs = new ArrayList<PolicyConf>();
 
 	    	for (Map<String, Object> map : rows) {
-	    		
 	    		PolicyConf  policyConf = new PolicyConf();
 	    		PolicyConfKey policyConfKey = new PolicyConfKey();
 	    		policyConfKey.setTenantid(map.get("tenant_id").toString());
 	    		policyConfKey.setConfkey(map.get("para_type").toString());
 	    		policyConfKey.setPolicyid(map.get("policyId").toString());
-
 	    		policyConf.setPolicyConfKey(policyConfKey);
-
-	    		
 	    		policyConf.setConfvalue(map.get("para_value").toString());
-	    		
+
 	    		policyConfs.add(policyConf);
 
 			}
@@ -125,9 +120,9 @@ public final class ConfigObtain implements IConfigObtain {
 	public List<Policy> selectPolicyAll() throws OmcException {
 		try {
 			StringBuilder sql = new StringBuilder("");
-			String tableName ="omc_scout_policy";
+//			String tableName ="omc_scout_policy";
 			sql.append("select policyId,policy_name, tenant_id,policyType, status, eff_date,exp_date from ");
-			sql.append(tableName).append(" where ");
+			sql.append("omc_scout_policy").append(" where ");
 			sql.append(" 1 =").append("1");
 			Connection connection = dbproxy.getConnection();
    		    List<Map<String,Object>> rows =  JdbcTemplate.query(sql.toString(), connection, new MapListHandler());
@@ -170,10 +165,10 @@ public final class ConfigObtain implements IConfigObtain {
 		
 		try {
 			StringBuilder sql = new StringBuilder("");
-			String tableName ="omc_scout_rule";
+//			String tableName ="omc_scout_rule";
 			sql.append("select rule_id,policyId,scout_rule,scout_type,balance_floor,balance_ceil,owe_maxdays,owe_mindays,");
 			sql.append("charge_ceil,charge_floor,cust_type,acct_type,user_type,cust_level,tenant_id,section_type from ");
-			sql.append(tableName).append(" where ");
+			sql.append("omc_scout_rule").append(" where ");
 			sql.append(" 1 =").append("1");
 
 			Connection connection = dbproxy.getConnection();
@@ -188,7 +183,6 @@ public final class ConfigObtain implements IConfigObtain {
 	    	for (Map<String, Object> map : rows) {
 	    		
 	    		SectionRule sectionRule = new  SectionRule();
-
 	    		sectionRule.setAccttype(map.get("acct_type").toString());
 	    		sectionRule.setBalanceceil(Long.parseLong(map.get("balance_ceil").toString()));
 	    		sectionRule.setBalancefloor(Long.parseLong(map.get("balance_floor").toString()));
@@ -223,9 +217,9 @@ public final class ConfigObtain implements IConfigObtain {
 	public List<OmcScoutActionDefine> selectActionAll() throws OmcException {
 		try {
 			StringBuilder sql = new StringBuilder("");
-			String tableName ="omc_scout_action_define";
+//			String tableName ="omc_scout_action_define";
 			sql.append("select tenant_id,scout_type,business_code,scout_rule,inf_commond,sms_template from ");
-			sql.append(tableName).append(" where ");
+			sql.append("omc_scout_action_define").append(" where ");
 			sql.append(" 1 =").append("1");
 
 			Connection connection = dbproxy.getConnection();

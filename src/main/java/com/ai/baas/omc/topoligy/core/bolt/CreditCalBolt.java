@@ -56,6 +56,7 @@ public class CreditCalBolt extends BaseBasicBolt {
 			OmcObj owner = indata.getOwner();
 			
 			Gson gson = new Gson();
+			//获取策略和规则信息
 			JsonObject jsonObject = gson.fromJson(indata.getExpanded_info(), JsonObject.class);
 			//补充Owner数据
 			String extAmount = indata.getAmount();

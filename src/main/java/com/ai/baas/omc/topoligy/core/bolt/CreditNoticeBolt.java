@@ -72,15 +72,15 @@ public class CreditNoticeBolt extends BaseBasicBolt{
 	@Override
 	public void prepare(Map stormConf, TopologyContext context) {
 		try {
+			//产生jdbcProxy
+			JdbcProxy.loadresource(new JdbcParam(stormConf));
+			JdbcProxy.getInstance();
+
 			//加载缓存资源
 			CacheClient.loadResource(stormConf);
 			confContainer = new ConfigContainer();
 			confContainer.configObtain();
 			confContainer.setSysconfig(stormConf);
-
-			//产生jdbcProxy
-			JdbcProxy.loadresource(new JdbcParam(stormConf));
-			JdbcProxy.getInstance();
 		} catch (OmcException e) {
 			logger.error("初始化异常",e);
 		}

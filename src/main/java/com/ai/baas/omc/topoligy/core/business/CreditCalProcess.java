@@ -60,10 +60,10 @@ public final class CreditCalProcess extends BaseCalProcess {
 		}
 		//默认信用度为0
 		double creditLine = 0.0;
-        //用户模式计算信用度,并且是账户余额模式
+        //用户信用度计算模式,并且是账户余额计算模式
 		if ((creditcalmodel.equals(CreditLineCalModel.SUM_USER))
 				&&(balcalmodel.equals(BalancecalModel.ACCTMODEL))){
-            //获取金额业务类型的信用度
+            //获取用户总的信用度
 			creditLine = getUserSum(this.getInformation().getUsers(), ResourceType.CASH);
 			this.setCreditline(Cal.bigDecimalFromDouble(creditLine, FeeSource.FROM_CREDIT));
 		}else{ 

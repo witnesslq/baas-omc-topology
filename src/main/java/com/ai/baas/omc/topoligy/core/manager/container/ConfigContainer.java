@@ -42,7 +42,9 @@ public final class ConfigContainer {
 	private Map<PolicyKey, List<SectionRule>> policyForRuleMap;
 	//信控规则集合
 	private Map<Integer, SectionRule> ruleMap;
+	//指令集合
 	private List<OmcScoutActionDefine> actionDefines;
+	//系统配置信息
 	private Map<String, String> sysconfig;
 
 	public ConfigContainer() {
@@ -50,15 +52,13 @@ public final class ConfigContainer {
 	}
 
 	public void configObtain() throws OmcException {
-		List<OmcCalConf> omcCalConfs = configObtainService.selectOmcCfgAll();
-		List<PolicyConf> policyConfs = configObtainService.selectPolicyCfgAll();
 		List<Policy> policies = configObtainService.selectPolicyAll();
 		List<SectionRule> sectionRules = configObtainService.selectSectionRuleAll();
 		List<OmcScoutActionDefine> omcScoutActionDefines = configObtainService.selectActionAll();
 
 		routePolicyAndRule(policies, sectionRules);
-		routeOmcCalConf(omcCalConfs);
-		routePolicyConf(policyConfs);
+		routeOmcCalConf(configObtainService.selectOmcCfgAll());
+		routePolicyConf(configObtainService.selectPolicyCfgAll());
 
 		if (omcScoutActionDefines != null) {
 			actionDefines = new ArrayList<OmcScoutActionDefine>();
@@ -68,13 +68,13 @@ public final class ConfigContainer {
 	}
 
 	/**
-	 * 
-	 * @Title: routePolicyAndRule @Description: 将策略和规则放到Map中 @param @param
-	 * list @param @param rules @param @throws OmcException 设定文件 @return void
-	 * 返回类型 @throws
+	 * 将策略和规则放到Map中
+	 *
+	 * @param list
+	 * @param rules
+	 * @throws OmcException
 	 */
 	private void routePolicyAndRule(List<Policy> list, List<SectionRule> rules) throws OmcException {
-
 		policyMap = new HashMap<PolicyKey, Policy>();
 		policyIdMap = new HashMap<String, Policy>();
 		policyForRuleMap = new HashMap<PolicyKey, List<SectionRule>>();
@@ -83,8 +83,8 @@ public final class ConfigContainer {
 		if ((list == null) || (list.isEmpty())) {
 			return;
 		}
-		for (Iterator<Policy> iterator = list.iterator(); iterator.hasNext();) {
-			Policy policy = (Policy) iterator.next();
+		//处理策略
+		for (Policy policy:list) {
 			PolicyKey policyKey = policy.getPolicyKey();
 
 			if (policyMap.get(policyKey) == null) {
@@ -95,10 +95,10 @@ public final class ConfigContainer {
 				policyIdMap.put(policy.getPolicyId(), policy);
 			}
 		}
-
-		for (Iterator<SectionRule> iterator = rules.iterator(); iterator.hasNext();) {
-			SectionRule sectionRule = (SectionRule) iterator.next();
-
+		//处理规则
+		Iterator<SectionRule> iterator = rules.iterator();
+		while (iterator.hasNext()) {
+			SectionRule sectionRule = iterator.next();
 			if (ruleMap.get(sectionRule.getScoutruleid()) == null) {
 				ruleMap.put(sectionRule.getScoutruleid(), sectionRule);
 			}
@@ -114,18 +114,17 @@ public final class ConfigContainer {
 			}
 			List<SectionRule> sectionRules = policyForRuleMap.get(policyKey);
 			if (sectionRules == null) {
-				List<SectionRule> sections = new ArrayList<SectionRule>();
-				sections.add(sectionRule);
-				policyForRuleMap.put(policyKey, sections);
+				sectionRules = new ArrayList<SectionRule>();
+				sectionRules.add(sectionRule);
+				policyForRuleMap.put(policyKey, sectionRules);
 			} else {
-				boolean bfind = false;
-				for (Iterator<SectionRule> it = sectionRules.iterator(); it.hasNext();) {
-					SectionRule st = (SectionRule) it.next();
+				boolean bFind = false;
+				for (SectionRule st:sectionRules) {
 					if (st.getScoutruleid() == sectionRule.getScoutruleid()) {
-						bfind = true;
+						bFind = true;
 					}
 				}
-				if (!bfind) {
+				if (!bFind) {
 					sectionRules.add(sectionRule);
 				}
 			}
@@ -133,9 +132,8 @@ public final class ConfigContainer {
 	}
 
 	/**
-	 * 
-	 * @Title: routeOmcCalConf @Description: 将信控计算参数放到Map中 @param @param list
-	 * 设定文件 @return void 返回类型 @throws
+	 * 将信控计算参数放到Map中
+	 * @param list
 	 */
 	private void routeOmcCalConf(List<OmcCalConf> list) {
 		omcCalConfMap = new HashMap<OmcCalConfKey, OmcCalConf>();
@@ -143,9 +141,7 @@ public final class ConfigContainer {
 			return;
 		}
 
-		for (Iterator<OmcCalConf> iterator = list.iterator(); iterator.hasNext();) {
-			OmcCalConf omcCalConf = (OmcCalConf) iterator.next();
-
+		for (OmcCalConf omcCalConf:list) {
 			OmcCalConfKey omcCalConfKey = new OmcCalConfKey();
 			omcCalConfKey.setTenantid(omcCalConf.getConfkey().getTenantid());
 			omcCalConfKey.setConfkey(omcCalConf.getConfkey().getConfkey());
@@ -158,9 +154,10 @@ public final class ConfigContainer {
 	}
 
 	/**
-	 * 
-	 * @Title: routePolicyConf @Description: 将策略参数放到Map中 @param @param list
-	 * 设定文件 @return void 返回类型 @throws
+	 * 将策略参数放到Map中
+	 *
+	 * @param list
+	 * @return void
 	 */
 	private void routePolicyConf(List<PolicyConf> list) {
 		policyConfMap = new HashMap<PolicyConfKey, PolicyConf>();
@@ -169,9 +166,7 @@ public final class ConfigContainer {
 			return;
 		}
 
-		for (Iterator<PolicyConf> iterator = list.iterator(); iterator.hasNext();) {
-			PolicyConf policyConf = (PolicyConf) iterator.next();
-
+		for (PolicyConf policyConf: list) {
 			PolicyConfKey policyConfKey = policyConf.getPolicyConfKey();
 
 			if (policyConfMap.get(policyConfKey) == null) {
@@ -214,8 +209,7 @@ public final class ConfigContainer {
 			throws OmcException {
 		OmcScoutActionDefine omcScoutAction = null;
 		if ((actionDefines != null) && (!actionDefines.isEmpty())) {
-			for (Iterator<OmcScoutActionDefine> iterator = actionDefines.iterator(); iterator.hasNext();) {
-				OmcScoutActionDefine omcScoutActionDefine = (OmcScoutActionDefine) iterator.next();
+			for (OmcScoutActionDefine omcScoutActionDefine: actionDefines) {
 				if (!omcScoutActionDefine.getTenantId().equals(tenantid)) {
 					continue;
 				}
@@ -225,17 +219,16 @@ public final class ConfigContainer {
 				if (!omcScoutActionDefine.getBusinessCode().equals(businessCode)) {
 					continue;
 				}
-				if (!StringUtils.isBlank(ruleId)) {
-					if (!"-1".equals(ruleId) && !"0".equals(ruleId)) {
-						if (!omcScoutActionDefine.getScoutRule().equals(ruleId)) {
-							continue;
-						}
+					if (StringUtils.isNotBlank(ruleId)
+							&& !"-1".equals(ruleId) && !"0".equals(ruleId)
+							&& !omcScoutActionDefine.getScoutRule().equals(ruleId)) {
+						continue;
 					}
-				}
 				omcScoutAction = omcScoutActionDefine;
 				break;
 			}
 		}
+		//如果未找到相关指令,则抛出异常
 		if (omcScoutAction == null) {
 			JsonObject jsonObject = new JsonObject();
 			jsonObject.addProperty("tenantid", tenantid);
@@ -249,7 +242,7 @@ public final class ConfigContainer {
 	}
 
 	/**
-	 *
+	 * 获取策略/规则参数
 	 * @param parakey
 	 * @param tenantid
 	 * @param policyid
@@ -258,15 +251,10 @@ public final class ConfigContainer {
      * @throws OmcException
      */
 	public String getCfgPara(String parakey, String tenantid, String policyid, String ruleid) throws OmcException {
-		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("parakey", parakey);
-		jsonObject.addProperty("tenantid", tenantid);
-		jsonObject.addProperty("policyid", policyid);
-		jsonObject.addProperty("ruleid", ruleid);
-		String para_value = "";
 		if (StringUtils.isBlank(parakey)) {
 			throw new OmcException("getActionDefine", "需要指定参数关键字");
 		}
+		String para_value = "";
 		if (StringUtils.isNotBlank(tenantid)) {
 			OmcCalConfKey omcCalConfKey = new OmcCalConfKey();
 			omcCalConfKey.setTenantid(tenantid);
@@ -278,7 +266,8 @@ public final class ConfigContainer {
 			}
 		}
 
-		if (StringUtils.isNotBlank(tenantid) && StringUtils.isNotBlank(policyid)) {
+		if (StringUtils.isNotBlank(tenantid)
+				&& StringUtils.isNotBlank(policyid)) {
 			PolicyConfKey policyConfKey = new PolicyConfKey();
 			policyConfKey.setTenantid(tenantid);
 			policyConfKey.setConfkey(parakey);
@@ -293,6 +282,11 @@ public final class ConfigContainer {
 			para_value = getDefaultParaCfg(parakey);
 		}
 		if (StringUtils.isBlank(para_value)) {
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("parakey", parakey);
+			jsonObject.addProperty("tenantid", tenantid);
+			jsonObject.addProperty("policyid", policyid);
+			jsonObject.addProperty("ruleid", ruleid);
 			throw new OmcException("getCfgPara", "参数值为空，请进行配置或设置缺省值" + jsonObject.toString());
 		}
 		return para_value;
@@ -309,5 +303,4 @@ public final class ConfigContainer {
 	public void setSysconfig(Map<String, String> sysconfig) {
 		this.sysconfig = sysconfig;
 	}
-
 }

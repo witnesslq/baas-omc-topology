@@ -11,6 +11,7 @@
 *.jar
 *.war
 *.ear
+/.idea
 /build/
 /*/bin/
 /*/build/

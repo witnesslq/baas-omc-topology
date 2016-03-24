@@ -24,22 +24,16 @@ import org.apache.commons.lang.StringUtils;
 *
  */
 public final class SubsUserServiceImplShm implements SubsUserService {
-	
-	private  static final CacheClient cacheClient = CacheClient.getInstance();
+	private static final CacheClient cacheClient = CacheClient.getInstance();
+	private static final String USER_TABLE = "bl_userinfo";
 	@Override
 	public User selectById(String tenantid, String id) throws OmcException {
 		try{
-			StringBuilder table = new StringBuilder();
-			
-			table.append("bl_userinfo");
-			
 			Map<String, String> params = new TreeMap<String, String>();
-			
 			params.put("SUBS_ID",id);
 			params.put("TENANT_ID",tenantid);
 
-			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			
+			List<Map<String, String>> result = cacheClient.doQuery(USER_TABLE, params);
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","subs_user表没有找到用户信息!" + params.toString());
 			}
@@ -63,24 +57,15 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 	public List<User> selectByAcctId(String tenantid, String id)  throws OmcException{
 		
 		try{
-			StringBuilder table = new StringBuilder();
-			
-			table.append("bl_userinfo");
-			
 			Map<String, String> params = new TreeMap<String, String>();
-			
 			params.put("ACCT_ID",id);
 			params.put("TENANT_ID",tenantid);
 
-			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			
+			List<Map<String, String>> result = cacheClient.doQuery(USER_TABLE, params);
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","bl_userinfo表没有找到用户信息!" + params.toString());
 			}
-			
 			return  getUsers(result);
-			
-
 		}catch (Exception e){
 			throw new OmcException("OMC-RULE0001B",e);
 		}
@@ -96,18 +81,11 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 	@Override
 	public List<User> selectByCustId(String tenantid,  String id)  throws OmcException{
 		try{
-			StringBuilder table = new StringBuilder();
-			
-			table.append("bl_userinfo");
-			
 			Map<String, String> params = new TreeMap<String, String>();
-			
 			params.put("CUST_ID",id);
 			params.put("TENANT_ID",tenantid);
 
-			
-			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			
+			List<Map<String, String>> result = cacheClient.doQuery(USER_TABLE, params);
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","subs_user表没有找到用户信息!"+ params.toString());
 			}
@@ -121,25 +99,16 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 	@Override
 	public User selectByNbr(String tenantid,  String nbr)  throws OmcException{
 		try{
-			StringBuilder table = new StringBuilder();
-			
-			table.append("bl_userinfo");
-			
 			Map<String, String> params = new TreeMap<String, String>();
-			
 			params.put("SERVICE_NUM",nbr);
 			params.put("TENANT_ID",tenantid);
-			
 
-			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
-			
-			if(result == null || result.size()==0){
+			List<Map<String, String>> result = cacheClient.doQuery(USER_TABLE, params);
+			if(result == null || result.isEmpty()){
 				throw new OmcException("OMC-SUBS0001B","subs_user表没有找到用户信息!"+ params.toString());
 			}
 			
 			return  getUsers(result).get(0);
-			
-
 		}catch (Exception e){
 			throw new OmcException("OMC-RULE0001B",e);
 		}
@@ -148,7 +117,6 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 	
 
 	private List<User> getUsers(List<Map<String, String>> result){
-		
 		String[] subsid =	StringUtils.split(result.get(0).get("subs_id"),"#");
 		String[] custid =	StringUtils.split(result.get(0).get("cust_id"),"#");
 		String[] acctid =	StringUtils.split(result.get(0).get("acct_id"),"#");

@@ -49,15 +49,11 @@ public final class CacheClient {
 			throw new OmcException("","cache client connection is null!");
 		}
 		List<Map<String, String>> result = null;
-	
 		try {
-
 			result = service.list(tableName).where(params).executeQuery();
-
 		} catch (Exception e) {
 			throw new OmcException("CacheClient", e);
 		}
 		return result;
 	}
-	
 }

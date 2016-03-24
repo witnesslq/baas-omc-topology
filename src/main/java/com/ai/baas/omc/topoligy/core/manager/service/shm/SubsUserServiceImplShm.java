@@ -14,6 +14,8 @@ import com.ai.baas.omc.topoligy.core.pojo.User;
 import com.ai.baas.omc.topoligy.core.util.CacheClient;
 import com.ai.baas.omc.topoligy.core.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -24,8 +26,14 @@ import org.apache.commons.lang.StringUtils;
 *
  */
 public final class SubsUserServiceImplShm implements SubsUserService {
+	private static Logger LOGGER = LoggerFactory.getLogger(SubsUserServiceImplShm.class);
 	private static final CacheClient cacheClient = CacheClient.getInstance();
+	//用户信息表表名
 	private static final String USER_TABLE = "bl_userinfo";
+	//用户信息扩展表表名
+	private static final String USER_INFO_EXT = "bl_userinfo_ext";
+	//提醒号码在扩展表中名称
+	private static final String REMIND_NUM = "remind_num";
 	@Override
 	public User selectById(String tenantid, String id) throws OmcException {
 		try{
@@ -124,7 +132,6 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 		String[] citycode =	StringUtils.split(result.get(0).get("city_code"),"#");
 		String[] activetime =	StringUtils.split(result.get(0).get("active_time"),"#");
 		String[] inactivetime =	StringUtils.split(result.get(0).get("inactive_time"),"#");
-		String[] factorcode =	StringUtils.split(result.get(0).get("factor_code"),"#");
 
 		List<User> users = new ArrayList<User>();
 		for (int i = 0; i < subsid.length; i++) {
@@ -141,7 +148,11 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 			 */
 			user.setSystemid("1");
 			user.setTenantid(tenantid[i]);
-			user.setFactorcode(factorcode[i]);
+			/**
+			 * 此属性修改为从扩展表中获取
+			 * updateDate 2016-03-24
+			 */
+			user.setFactorcode(getRemindNum(subsid[i]));
 			String s2 = StringUtils.isBlank(activetime[i])?"1900-01-01 00:00:00.000":activetime[i];
 			user.setActivetime(Timestamp.valueOf(s2));
 			String s3 = StringUtils.isBlank(inactivetime[i])?"1900-01-01 00:00:00.000":inactivetime[i];
@@ -151,19 +162,41 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 		
 		for (Iterator<User> iterator = users.iterator(); iterator.hasNext();) {
 			User subsUser = iterator.next();
-			if (DateUtils.currTimeStamp().after(subsUser.getActivetime())
-				&& DateUtils.currTimeStamp().before(subsUser.getInactivetime())){
-				continue;
-			}else{
+			Timestamp nowTime = DateUtils.currTimeStamp();
+			//如果当前时间在用户生效时间之前或失效时间之后,则用户无效
+			if (nowTime.before(subsUser.getActivetime())
+				&& nowTime.after(subsUser.getInactivetime())){
 				iterator.remove();
 			}
 		}
 		
 		if (users.isEmpty()){
-			return Collections.emptyList();
+			users = Collections.emptyList();
 		}
 		return users;
 	}
 
+	/**
+	 * 从用户信息扩展表中获取提醒号码
+	 * @param subsId
+	 * @return
+	 * @addDate 2016-03-24
+     */
+	public String getRemindNum(String subsId) {
+		Map<String, String> params = new TreeMap<String, String>();
+		params.put("SUBS_ID", subsId);
+		params.put("EXT_NAME", REMIND_NUM);
+		String remindNum = null;
+		try {
+			List<Map<String, String>> result = cacheClient.doQuery(USER_INFO_EXT, params);
+			if (result!=null && result.size()>0){
+				String[] extVals = StringUtils.split(result.get(0).get("ext_value"),"#");
+				remindNum = extVals[0];
+			}
+		} catch (OmcException e) {
+			LOGGER.error("",e);
+		}
+		return remindNum;
+	}
 
 }

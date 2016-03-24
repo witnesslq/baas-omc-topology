@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.7
@@ -26,9 +27,11 @@ dependencies{
     compile  'com.zaxxer:HikariCP-java6:2.1.0'
 
     // 框架级依赖
-    compile 'org.apache.kafka:kafka_2.10:0.8.2.1'
+    compile ('org.apache.kafka:kafka_2.10:0.8.2.1'){
+        exclude group:'org.slf4j',module:'slf4j-log4j12'
+    }
     compile 'org.apache.storm:storm-kafka:0.9.6'
-    compile 'org.apache.hbase:hbase-client:1.1.2'
+//    compile 'org.apache.hbase:hbase-client:1.1.2'
     compile 'com.ai.baas.storm:baas-storm:0.1.1-SNAPSHOT'
     compile 'com.ai.runner.center.dshm:dshmservice:1.0.1-SNAPSHOT';
 

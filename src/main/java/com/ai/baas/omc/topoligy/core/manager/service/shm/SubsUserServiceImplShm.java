@@ -37,10 +37,7 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","subs_user表没有找到用户信息!" + params.toString());
 			}
-			
 			return  getUsers(result).get(0);
-			
-
 		}catch (Exception e){
 			throw new OmcException("OMC-RULE0001B",e);
 		}

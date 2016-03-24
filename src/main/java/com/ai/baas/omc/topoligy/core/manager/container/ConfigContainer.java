@@ -38,7 +38,7 @@ public final class ConfigContainer {
 	private Map<OmcCalConfKey, OmcCalConf> omcCalConfMap;
 	//信控策略参数
 	private Map<PolicyConfKey, PolicyConf> policyConfMap;
-	//信控规则参数
+	//信控规则集合
 	private Map<PolicyKey, List<SectionRule>> policyForRuleMap;
 	//信控规则集合
 	private Map<Integer, SectionRule> ruleMap;
@@ -132,7 +132,7 @@ public final class ConfigContainer {
 	}
 
 	/**
-	 * 将信控计算参数放到Map中
+	 * 将信控租户参数放到Map中
 	 * @param list
 	 */
 	private void routeOmcCalConf(List<OmcCalConf> list) {
@@ -177,7 +177,7 @@ public final class ConfigContainer {
 	}
 
 	/**
-	 * 获取符号指定虚商标识和策略类型的策略
+	 * 获取指定虚商标识和策略类型的策略
 	 * @param tenantId
 	 * @param businessCode
 	 * @return
@@ -205,25 +205,31 @@ public final class ConfigContainer {
 		return ruleMap.get(ruleid);
 	}
 
+	/**
+	 * 获取指令定义
+	 * @param tenantid
+	 * @param businessCode
+	 * @param ruleId
+	 * @param scoutType
+	 * @return
+     * @throws OmcException
+     */
 	public OmcScoutActionDefine getActionDefine(String tenantid, String businessCode, String ruleId, String scoutType)
 			throws OmcException {
 		OmcScoutActionDefine omcScoutAction = null;
 		if ((actionDefines != null) && (!actionDefines.isEmpty())) {
 			for (OmcScoutActionDefine omcScoutActionDefine: actionDefines) {
-				if (!omcScoutActionDefine.getTenantId().equals(tenantid)) {
+				if (!omcScoutActionDefine.getTenantId().equals(tenantid)
+						|| !omcScoutActionDefine.getScoutType().equals(scoutType)
+						|| !omcScoutActionDefine.getBusinessCode().equals(businessCode)) {
 					continue;
 				}
-				if (!omcScoutActionDefine.getScoutType().equals(scoutType)) {
+
+				if (StringUtils.isNotBlank(ruleId)
+						&& !"-1".equals(ruleId) && !"0".equals(ruleId)
+						&& !omcScoutActionDefine.getScoutRule().equals(ruleId)) {
 					continue;
 				}
-				if (!omcScoutActionDefine.getBusinessCode().equals(businessCode)) {
-					continue;
-				}
-					if (StringUtils.isNotBlank(ruleId)
-							&& !"-1".equals(ruleId) && !"0".equals(ruleId)
-							&& !omcScoutActionDefine.getScoutRule().equals(ruleId)) {
-						continue;
-					}
 				omcScoutAction = omcScoutActionDefine;
 				break;
 			}
@@ -242,7 +248,7 @@ public final class ConfigContainer {
 	}
 
 	/**
-	 * 获取策略/规则参数
+	 * 获取租户/策略参数
 	 * @param parakey
 	 * @param tenantid
 	 * @param policyid

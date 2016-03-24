@@ -231,7 +231,7 @@ public final class OmcCalProcessor extends BaseProcess {
 		String  matchowners = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_OWNERS,this.getOmcobj().getTenantid(),policyid,"");
 		if (MatchOwners.MATCH.equals(matchowners)){
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
-				SectionRule sectionRule = (SectionRule) iterator.next();
+				SectionRule sectionRule = iterator.next();
 				//匹配余额 大于最小天数,小于最大天数
 			    if ((balance.getUnsettleMons()>sectionRule.getOwemindays())
 						&&(balance.getUnsettleMons()<=sectionRule.getOwemaxdays())){
@@ -256,6 +256,7 @@ public final class OmcCalProcessor extends BaseProcess {
 	 */
 	private List<SectionRule> matchCreditLevel(Customer customer,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		ConfigContainer cfg = this.getConfig();
+		//是否参照客户级别
 		String  matchcreditlevel = cfg.getCfgPara(OmcCalKey.OMC_CFG_MATCH_CREDITLEVEL,this.getOmcobj().getTenantid(),policyid,"");
 		List<SectionRule> midRules = new ArrayList<SectionRule>();
 		

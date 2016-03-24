@@ -53,7 +53,8 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 		String  balancemodel =  this.getConfig().getCfgPara(OmcCalKey.OMC_CFG_BALANCECALMODEL, tenantid, policyid,"");
 		
 		if (StringUtils.isBlank(balancemodel)){
-			 throw new OmcException("BalanceCal", "获取余额计算参数【" + OmcCalKey.OMC_CFG_BALANCECALMODEL + "】失败，请检查配置或者设置缺省值:" + messageinfo.toString());
+			 throw new OmcException("BalanceCal",
+					 "获取余额计算参数【" + OmcCalKey.OMC_CFG_BALANCECALMODEL + "】失败，请检查配置或者设置缺省值:" + messageinfo.toString());
 		}
 		//用户余额模式
 		if ((BalancecalModel.SUBSMODEL.equals(balancemodel))&&(OwnerType.SERV.equals(ownertype))){

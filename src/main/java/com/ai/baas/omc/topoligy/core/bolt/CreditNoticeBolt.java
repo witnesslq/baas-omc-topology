@@ -49,7 +49,8 @@ public class CreditNoticeBolt extends BaseBasicBolt{
 			JsonObject jsonObject = gson.fromJson(dto4CreditNotice.getExtInfo(), JsonObject.class);
 
 			//信控通知初始化
-			NoticeProcessor noticeProcessor = new NoticeProcessor(confContainer,dto4CreditNotice.getOwner(),jsonObject,dto4CreditNotice.getRealTimeBalance());
+			NoticeProcessor noticeProcessor = new NoticeProcessor(
+					confContainer,dto4CreditNotice.getOwner(),jsonObject,dto4CreditNotice.getRealTimeBalance());
 			//信控通知处理
 			noticeProcessor.process();
 		} catch (Exception e) {

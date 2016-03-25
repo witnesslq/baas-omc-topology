@@ -43,9 +43,7 @@ public final class InformationProcessor extends BaseProcess {
 
 	public InformationProcessor(ConfigContainer cfg, OmcObj obj, JsonObject data) throws OmcException {
 		super(cfg, obj, data);
-		subsUserService = new SubsUserServiceImplShm();
-		accountService = new AccountServiceImplShm();
-		customerService = new CustomerServiceImplShm();
+
 	}
 
 
@@ -223,7 +221,10 @@ public final class InformationProcessor extends BaseProcess {
 
 	@Override
 	public void prepare(String cfg) throws OmcException {
-		// TODO Auto-generated method stub
+		//目前只能来源于共享内存
+		subsUserService = new SubsUserServiceImplShm();
+		accountService = new AccountServiceImplShm();
+		customerService = new CustomerServiceImplShm();
 	}
 
 	private String paramsString(String tenantid,String ownertype,String ownerid){

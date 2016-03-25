@@ -18,18 +18,16 @@ import org.apache.commons.lang.StringUtils;
 public final class AccountServiceImplShm implements AccountService {
 
 	private  static final CacheClient cacheClient = CacheClient.getInstance();
+	static final String TABLE_NAME = "BL_ACCTINFO";
 	
 	@Override
 	public Account selectById(String tenantid, String acctId) throws OmcException {
 		try{
-			StringBuilder table = new StringBuilder();
-			table.append("BL_ACCTINFO");
-
 			Map<String, String> params = new TreeMap<String, String>();
 			params.put("ACCT_ID",acctId);
 			params.put("TENANT_ID",tenantid);
 
-			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
+			List<Map<String, String>> result = cacheClient.doQuery(TABLE_NAME, params);
 			if(result == null || result.isEmpty()){
 				throw new OmcException("OMC-SUBS0001B","BL_ACCTINFO表没有找到账户信息!");
 			}
@@ -41,14 +39,11 @@ public final class AccountServiceImplShm implements AccountService {
 	@Override
 	public List<Account> selectBycustId(String tenantid, String custId) throws OmcException {
 		try{
-			StringBuilder table = new StringBuilder();
-			table.append("BL_ACCTINFO");
-
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("cust_id",custId);
 			params.put("TENANT_ID",tenantid);
 
-			List<Map<String, String>> result = cacheClient.doQuery(table.toString(), params);
+			List<Map<String, String>> result = cacheClient.doQuery(TABLE_NAME, params);
 			if(result == null || result.size()==0){
 				throw new OmcException("OMC-SUBS0001B","BL_ACCTINFO表没有找到账户信息!");
 			}
@@ -61,7 +56,6 @@ public final class AccountServiceImplShm implements AccountService {
 	private List<Account> getAccounts(List<Map<String, String>> result){
 		String[] acctid =	StringUtils.split(result.get(0).get("acct_id"),"#");
 		String[] accttype =	StringUtils.split(result.get(0).get("acct_type"),"#");
-		String[] custid =	StringUtils.split(result.get(0).get("cust_id"),"#");
 		String[] ownerTypes = StringUtils.split(result.get(0).get("owner_type"),"#");
 		String[] ownerIds =	StringUtils.split(result.get(0).get("owner_id"),"#");
 		String[] tenantid = StringUtils.split(result.get(0).get("tenant_id"),"#");

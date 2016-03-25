@@ -6,7 +6,7 @@ package com.ai.baas.omc.topoligy.core.constant;
  */
 public final class AccOwnerType {
     //客户类型
-    public static final String CUST_TYPE = "cust";
+    public static final String CUST_TYPE = "CUST";
     //用户类型
-    public static final String USER_TYPE = "user";
+    public static final String USER_TYPE = "USER";
 }

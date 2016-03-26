@@ -33,49 +33,43 @@ public class ScoutActBmsExt extends ScoutActBms {
 		}
 		//获取信控状态
 		ScoutStatus scoutStatus = scoutStatusService.selectStatus(user.getTenantid(), this.getOmcobj().getBusinesscode(), user.getSubsid()) ;
-		
+		//若信控状态为stop,则直接返回
 		if ((scoutStatus != null)&&(scoutStatus.getStatus().equals(ScoStatus.STOP))){
 			return 1;
 		}
 		//判断非延迟停机配置的直接进入停机处理
-		
+		//获得租户允许延迟停机时间
 		Integer delayTimes = getDelaytimes(OmcCalKey.OMC_CFG_DELAYSTOP);
 //		if (!checkDelay()){
 //			return 0;
 //		}
+		//不存在延迟停机
 		if ( delayTimes <= 0 ){
 			//todo 待添加单停处理
 			if (scoutStatus == null){
-				String currStatus = ScoStatus.STOP;
-				myscoutStatus = this.newScoStatus(user, currStatus);
+				myscoutStatus = this.newScoStatus(user, ScoStatus.STOP);
 			}else{
-				String currStatus = ScoStatus.STOP;
-				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
+				myscoutStatus = this.modiScoStatus(scoutStatus, ScoStatus.STOP);
 			}
-			
-			
 			return super.stop(user);
 		}
 		
 		//存在延迟停机
 		if ((scoutStatus == null)||(!scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP))){
 			if (scoutStatus == null){
-				String currStatus = ScoStatus.DELAYSTOP;
-				myscoutStatus = this.newScoStatus(user, currStatus);
-
+				myscoutStatus = this.newScoStatus(user, ScoStatus.DELAYSTOP);
 			}else{
-				String currStatus = ScoStatus.DELAYSTOP;
-				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
+				myscoutStatus = this.modiScoStatus(scoutStatus, ScoStatus.DELAYSTOP);
 			}
 			return 1;
+		//已经是延迟停机状态
 		}else if(scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP)){
 			//todo双停判断
-			Timestamp lastTime = scoutStatus.getStatusTime();
-			Timestamp currTime = DateUtils.currTimeStamp();
+			long lastTime = scoutStatus.getStatusTime().getTime();
+			long currTime = DateUtils.currTimeStamp().getTime();
 			final long SECONDS_PER_MINUS = 1l * 1000 * 60;
-			if ((currTime.getTime() - lastTime.getTime()) <= (delayTimes * SECONDS_PER_MINUS)){
-				String currStatus = ScoStatus.DELAYSTOP;
-				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
+			if ((currTime - lastTime) <= (delayTimes * SECONDS_PER_MINUS)){
+				myscoutStatus = this.modiScoStatus(scoutStatus, ScoStatus.DELAYSTOP);
 				return super.stop(user);
 			}
 		}
@@ -228,29 +222,24 @@ public class ScoutActBmsExt extends ScoutActBms {
 		JsonObject data = this.getIndata();
 		String policyId = data.get(OmcCalKey.OMC_POLICY_ID).getAsString();
 		String delaystop = cfg.getCfgPara(delaytype, this.getOmcobj().getTenantid(), policyId, "0");
-		//配置为空
+		//未配置延迟停机参数为空
 		if (StringUtils.isBlank(delaystop)){
-			delaystop = YesNo.NO;
-		}
-		if (delaystop.equals(YesNo.NO)){
 			return 0;
 		}
 		
 		String timestype = "";
+		//判断延迟停机类型
 		if (delaytype.equals(OmcCalKey.OMC_CFG_DELAYSTOP)){
 			timestype = OmcCalKey.OMC_CFG_DELAYSTOPTIMES;
 		}else if (delaytype.equals(OmcCalKey.OMC_CFG_DELAYHALFSTOP)){
 			timestype = OmcCalKey.OMC_CFG_DELAYHALFSTOPTIMES;
 		}
-		
+		//获取租户允许延迟时间
 		String delaystoptimes = cfg.getCfgPara(timestype, this.getOmcobj().getTenantid(), policyId, "0");
-
-		Integer ndelaystoptimes;
         if (StringUtils.isBlank(delaystoptimes)){
-        	ndelaystoptimes = 0;
-        	return ndelaystoptimes;
+        	return 0;
         }
-		
+		Integer ndelaystoptimes;
 		if (StringUtils.isNumeric(delaystoptimes)){
 			throw new OmcException("OMC_checkStopDelay", "延迟停机时间长度配置错误"+delaystoptimes);
 		}else{

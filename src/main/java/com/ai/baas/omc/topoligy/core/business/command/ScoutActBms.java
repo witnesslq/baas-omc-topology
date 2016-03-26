@@ -51,7 +51,7 @@ public class ScoutActBms {
 	public int stop(User user) throws OmcException {
 		ConfigContainer cfg = this.getConfig();
 		OmcObj actionObj = this.getOmcobj();
-		
+		//获取指令
 		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1", ScoRuleType.STOP);
 		//添加短信支持
 		sendmsg(user, ScoRuleType.STOP,action.getSmsTemplate());

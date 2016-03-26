@@ -45,6 +45,13 @@ public final class OmcScoutStatusDaoImpl implements OmcScoutStatusDao {
 		}
 	}
 
+	/**
+	 * 根据用户id,租户id,业务类型查询信控状态
+	 * @param connection
+	 * @param param
+	 * @return
+	 * @throws OmcException
+     */
 	@Override
 	public OmcScoutStatus selectByparam(Connection connection, Map<String, String> param) throws OmcException {
 		
@@ -61,47 +68,38 @@ public final class OmcScoutStatusDaoImpl implements OmcScoutStatusDao {
 		params[0] = param.get("subs_id");
 		params[1] = param.get("tenant_id");
 		params[2] = param.get("business_code");
-		try{
-			
-			
-			List<Map<String, Object>> retMap = JdbcTemplate.query(connection,sql.toString(), new MapListHandler(),params);			
-			if (retMap == null){
+		try {
+			List<Map<String, Object>> retMap = JdbcTemplate.query(connection, sql.toString(), new MapListHandler(), params);
+			if (retMap == null || retMap.isEmpty()) {
 				return null;
 			}
-			if (retMap.isEmpty()){
-				return null;
-			}
-			
-			OmcScoutStatus omcScoutStatus = new OmcScoutStatus();
-			for (Iterator<Map<String, Object>> iterator = retMap.iterator(); iterator.hasNext();) {
-				Map<String, Object> map = (Map<String, Object>) iterator.next();
 
-				omcScoutStatus.setAcctId(map.get("acct_id").toString());
-				omcScoutStatus.setBusinessCode(map.get("business_code").toString());
-				omcScoutStatus.setCustId(map.get("cust_id").toString());
-				omcScoutStatus.setLastStatus(map.get("last_status").toString());
-				omcScoutStatus.setNotifyStatus(map.get("notify_status").toString());
-				omcScoutStatus.setNotifyType(map.get("notify_type").toString());
-				omcScoutStatus.setScoutInfo(map.get("scout_info").toString());
-				omcScoutStatus.setStatus(map.get("status").toString());
-				omcScoutStatus.setSubsId(map.get("subs_id").toString());
-				omcScoutStatus.setSystemId(map.get("system_id").toString());
-				omcScoutStatus.setTenantId(map.get("tenant_id").toString());
-	    		String notifytimes = (map.get("notify_times") == null) ? "0":map.get("notify_times").toString()  ;
-	    		String ScoSeq = (map.get("sco_seq") == null) ? "0":map.get("sco_seq").toString()  ;
-	    		
-				omcScoutStatus.setNotifyTimes(Integer.parseInt(notifytimes));
-				omcScoutStatus.setScoSeq(Long.parseLong(ScoSeq));
-				omcScoutStatus.setStatusTime(DateUtils.getTimestamp(map.get("status_time").toString(), "yyyy-MM-dd HH:mm:ss"));
-				omcScoutStatus.setNotifyTime(DateUtils.getTimestamp(map.get("notify_time").toString(), "yyyy-MM-dd HH:mm:ss"));
-				
-				break;
-			}
-		
+			OmcScoutStatus omcScoutStatus = new OmcScoutStatus();
+			Map<String, Object> map = retMap.get(0);
+			omcScoutStatus.setAcctId(map.get("acct_id").toString());
+			omcScoutStatus.setBusinessCode(map.get("business_code").toString());
+			omcScoutStatus.setCustId(map.get("cust_id").toString());
+			omcScoutStatus.setLastStatus(map.get("last_status").toString());
+			omcScoutStatus.setNotifyStatus(map.get("notify_status").toString());
+			omcScoutStatus.setNotifyType(map.get("notify_type").toString());
+			omcScoutStatus.setScoutInfo(map.get("scout_info").toString());
+			omcScoutStatus.setStatus(map.get("status").toString());
+			omcScoutStatus.setSubsId(map.get("subs_id").toString());
+			omcScoutStatus.setSystemId(map.get("system_id").toString());
+			omcScoutStatus.setTenantId(map.get("tenant_id").toString());
+			String notifytimes = (map.get("notify_times") == null) ? "0" : map.get("notify_times").toString();
+			String ScoSeq = (map.get("sco_seq") == null) ? "0" : map.get("sco_seq").toString();
+
+			omcScoutStatus.setNotifyTimes(Integer.parseInt(notifytimes));
+			omcScoutStatus.setScoSeq(Long.parseLong(ScoSeq));
+			omcScoutStatus.setStatusTime(DateUtils.getTimestamp(map.get("status_time").toString(), "yyyy-MM-dd HH:mm:ss"));
+			omcScoutStatus.setNotifyTime(DateUtils.getTimestamp(map.get("notify_time").toString(), "yyyy-MM-dd HH:mm:ss"));
+
+
 			return omcScoutStatus;
 
-		}catch(Exception e){
-			throw new OmcException("获取信控状态异常",sql.toString() + Arrays.toString(params),e);
+		} catch (Exception e) {
+			throw new OmcException("获取信控状态异常", sql.toString() + Arrays.toString(params), e);
 		}
 	}
 
@@ -116,7 +114,6 @@ public final class OmcScoutStatusDaoImpl implements OmcScoutStatusDao {
 		sql.append(" where  sco_seq = ?");
 
 		Object[] params = new Object[8];
-
 		params[0] = record.getStatus();
 		params[1] = record.getLastStatus();
 		params[2] = record.getStatusTime();

@@ -122,6 +122,12 @@ public final class NoticeProcessor extends BaseProcess {
 		
 	}
 
+	/**
+	 * 停机操作
+	 * @param users
+	 * @param sectionRule
+	 * @throws OmcException
+     */
 	private void stop(List<User> users,SectionRule sectionRule)  throws OmcException {
 		List<OmcBmsInterface> omcBmsInterfaces = new ArrayList<OmcBmsInterface>();
 		List<SmsInf> smsInfs = new ArrayList<SmsInf>();
@@ -144,7 +150,6 @@ public final class NoticeProcessor extends BaseProcess {
 			if (scoutActBmsExt.getSmsInfs()!=null){
 				smsInfs.add(scoutActBmsExt.getSmsInfs());
 			}
-			
 		}
 		ScoutLog scoLog = null;
 		if ((omcBmsInterfaces!=null)&&(!omcBmsInterfaces.isEmpty())){

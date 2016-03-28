@@ -37,6 +37,10 @@ dependencies{
 
     // 不打包依赖
     provided 'org.apache.storm:storm-core:0.9.6'
+
+    testCompile (
+            "junit:junit:4.12"
+    )
 }
 
 jar {

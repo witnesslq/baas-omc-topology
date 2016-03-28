@@ -26,7 +26,6 @@ public class ScoutActBmsExt extends ScoutActBms {
 	
 	@Override
 	public int stop(User user)  throws OmcException {
-
 		//资料类判断
 		if (!ActionRule.canAction(ScoRuleType.STOP, user,this.getConfig())){
 			return 0;
@@ -55,7 +54,8 @@ public class ScoutActBmsExt extends ScoutActBms {
 		}
 		
 		//存在延迟停机
-		if ((scoutStatus == null)||(!scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP))){
+		if ((scoutStatus == null)
+				||(!scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP))){
 			if (scoutStatus == null){
 				myscoutStatus = this.newScoStatus(user, ScoStatus.DELAYSTOP);
 			}else{
@@ -68,6 +68,7 @@ public class ScoutActBmsExt extends ScoutActBms {
 			long lastTime = scoutStatus.getStatusTime().getTime();
 			long currTime = DateUtils.currTimeStamp().getTime();
 			final long SECONDS_PER_MINUS = 1l * 1000 * 60;
+			//若现在时间大于信控状态时间加上延迟时间,则进行将信控状态设置为stop
 			if ((currTime - lastTime) <= (delayTimes * SECONDS_PER_MINUS)){
 				myscoutStatus = this.modiScoStatus(scoutStatus, ScoStatus.DELAYSTOP);
 				return super.stop(user);
@@ -83,19 +84,13 @@ public class ScoutActBmsExt extends ScoutActBms {
 			return 0;
 		}
 		//根据信控信控状态判断是否可以开机（为避免资料同步延迟，对于资料正常开机的不再判断资料）
-		
 		ScoutStatus scoutStatus = scoutStatusService.selectStatus(user.getTenantid(), this.getOmcobj().getBusinesscode(), user.getSubsid());
-		
-		if (scoutStatus == null){
+		//若信控状态不存在或已经为start,则直接返回
+		if (scoutStatus == null
+				|| ScoStatus.START.equals(scoutStatus.getStatus())){
 			return 1;
-		}else{
-			if (ScoStatus.START.equals(scoutStatus.getStatus())){
-				return 1;
-			}else{
-				String currStatus = ScoStatus.START;
-				myscoutStatus = this.modiScoStatus(scoutStatus, currStatus);
-			}
 		}
+		myscoutStatus = this.modiScoStatus(scoutStatus, ScoStatus.START);
 		return super.start(user);
 	}
 
@@ -107,11 +102,12 @@ public class ScoutActBmsExt extends ScoutActBms {
 		
 		Integer delayTimes = getDelaytimes(OmcCalKey.OMC_CFG_DELAYHALFSTOP);
 		//根据本地信控状态判断是否需要单停信控
-
-		ScoutStatus scoutStatus = scoutStatusService.selectStatus(user.getTenantid(),this.getOmcobj().getBusinesscode(), user.getSubsid());
+		ScoutStatus scoutStatus = scoutStatusService.selectStatus(
+				user.getTenantid(),this.getOmcobj().getBusinesscode(), user.getSubsid());
 
 		//对于已经停机 单停 双缓的用户不再进行后续操作
-		if ((scoutStatus != null)&&((scoutStatus.getStatus().equals(ScoStatus.STOP))||
+		if ((scoutStatus != null)
+				&&((scoutStatus.getStatus().equals(ScoStatus.STOP))||
 									(scoutStatus.getStatus().equals(ScoStatus.HALFSTOP ))||
 									(scoutStatus.getStatus().equals(ScoStatus.DELAYSTOP)))){
 			return 0;

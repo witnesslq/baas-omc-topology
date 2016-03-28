@@ -100,7 +100,7 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 	public User selectByNbr(String tenantid,  String nbr)  throws OmcException{
 		try{
 			Map<String, String> params = new TreeMap<String, String>();
-			params.put("SERVICE_NUM",nbr);
+			params.put("SERVICE_ID",nbr);
 			params.put("TENANT_ID",tenantid);
 
 			List<Map<String, String>> result = cacheClient.doQuery(USER_TABLE, params);

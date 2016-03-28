@@ -43,24 +43,16 @@ public class RealEventBolt extends BaseBasicBolt {
 			Gson gson = new Gson();
 			//对获取数据进行解析
 			JsonObject input = gson.fromJson(data, JsonObject.class);
-			String amount = input.get("amount").getAsString();//数量
-			String owner_type = input.get("owner_type").getAsString();//acct:账户；cust:客户；subs:用户
-			String amount_type = input.get("amount_type").getAsString();//数量的类型：
-			//事件类型：CASH主业务（按资料信控），VOICE 语音，SMS 短信，DATA 数据
+			String amount = input.get("amount").getAsString();
+			String owner_type = input.get("owner_type").getAsString();
+			String amount_type = input.get("amount_type").getAsString();
 			String event_type = input.get("event_type").getAsString();
-			//数量的增减属性，包括PLUS(导致余额增加的，如缴费导致的)，MINUS(导致余额减少的，如业务使用导致的)
 			String amount_mark = input.get("amount_mark").getAsString();
-			//属主id
 			String owner_id = input.get("owner_id").getAsString();
-			//来源 resource：资源入账，bmc：计费
 			String source_type = input.get("source_type").getAsString();
-			//租户id
 			String tenant_id = input.get("tenant_id").getAsString();
-			//系统id
 			String system_id = input.get("system_id").getAsString();
-			//事件id
 			String event_id = input.get("event_id").getAsString();
-			//扩展信息，用json传递具体信息
 			String expanded_info = input.get("expanded_info").toString();
 
 			if (!owner_type.startsWith("/")){

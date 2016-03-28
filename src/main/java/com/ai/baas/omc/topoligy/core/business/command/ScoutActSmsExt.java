@@ -33,7 +33,6 @@ public class ScoutActSmsExt extends ScoutActSms {
 	* @throws
 	 */
 	public int warning(String ownertype,String oid)  throws OmcException {
-	
 
 		//根据本地信控状态判断是否需要预警，对于提醒到用户的需要判断用户资料的状态，提醒的账户和客户的不判断资料
 		if ((ownertype.equals(OwnerType.SERV))){
@@ -99,11 +98,8 @@ public class ScoutActSmsExt extends ScoutActSms {
 		//获取当前预警状态
 		OmcUrgeStatus  omcUrgeStatus = urgeStatusService.selectUrgeStatus(this.getOmcobj().getTenantid(),this.getOmcobj().getBusinesscode(), this.getSectionRule().getSectiontype() , ownertype, oid);
 		
-		if (omcUrgeStatus == null){
-			return 0;
-		}
-		
-		if (ScoStatus.WARNOFF.equals(omcUrgeStatus.getStatus())){
+		if (omcUrgeStatus == null
+				|| ScoStatus.WARNOFF.equals(omcUrgeStatus.getStatus())){
 			return 0;
 		}
 		//获取当前信控状态

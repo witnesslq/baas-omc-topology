@@ -18,7 +18,7 @@ import org.apache.commons.lang.StringUtils;
 public final class AccountServiceImplShm implements AccountService {
 
 	private  static final CacheClient cacheClient = CacheClient.getInstance();
-	static final String TABLE_NAME = "BL_ACCTINFO";
+	static final String TABLE_NAME = "bl_acct_info";
 	
 	@Override
 	public Account selectById(String tenantid, String acctId) throws OmcException {

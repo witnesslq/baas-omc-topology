@@ -333,7 +333,7 @@ public final class NoticeProcessor extends BaseProcess {
 		
 		String remindTarget = cfg.getCfgPara(OmcCalKey.OMC_CFG_REMINDTARGET,this.getOmcobj().getTenantid(), policyid,Integer.toString(sectionRule.getScoutruleid()));
 		
-		//缺省配置
+		//缺省配置 ,默认提醒到用户
 		if (StringUtils.isBlank(remindTarget)){
 			remindTarget = RemindTarget.TOSERV;
 		}
@@ -342,8 +342,10 @@ public final class NoticeProcessor extends BaseProcess {
 		jsonObject.addProperty(OmcCalKey.OMC_RULE_ID, sectionRule.getScoutruleid());
 		jsonObject.addProperty(OmcCalKey.OMC_RULE_SECTION, sectionRule.getSectiontype());
 		jsonObject.addProperty(OmcCalKey.OMC_POLICY_ID, policyid);
-		ScoutActSmsExt scoutActSmsExt = new ScoutActSmsExt(this.getOmcobj(),info,this.getConfig(),this.getRealBalance(),jsonObject);
+		ScoutActSmsExt scoutActSmsExt = new ScoutActSmsExt(
+				this.getOmcobj(),info,this.getConfig(),this.getRealBalance(),jsonObject);
 		//根据不同的配置进行处理
+		//用户
         if (remindTarget.equals(RemindTarget.TOSERV)){
         	List<User> remindusers = info.getUsers();
     		for (User user:remindusers){
@@ -358,7 +360,7 @@ public final class NoticeProcessor extends BaseProcess {
     				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
     			}
     		}
-        	
+        //账户
         }else if(remindTarget.equals(RemindTarget.TOACCT)){
         	List<Account> accounts = info.getAccounts();
     		for (Account account:accounts){
@@ -372,7 +374,7 @@ public final class NoticeProcessor extends BaseProcess {
     				omcUrgeStatus.add(scoutActSmsExt.getMyomcUrgeStatus());
     			}
     		}
-        	
+        //客户
         }else if(remindTarget.equals(RemindTarget.TOCUST)){
         	Customer customer = info.getCustomer();
 

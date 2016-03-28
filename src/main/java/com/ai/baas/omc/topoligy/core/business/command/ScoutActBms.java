@@ -52,7 +52,8 @@ public class ScoutActBms {
 		ConfigContainer cfg = this.getConfig();
 		OmcObj actionObj = this.getOmcobj();
 		//获取指令
-		OmcScoutActionDefine action = cfg.getActionDefine(actionObj.getTenantid(),actionObj.getBusinesscode(), "-1", ScoRuleType.STOP);
+		OmcScoutActionDefine action = cfg.getActionDefine(
+				actionObj.getTenantid(),actionObj.getBusinesscode(), "-1", ScoRuleType.STOP);
 		//添加短信支持
 		sendmsg(user, ScoRuleType.STOP,action.getSmsTemplate());
 		//获取停机指令	
@@ -85,7 +86,6 @@ public class ScoutActBms {
 	}
 	
 	public int halfstop(User user)  throws OmcException {
-		
 		ConfigContainer cfg = this.getConfig();
 		OmcObj actionObj = this.getOmcobj();
 		//获取指定定义
@@ -128,6 +128,10 @@ public class ScoutActBms {
 		
 	}
 
+	/**
+	 * 产生停开机接口信息中备注信息
+	 * @return
+     */
 	private String getbmsRemark(){
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("实时余额：" + realtimeBalance.getRealBalance());
@@ -138,18 +142,24 @@ public class ScoutActBms {
 		stringBuffer.append("最早欠费月：" + realtimeBalance.getFstUnSettleMon());
 		return stringBuffer.toString();
 	}
+
+	/**
+	 * 产生停开机接口信息
+	 * @param user
+	 * @param scotype
+     * @return
+     */
 	private String getbmsData(User user,String scotype){
-		String data = "";
-		data += "3|" + user.getSubsid();
-		data +=  "|" + user.getServicetype();
-		data +=  "|" +"A";
-		data +=  "|" + scotype;
-		data += getbmsRemark();
-
-		return data;
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("3|" + user.getSubsid());
+		stringBuffer.append("|" + user.getServicetype());
+		stringBuffer.append("|" +"A");
+		stringBuffer.append("|" + scotype);
+		stringBuffer.append(getbmsRemark());
+		return stringBuffer.toString();
 	}
-	private String getinfData(User user,String scouttype,String commonid){
 
+	private String getinfData(User user,String scouttype,String commonid){
 		JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("balance", realtimeBalance.getRealBalance());
 		jsonObject.add("pileid", this.getIndata().get(OmcCalKey.OMC_CHARGING_PILE));
@@ -162,15 +172,23 @@ public class ScoutActBms {
 		return jsonObject.toString();
 
 	}
+
+	/**
+	 * 产生停开机接口
+	 * @param user
+	 * @param scouttype
+	 * @param commonid
+     * @return
+     */
 	private OmcBmsInterface builderinf(User user,String scouttype,String commonid){
 		OmcBmsInterface bmsinf = new OmcBmsInterface();
-		String bmsdata = getbmsData(user,scouttype);
 		String infdata = getinfData(user, ScoRuleType.HALFSTOP,commonid);
 		bmsinf.setSerialNo(0L);  //统一赋值
 		bmsinf.setTenantId(user.getTenantid());
 		bmsinf.setSystemId(user.getSystemid());
 		bmsinf.setAcctId(user.getAccountid());
-		bmsinf.setBmsData(bmsdata);
+
+		bmsinf.setBmsData(getbmsData(user,scouttype));
 		bmsinf.setDealFlag(0);
 		bmsinf.setDealTime(DateUtils.currTimeStamp());
 		bmsinf.setInsertTime(DateUtils.currTimeStamp());

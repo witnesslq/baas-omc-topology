@@ -79,6 +79,46 @@ public final class UrlClient {
         }
     }
 
+    public RealTimeBalance doQueryForDemo(String productType, OmcObj omcobj) throws OmcException {
+        RealTimeBalance realTimeBalance = new RealTimeBalance();
+       /* String realbalance = jsonObject.get(UrlClient.INF_OUT_REALBALANCE).getAsString();
+        String realbill = jsonObject.get(UrlClient.INF_OUT_REALBILL).getAsString();
+        String balance = jsonObject.get(UrlClient.INF_OUT_BALANCE).getAsString();
+        String unsettlebill = jsonObject.get(UrlClient.INF_OUT_UNSETTLEBILL).getAsString();
+        String unIntoBill = jsonObject.get(UrlClient.INF_OUT_UNINTOBILL).getAsString();
+        String fstunsettlemon = jsonObject.get(UrlClient.INF_OUT_FSTUNSETTLEMON).getAsString();
+        //String unsettlemons = jsonObject.get(UrlClient.INF_OUT_UNSETTLEMONS).getAsString();
+        String creditline = jsonObject.get(UrlClient.INF_OUT_CREDITLINE).getAsString();
+        String acctmonth = jsonObject.get(UrlClient.INF_OUT_ACCTMONTH).getAsString();
+        String expandinfo = jsonObject.get(UrlClient.INF_OUT_EXPANDINFO).toString();
+        String owner = jsonObject.get(UrlClient.INF_OUT_OWNER).toString();
+
+        JsonObject jsonObjectowner = gson.fromJson(owner, JsonObject.class);
+        String tenantid = jsonObjectowner.get(UrlClient.INF_OUT_TENANTID).getAsString();
+        String owertype = jsonObjectowner.get(UrlClient.INF_OUT_OWERTYPE).getAsString();
+        String owerid = jsonObjectowner.get(UrlClient.INF_OUT_OWERID).getAsString();
+        String businesscode = jsonObjectowner.get(UrlClient.INF_OUT_BUSINESSCODE).getAsString();
+
+        //默认为用户类型.
+        String newownertype = OwnerType.SERV;
+        if ("1".equals(owertype)) {
+            newownertype = OwnerType.ACCT;
+        }
+
+        realTimeBalance.setOwner(new OmcObj(tenantid, newownertype, owerid, StringUtils.upperCase(businesscode)));
+        realTimeBalance.setBalance(new BigDecimal(balance));
+        realTimeBalance.setCreditline(new BigDecimal(creditline));
+        realTimeBalance.setRealBalance(new BigDecimal(realbalance));
+        realTimeBalance.setRealBill(new BigDecimal(realbill));
+        realTimeBalance.setUnIntoBill(new BigDecimal(unIntoBill));
+        realTimeBalance.setUnSettleBill(new BigDecimal(unsettlebill));
+        realTimeBalance.setFstUnSettleMon(fstunsettlemon);
+        realTimeBalance.setAcctMonth(acctmonth);
+        realTimeBalance.setUnsettleMons(DateUtils.monthDiffs(fstunsettlemon, acctmonth));
+        realTimeBalance.setExtInfo(expandinfo);*/
+        return realTimeBalance;
+    }
+
     public RealTimeBalance doQuery(String productType, OmcObj omcobj) throws OmcException {
         //0 － 用户, 1 － 账户
         String ownertype = "0";

@@ -236,7 +236,7 @@ public class ScoutActBmsExt extends ScoutActBms {
         	return 0;
         }
 		Integer ndelaystoptimes;
-		if (StringUtils.isNumeric(delaystoptimes)){
+		if (!StringUtils.isNumeric(delaystoptimes)){
 			throw new OmcException("OMC_checkStopDelay", "延迟停机时间长度配置错误"+delaystoptimes);
 		}else{
 			ndelaystoptimes = Integer.parseInt(delaystoptimes);

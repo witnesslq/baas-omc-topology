@@ -5,10 +5,14 @@ topology.name: "baas-omc"
 #topology.spout.parallel: 2
 
 ### kafka spout params
-kafka.spout.consumer.addr: "10.1.130.84:49181,10.1.130.85:49181,10.1.236.122:49181"
 kafka.spout.topic: "omckafka"
+kafka.spout.consumer.addr: "10.1.130.84:49181,10.1.130.85:49181,10.1.236.122:49181"
 kafka.spout.zk.server: "10.1.130.84,10.1.130.85,10.1.236.122"
 kafka.spout.zk.port: "49181"
+### local kafka params
+#kafka.spout.consumer.addr: "localhost:2181"
+#kafka.spout.zk.server: "localhost"
+#kafka.spout.zk.port: "2181"
 kafka.spout.parallel.num: 1
 
 ### dshm rmi params

@@ -23,16 +23,38 @@ public class KafkaProduceTest {
     /**
      * 想kafka的信控topic中写入信息
      */
+    private void produceOmc(String strMsg){
+        Properties props = new Properties();
+//        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", "10.1.130.84:39091,10.1.130.85:39091,10.1.236.122:39091");
+        props.put("acks", "all");
+        props.put("retries", 0);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("buffer.memory", 33554432);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String,String> producer = new KafkaProducer<String,String>(props);
+        producer.send(
+                new ProducerRecord<String, String>(OMC_TOPIC, strMsg));
+
+        producer.close();
+    }
+
+    /**
+     * 模拟停止操作
+     */
     @Test
-    public void produceOmc(){
+    public void vdStop(){
         //信控数据源信息
         JsonObject jsonObject = new JsonObject();
         //数量
-        jsonObject.addProperty("amount", "20");
+        jsonObject.addProperty("amount", "30");
         //acct:账户；cust:客户；subs:用户
         jsonObject.addProperty("owner_type", "subs");
         //属主id
-        jsonObject.addProperty("owner_id", "122301");
+        jsonObject.addProperty("owner_id", "10707");
         //数量的类型 VOICE:语音资源;DATA:流量资源;SM:短信资源;VC:虚拟币资源;BOOK:资金账本;PC:电量资源
         jsonObject.addProperty("amount_type", "DATA");
         //事件类型：CASH主业务（按资料信控），VOICE 语音，SMS 短信，DATA 数据
@@ -50,21 +72,6 @@ public class KafkaProduceTest {
         //扩展信息，用json传递具体信息
         jsonObject.addProperty("expanded_info", "");
 
-        Properties props = new Properties();
-//        props.put("bootstrap.servers", "localhost:9092");
-        props.put("bootstrap.servers", "10.1.130.84:39091,10.1.130.85:39091,10.1.236.122:39091");
-        props.put("acks", "all");
-        props.put("retries", 0);
-        props.put("batch.size", 16384);
-        props.put("linger.ms", 1);
-        props.put("buffer.memory", 33554432);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-
-        Producer<String,String> producer = new KafkaProducer<String,String>(props);
-        producer.send(
-                new ProducerRecord<String, String>(OMC_TOPIC, jsonObject.toString()));
-
-        producer.close();
+        produceOmc(jsonObject.toString());
     }
 }

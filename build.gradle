@@ -15,6 +15,7 @@ configurations {
 group = 'com.ai.baas.omc'
 
 repositories {
+    mavenLocal()
     maven{ url "http://10.1.228.199:18081/nexus/content/groups/public/"  }
 }
 
@@ -34,6 +35,11 @@ dependencies{
 //    compile 'org.apache.hbase:hbase-client:1.1.2'
     compile 'com.ai.baas.storm:baas-storm:0.1.1-SNAPSHOT'
     compile 'com.ai.runner.center.dshm:dshmservice:1.0.1-SNAPSHOT';
+    compile 'com.alibaba:dubbox:2.8.3'
+
+    //dubbo demo
+    compile 'com.alibaba:dubbo-demo-api:2.8.3'
+    compile 'javax.validation:validation-api:1.0.0.GA'
 
     // 不打包依赖
     provided 'org.apache.storm:storm-core:0.9.6'

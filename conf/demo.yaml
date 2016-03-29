@@ -27,5 +27,9 @@ omc.environment.db.init.conn: "5"
 # databases connections pool max connections num (Optiona)
 omc.environment.db.max.conn: "20"
 
+## dubbo config params
+dubbox.app.name: ""
+dubbox.reg.adds: "zookeeper://127.0.0.1:2181"
+
 ### virtual-deduct rest url
 omc.bwo.url: "http://127.0.0.1:8080/virtualdeduct/cancelAccountProcess"

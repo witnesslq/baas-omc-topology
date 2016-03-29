@@ -3,6 +3,7 @@ package com.ai.baas.omc.topoligy.core.flow;
 import com.ai.baas.omc.topoligy.core.bolt.CreditCalBolt;
 import com.ai.baas.omc.topoligy.core.bolt.CreditNoticeBolt;
 import com.ai.baas.omc.topoligy.core.bolt.RealEventBolt;
+import com.ai.baas.omc.topoligy.core.util.DubboxUtils;
 import com.ai.baas.storm.flow.BaseFlow;
 import com.ai.baas.storm.util.BaseConstants;
 import org.slf4j.Logger;
@@ -27,5 +28,7 @@ public class MainCalProcessFlow extends BaseFlow {
 	public static void main(String[] args){
 		MainCalProcessFlow flow = new MainCalProcessFlow();
 		flow.run(args);
+		//初始化dubbo
+		DubboxUtils.initContext(flow.conf);
 	}
 }

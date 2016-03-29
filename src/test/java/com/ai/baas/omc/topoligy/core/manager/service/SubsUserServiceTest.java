@@ -20,8 +20,8 @@ public class SubsUserServiceTest {
     @Before
     public void initCache() throws OmcException {
         Map<String,String> config = new HashMap<>();
-        config.put(CacheClient.CACHE_IP,"10.1.241.37");
-        config.put(CacheClient.CACHE_PORT,"8686");
+        config.put(CacheClient.CCS_APP_NAME,"aiopt-baas-dshm");
+        config.put(CacheClient.CCS_ZK_ADDRESS,"10.1.130.84:39181");
         CacheClient.loadResource(config);
         subsUserService = new SubsUserServiceImplShm();
     }

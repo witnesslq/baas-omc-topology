@@ -15,9 +15,11 @@ kafka.spout.zk.port: "49181"
 #kafka.spout.zk.port: "2181"
 kafka.spout.parallel.num: 1
 
-### dshm rmi params
-omc.flow.cache.ip: "10.1.241.37"
-omc.flow.cache.port: "8686"
+### dshm sdk params
+ccs.appname: "aiopt-baas-dshm"
+ccs.zk_address: "10.1.130.84:39181"
+#omc.flow.cache.ip: "10.1.241.37"
+#omc.flow.cache.port: "8686"
 
 ### databases params
 omc.environment.db.driver: "com.mysql.jdbc.Driver"

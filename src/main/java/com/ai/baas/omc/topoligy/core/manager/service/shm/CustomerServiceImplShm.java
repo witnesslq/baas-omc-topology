@@ -48,7 +48,7 @@ public final class CustomerServiceImplShm implements CustomerService {
 		String[] tenantid = StringUtils.split(result.get(0).get("tenant_id"),"#");
 
 		List<Customer> customers = new ArrayList<Customer>();
-		for (int i = 0; i < custid.length; i++) {
+		for (int i = 0;custid!=null && i < custid.length; i++) {
 			Customer customer = new Customer();
 			customer.setCustomerId(custid[i]);
 			customer.setCustType(custtype[i]);

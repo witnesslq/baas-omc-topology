@@ -34,7 +34,8 @@ dependencies{
     compile 'org.apache.storm:storm-kafka:0.9.6'
 //    compile 'org.apache.hbase:hbase-client:1.1.2'
     compile 'com.ai.baas.storm:baas-storm:0.1.1-SNAPSHOT'
-    compile 'com.ai.runner.center.dshm:dshmservice:1.0.1-SNAPSHOT';
+    compile 'com.ai.baas:baas-dshm-sdk:1.0.6-SNAPSHOT'
+    compile 'com.ai.opt.sdk:opt-sdk:1.0.2-SNAPSHOT'
     compile 'com.alibaba:dubbox:2.8.3'
 
     //dubbo demo

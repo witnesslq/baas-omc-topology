@@ -27,7 +27,7 @@ public class AccountServiceTest {
     @Test
     public void selectByIdTest() {
         try {
-            Account account = accountService.selectById("VIV-BYD", "10000002");
+            Account account = accountService.selectById("VIV-BYD", "122301");
             System.out.print(account.toString());
         } catch (OmcException e) {
             e.printStackTrace();

@@ -35,11 +35,13 @@ dependencies{
 //    compile 'org.apache.hbase:hbase-client:1.1.2'
     compile 'com.ai.baas.storm:baas-storm:0.1.1-SNAPSHOT'
     compile 'com.ai.baas:baas-dshm-sdk:1.0.6-SNAPSHOT'
-    compile 'com.ai.opt.sdk:opt-sdk:1.0.2-SNAPSHOT'
-    compile 'com.alibaba:dubbox:2.8.3'
+    compile ('com.ai.opt.sdk:opt-sdk:1.0.2-SNAPSHOT'){
+        exclude group:'org.slf4j',module:'slf4j-log4j12'
+    }
+//    compile 'com.alibaba:dubbox:2.8.3'
 
     //dubbo demo
-    compile 'com.alibaba:dubbo-demo-api:2.8.3'
+//    compile 'com.alibaba:dubbo-demo-api:2.8.3'
     compile 'javax.validation:validation-api:1.0.0.GA'
 
     // 不打包依赖

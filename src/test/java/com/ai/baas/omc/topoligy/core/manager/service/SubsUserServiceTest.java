@@ -29,7 +29,7 @@ public class SubsUserServiceTest {
     @Test
     public void selectById(){
         try {
-            User user = subsUserService.selectById("VIV-BYD","122601");
+            User user = subsUserService.selectById("VIV-BYD","122301");
             System.out.println(user.toString());
         } catch (OmcException e) {
             e.printStackTrace();

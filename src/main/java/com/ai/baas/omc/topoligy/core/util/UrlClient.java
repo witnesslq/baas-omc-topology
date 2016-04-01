@@ -121,7 +121,7 @@ public final class UrlClient {
         String input = jsonObject.toString();
         RealTimeBalance realtimebalance;
         HttpURLConnection httpConnection = null;
-        /*try {
+        try {
             httpConnection = (HttpURLConnection) client.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
@@ -151,9 +151,9 @@ public final class UrlClient {
             if (httpConnection != null) {
                 httpConnection.disconnect();
             }
-        }*/
+        }
         //固定测试数据
-        realtimebalance = doQueryForDemo(omcobj);
+//        realtimebalance = doQueryForDemo(omcobj);
         return realtimebalance;
     }
 

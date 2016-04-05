@@ -58,7 +58,7 @@ public class KafkaProduceTest {
         //数量的类型 VOICE:语音资源;DATA:流量资源;SM:短信资源;VC:虚拟币资源;BOOK:资金账本;PC:电量资源
         jsonObject.addProperty("amount_type", "DATA");
         //事件类型：CASH主业务（按资料信控），VOICE 语音，SMS 短信，DATA 数据
-        jsonObject.addProperty("event_type", "DATA");
+        jsonObject.addProperty("event_type", "CASH");
         //数量的增减属性，包括PLUS(导致余额增加的，如缴费导致的)，MINUS(导致余额减少的，如业务使用导致的)
         jsonObject.addProperty("amount_mark", "MINUS");
         //来源 resource：资源入账，bmc：计费

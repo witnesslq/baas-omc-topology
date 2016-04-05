@@ -233,8 +233,8 @@ public final class OmcCalProcessor extends BaseProcess {
 			for (Iterator<SectionRule> iterator = sectionRules.iterator(); iterator.hasNext();) {
 				SectionRule sectionRule = iterator.next();
 				//匹配余额 大于最小天数,小于最大天数
-			    if ((balance.getUnsettleMons()>sectionRule.getOwemindays())
-						&&(balance.getUnsettleMons()<=sectionRule.getOwemaxdays())){
+			    if ((balance.getUnSettleMons()>sectionRule.getOwemindays())
+						&&(balance.getUnSettleMons()<=sectionRule.getOwemaxdays())){
 			    	sRules.add(sectionRule);
 			    }
 			}

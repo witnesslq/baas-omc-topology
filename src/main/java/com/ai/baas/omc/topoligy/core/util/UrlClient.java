@@ -99,7 +99,7 @@ public final class UrlClient {
         //当前账期
         realTimeBalance.setAcctMonth("201603");
         //未交缴费月数
-        realTimeBalance.setUnsettleMons(1);
+        realTimeBalance.setUnSettleMons(1);
         //扩展信息
         realTimeBalance.setExtInfo("");
         return realTimeBalance;
@@ -121,7 +121,7 @@ public final class UrlClient {
         String input = jsonObject.toString();
         RealTimeBalance realtimebalance;
         HttpURLConnection httpConnection = null;
-        try {
+        /*try {
             httpConnection = (HttpURLConnection) client.openConnection();
             httpConnection.setDoOutput(true);
             httpConnection.setRequestMethod("POST");
@@ -151,9 +151,9 @@ public final class UrlClient {
             if (httpConnection != null) {
                 httpConnection.disconnect();
             }
-        }
+        }*/
         //固定测试数据
-//        realtimebalance = doQueryForDemo(omcobj);
+        realtimebalance = doQueryForDemo(omcobj);
         return realtimebalance;
     }
 
@@ -199,7 +199,7 @@ public final class UrlClient {
             realTimeBalance.setUnSettleBill(new BigDecimal(unsettlebill));
             realTimeBalance.setFstUnSettleMon(fstunsettlemon);
             realTimeBalance.setAcctMonth(acctmonth);
-            realTimeBalance.setUnsettleMons(DateUtils.monthDiffs(fstunsettlemon, acctmonth));
+            realTimeBalance.setUnSettleMons(DateUtils.monthDiffs(fstunsettlemon, acctmonth));
             realTimeBalance.setExtInfo(expandinfo);
         } catch (Exception e) {
             logger.error("调用模拟销账返回值异常",e);

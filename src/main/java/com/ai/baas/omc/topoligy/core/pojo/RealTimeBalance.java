@@ -15,7 +15,7 @@ public final class RealTimeBalance implements Serializable {
 	private BigDecimal unSettleBill;
 	private BigDecimal unIntoBill;
 	private String fstUnSettleMon;
-	private int UnsettleMons;
+	private int unSettleMons;
 	private BigDecimal creditline;
 	private String acctMonth;
 	private String  extInfo;
@@ -61,11 +61,11 @@ public final class RealTimeBalance implements Serializable {
 	public void setFstUnSettleMon(String fstUnSettleMon) {
 		this.fstUnSettleMon = fstUnSettleMon;
 	}
-	public int getUnsettleMons() {
-		return UnsettleMons;
+	public int getUnSettleMons() {
+		return unSettleMons;
 	}
-	public void setUnsettleMons(int unsettleMons) {
-		UnsettleMons = unsettleMons;
+	public void setUnSettleMons(int unSettleMons) {
+		this.unSettleMons = unSettleMons;
 	}
 	public BigDecimal getCreditline() {
 		return creditline;
@@ -89,7 +89,7 @@ public final class RealTimeBalance implements Serializable {
 	public String toString() {
 		return "RealTimeBalance [owner=" + owner +  ", realBalance=" + realBalance
 				+ ", realBill=" + realBill + ", balance=" + balance + ", unSettleBill=" + unSettleBill + ", unIntoBill="
-				+ unIntoBill + ", fstUnSettleMon=" + fstUnSettleMon + ", UnsettleMons=" + UnsettleMons + ", creditline="
+				+ unIntoBill + ", fstUnSettleMon=" + fstUnSettleMon + ", UnSettleMons=" + unSettleMons + ", creditline="
 				+ creditline + ", acctMonth=" + acctMonth + ", extInfo=" + extInfo + "]";
 	}
 

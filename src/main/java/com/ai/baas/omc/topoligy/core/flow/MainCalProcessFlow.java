@@ -28,7 +28,5 @@ public class MainCalProcessFlow extends BaseFlow {
 	public static void main(String[] args){
 		MainCalProcessFlow flow = new MainCalProcessFlow();
 		flow.run(args);
-		//初始化dubbo
-		DubboxUtils.initContext(flow.conf);
 	}
 }

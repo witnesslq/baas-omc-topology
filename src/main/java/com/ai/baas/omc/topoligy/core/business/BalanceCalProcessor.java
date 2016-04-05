@@ -6,11 +6,12 @@ import com.ai.baas.omc.topoligy.core.business.base.BaseCalProcess;
 import com.ai.baas.omc.topoligy.core.constant.BalancecalModel;
 import com.ai.baas.omc.topoligy.core.constant.OmcCalKey;
 import com.ai.baas.omc.topoligy.core.constant.OwnerType;
+import com.ai.baas.omc.topoligy.core.dubbo.service.RealtimeBalanceService;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.manager.container.ConfigContainer;
 import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
 import com.ai.baas.omc.topoligy.core.pojo.RealTimeBalance;
-import com.ai.baas.omc.topoligy.core.util.UrlClient;
+import com.ai.baas.omc.topoligy.core.util.DubboxUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.JsonObject;
@@ -22,8 +23,6 @@ import com.google.gson.JsonObject;
 public final class BalanceCalProcessor extends BaseCalProcess {
 	
 	private static final long serialVersionUID = 25013473026836549L;
-	
-	private static final UrlClient urlClient = UrlClient.getInstance();
 	
 	private RealTimeBalance realBalance = null;
 
@@ -91,7 +90,9 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 	 */
 	private void builderResBalanceServ(OmcObj owner, String extinfo) throws OmcException{
 		String appname = this.getConfig().getSysconfig().get(OmcCalKey.OMC_CFG_ENVIRONMENT_APP);
-		RealTimeBalance realTimeBalance = urlClient.doQuery(appname, owner);
+//		RealTimeBalance realTimeBalance = urlClient.doQuery(appname, owner);
+		RealtimeBalanceService balanceService = DubboxUtils.getBalanceService();
+		realBalance = balanceService.queryBalance(appname,owner);
 //		RealTimeBalance realTimeBalance = new RealTimeBalance();
 //		realTimeBalance.setOwner(owner);
 //		realTimeBalance.setAcctMonth("201603");
@@ -104,7 +105,7 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 //		realTimeBalance.setUnIntoBill(new BigDecimal("0"));
 //		realTimeBalance.setUnSettleBill(new BigDecimal("0"));
 //		realTimeBalance.setUnsettleMons(0);
-		realBalance = realTimeBalance;
+//		realBalance = realTimeBalance;
 	}
 
 	/**
@@ -116,6 +117,8 @@ public final class BalanceCalProcessor extends BaseCalProcess {
 	private void builderBalanceAcct(OmcObj owner,String extinfo) throws OmcException{
 		Map<String,String> syscfg =  this.getConfig().getSysconfig();
 		String appname = syscfg.get(OmcCalKey.OMC_CFG_ENVIRONMENT_APP);
-		realBalance = urlClient.doQuery(appname, owner);
+		RealtimeBalanceService balanceService = DubboxUtils.getBalanceService();
+		realBalance = balanceService.queryBalance(appname,owner);
+//		realBalance = urlClient.doQuery(appname, owner);
 	}
 }

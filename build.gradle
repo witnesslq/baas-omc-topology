@@ -15,7 +15,6 @@ configurations {
 group = 'com.ai.baas.omc'
 
 repositories {
-    mavenLocal()
     maven{ url "http://10.1.228.199:18081/nexus/content/groups/public/"  }
 }
 
@@ -37,8 +36,10 @@ dependencies{
     compile 'com.ai.baas:baas-dshm-sdk:1.0.6-SNAPSHOT'
     compile ('com.ai.opt.sdk:opt-sdk:1.0.2-SNAPSHOT'){
         exclude group:'org.slf4j',module:'slf4j-log4j12'
+        exclude group:'com.esotericsoftware.kryo',module:'kryo'
     }
-//    compile 'com.alibaba:dubbox:2.8.3'
+    compile 'com.ai.baas.amc:virtualdeduct:1.0-SNAPSHOT'
+    compile 'com.alibaba:dubbox:2.8.3'
 
     //dubbo demo
 //    compile 'com.alibaba:dubbo-demo-api:2.8.3'

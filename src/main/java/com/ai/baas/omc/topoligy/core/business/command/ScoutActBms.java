@@ -138,7 +138,7 @@ public class ScoutActBms {
 		stringBuffer.append("预存余额：" + realtimeBalance.getBalance());
 		stringBuffer.append("实时话费：" + realtimeBalance.getRealBill());
 		stringBuffer.append("历史话费：" + realtimeBalance.getUnSettleBill());
-		stringBuffer.append("欠费月数：" + realtimeBalance.getUnsettleMons());
+		stringBuffer.append("欠费月数：" + realtimeBalance.getUnSettleMons());
 		stringBuffer.append("最早欠费月：" + realtimeBalance.getFstUnSettleMon());
 		return stringBuffer.toString();
 	}

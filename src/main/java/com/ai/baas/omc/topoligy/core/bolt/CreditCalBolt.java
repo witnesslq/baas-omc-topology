@@ -17,6 +17,7 @@ import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
 import com.ai.baas.omc.topoligy.core.pojo.RealTimeBalance;
 import com.ai.baas.omc.topoligy.core.pojo.SectionRule;
 import com.ai.baas.omc.topoligy.core.util.CacheClient;
+import com.ai.baas.omc.topoligy.core.util.DubboxUtils;
 import com.ai.baas.omc.topoligy.core.util.OmcUtils;
 import com.ai.baas.omc.topoligy.core.util.UrlClient;
 import com.ai.baas.omc.topoligy.core.util.db.JdbcParam;
@@ -125,7 +126,8 @@ public class CreditCalBolt extends BaseBasicBolt {
 			JdbcProxy.loadresource(new JdbcParam(stormConf));
 			JdbcProxy.getInstance();
 			CacheClient.loadResource(stormConf);
-
+			//初始化dubbo服务
+			DubboxUtils.initContext(stormConf);
 			UrlClient.loadResource(stormConf);
 			confContainer = new ConfigContainer();
 			confContainer.configObtain();

@@ -179,8 +179,8 @@ public final class SubsUserServiceImplShm implements SubsUserService {
      */
 	public String getRemindNum(String subsId) {
 		Map<String, String> params = new TreeMap<String, String>();
-		params.put("SUBS_ID", subsId);
 		params.put("EXT_NAME", REMIND_NUM);
+		params.put("SUBS_ID", subsId);
 		String remindNum = null;
 		try {
 			List<Map<String, String>> result = cacheClient.doQuery(USER_INFO_EXT, params);

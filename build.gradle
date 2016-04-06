@@ -7,6 +7,10 @@ sourceCompatibility = 1.7
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 10, 'seconds'
+}
+
 configurations {
     provided
     compile.extendsFrom provided
@@ -38,11 +42,9 @@ dependencies{
         exclude group:'org.slf4j',module:'slf4j-log4j12'
         exclude group:'com.esotericsoftware.kryo',module:'kryo'
     }
-    compile 'com.ai.baas.amc:virtualdeduct:1.0-SNAPSHOT'
+    compile group:'com.ai.baas.amc',name:'virtualdeduct',version:'1.0-SNAPSHOT'
     compile 'com.alibaba:dubbox:2.8.3'
 
-    //dubbo demo
-//    compile 'com.alibaba:dubbo-demo-api:2.8.3'
     compile 'javax.validation:validation-api:1.0.0.GA'
 
     // 不打包依赖

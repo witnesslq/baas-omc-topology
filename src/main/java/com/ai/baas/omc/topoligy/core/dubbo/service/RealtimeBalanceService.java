@@ -3,6 +3,7 @@ package com.ai.baas.omc.topoligy.core.dubbo.service;
 import com.ai.baas.amc.api.virtualdeduct.interfaces.IBalanceQuerySV;
 import com.ai.baas.amc.api.virtualdeduct.param.BalanceQueryRequest;
 import com.ai.baas.amc.api.virtualdeduct.param.VdRealTimeBalance;
+import com.ai.baas.omc.topoligy.core.constant.OwnerType;
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
 import com.ai.baas.omc.topoligy.core.pojo.OmcObj;
 import com.ai.baas.omc.topoligy.core.pojo.RealTimeBalance;
@@ -33,7 +34,12 @@ public class RealtimeBalanceService {
     public RealTimeBalance queryBalance(String productType, OmcObj topOmcObj)throws OmcException {
         BalanceQueryRequest queryRequest = new BalanceQueryRequest();
         queryRequest.setOwerId(topOmcObj.getOwerid());
-        queryRequest.setOwerType(topOmcObj.getOwertype());
+        //0: 用户 1:账户
+        String ownerType = "0";
+        if (OwnerType.ACCT.equals(topOmcObj.getOwertype())) {
+            ownerType = "1";
+        }
+        queryRequest.setOwerType(ownerType);
         queryRequest.setTenantId(topOmcObj.getTenantid());
         queryRequest.setBusinessCode(topOmcObj.getBusinesscode());
         queryRequest.setProductType(productType);

@@ -60,6 +60,7 @@ public class RealtimeBalanceService {
             realTimeBalance.setUnSettleBill(vdBalance.getUnSettleBill());
             realTimeBalance.setFstUnSettleMon(vdBalance.getFstUnsettLemon());
             realTimeBalance.setAcctMonth(vdBalance.getAcctMonth());
+            //欠费月数
             realTimeBalance.setUnSettleMons(
                     DateUtils.monthDiffs(vdBalance.getFstUnsettLemon(),vdBalance.getAcctMonth()));
             realTimeBalance.setExtInfo(vdBalance.getExpandInfo());

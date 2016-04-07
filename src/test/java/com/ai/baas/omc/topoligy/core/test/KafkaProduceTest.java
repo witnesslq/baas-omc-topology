@@ -54,7 +54,7 @@ public class KafkaProduceTest {
         //acct:账户；cust:客户；subs:用户
         jsonObject.addProperty("owner_type", "subs");
         //属主id
-        jsonObject.addProperty("owner_id", "10707");
+        jsonObject.addProperty("owner_id", "122301");
         //数量的类型 VOICE:语音资源;DATA:流量资源;SM:短信资源;VC:虚拟币资源;BOOK:资金账本;PC:电量资源
         jsonObject.addProperty("amount_type", "DATA");
         //事件类型：CASH主业务（按资料信控），VOICE 语音，SMS 短信，DATA 数据

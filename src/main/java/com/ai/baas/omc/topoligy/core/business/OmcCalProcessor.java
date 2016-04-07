@@ -116,7 +116,7 @@ public final class OmcCalProcessor extends BaseProcess {
 	private List<SectionRule> thresholdMatch(RealTimeBalance balance,List<SectionRule> sectionRules,String policyid) throws OmcException{
 		//欠费天数
 		List<SectionRule> matchRules = matchOwners( balance, sectionRules,policyid);
-		//若欠费天数匹配规则为空,则进行费用匹配规则
+		//若欠费天数匹配规则为空,则进行实时费用匹配规则
 		if (matchRules==null || matchRules.isEmpty()){
 			matchRules = matchCharge( balance, sectionRules,policyid);
 		}
@@ -156,6 +156,7 @@ public final class OmcCalProcessor extends BaseProcess {
 				//用户余额
 				BigDecimal realbalance = balance.getRealBalance();
 				//监控规则类型
+				//判断是否需要加入信用度
 				if (sectionRule.getScouttype().equals(ScoRuleType.HALFSTOP)||
 					sectionRule.getScouttype().equals(ScoRuleType.STOP)){
 					if (stopaddcredit.equals(YesNo.YES)){

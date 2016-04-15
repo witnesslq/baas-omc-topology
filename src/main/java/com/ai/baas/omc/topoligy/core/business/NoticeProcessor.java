@@ -436,7 +436,7 @@ public final class NoticeProcessor extends BaseProcess {
 				this.sendUrgeStatus(connection, omcurgeStatus);
 				//保存日志表
 				this.sendScoLog(connection, scoutLog);
-				
+
 				connection.commit();
 				connection.setAutoCommit(true);
 				connection.close();

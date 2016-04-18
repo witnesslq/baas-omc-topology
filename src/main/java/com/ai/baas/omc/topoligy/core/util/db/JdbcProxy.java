@@ -42,7 +42,8 @@ public final class JdbcProxy {
 			//超时时间 2分钟
 			config.setConnectionTimeout(120000);
 			config.setConnectionTestQuery("show tables");
-	         
+			config.setMaxLifetime(0l);
+
 	        HikariDataSource ds = new HikariDataSource(config);
 	        //设置数据源
 			if (instance == null){

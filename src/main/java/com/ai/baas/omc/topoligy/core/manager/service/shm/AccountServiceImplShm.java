@@ -40,7 +40,7 @@ public final class AccountServiceImplShm implements AccountService {
 	public List<Account> selectBycustId(String tenantid, String custId) throws OmcException {
 		try{
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("cust_id",custId);
+			params.put("CUST_ID",custId);
 			params.put("TENANT_ID",tenantid);
 
 			List<Map<String, String>> result = cacheClient.doQuery(TABLE_NAME, params);

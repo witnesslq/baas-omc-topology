@@ -24,6 +24,7 @@ public final class SysSequence implements ISysSequenceCredit {
 	private static final JdbcProxy dbproxy = JdbcProxy.getInstance();
 	
     private static SysSequence ourInstance = new SysSequence();
+	private SysSequenceCreditDao sysSequenceCreditDao = new SysSequenceCreditDaoImpl();
     
     public static SysSequence getInstance() {
         if (ourInstance==null){
@@ -37,11 +38,7 @@ public final class SysSequence implements ISysSequenceCredit {
 
     public   List<Long>   getSequence(String name, int nCount) throws OmcException {
         List<Long> longList = new ArrayList<Long>();
-        long currvalue;
-        long nextvalue;
-
         try{
-	        SysSequenceCreditDao sysSequenceCreditDao = new SysSequenceCreditDaoImpl();
 	        Connection conn = dbproxy.getConnection();
 	        SysSequenceCredit sequence = sysSequenceCreditDao.selectByKey(conn, name);
 	        
@@ -50,8 +47,8 @@ public final class SysSequence implements ISysSequenceCredit {
 	        }
 	        
 	        //获取当前值
-	        currvalue = sequence.getCurrentValue();
-	        nextvalue = currvalue + nCount;
+	        long currvalue = sequence.getCurrentValue();
+	        long nextvalue = currvalue + nCount;
 	        sequence.setCurrentValue(nextvalue);
 	        
 	        Connection conn1 = dbproxy.getConnection();

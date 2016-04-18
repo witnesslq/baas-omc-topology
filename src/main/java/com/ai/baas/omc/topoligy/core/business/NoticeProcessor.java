@@ -1,6 +1,7 @@
 package com.ai.baas.omc.topoligy.core.business;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +18,11 @@ import com.ai.baas.omc.topoligy.core.util.OmcUtils;
 import com.ai.baas.omc.topoligy.core.util.db.JdbcProxy;
 import org.apache.commons.lang.StringUtils;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class NoticeProcessor extends BaseProcess {
+	private static Logger LOGGER = LoggerFactory.getLogger(NoticeProcessor.class);
 	private SpeUrgeStopService speUrgeStopService;
 	private ScoutStatusService scoutStatusService;
 	private UrgeStatusService urgeStatusService;
@@ -65,24 +69,15 @@ public final class NoticeProcessor extends BaseProcess {
 			//规则类型为stop
 			if (rule.getScouttype().equals(ScoRuleType.STOP)) {
 				stop(users, rule);
-			}
-
-			if (rule.getScouttype().equals(ScoRuleType.HALFSTOP)) {
+			}else if (rule.getScouttype().equals(ScoRuleType.HALFSTOP)) {
 				halfstop(users, rule);
-			}
-
-			if (rule.getScouttype().equals(ScoRuleType.START)) {
+			}else if (rule.getScouttype().equals(ScoRuleType.START)) {
 				start(users, rule);
-			}
-
-			if (rule.getScouttype().equals(ScoRuleType.WARNING)) {
+			}else if (rule.getScouttype().equals(ScoRuleType.WARNING)) {
 				warning(info, rule, policyId);
-			}
-
-			if (rule.getScouttype().equals(ScoRuleType.WARNOFF)) {
+			}else if (rule.getScouttype().equals(ScoRuleType.WARNOFF)) {
 				warnoff(info, rule, policyId);
 			}
-
 		}
 		
 		//按照用户提醒  是否提醒到其他号码  可以本号码/其他号码    用户级余额  账户级余额  客户级余额
@@ -423,7 +418,6 @@ public final class NoticeProcessor extends BaseProcess {
 			try {
 				if (connection.getAutoCommit())
 					connection.setAutoCommit(false);
-				connection.isValid(0);
 
 				//保存状态表
 				this.sendScoStatus(connection, scoutStatus);
@@ -437,16 +431,20 @@ public final class NoticeProcessor extends BaseProcess {
 				this.sendScoLog(connection, scoutLog);
 
 				connection.commit();
-				connection.setAutoCommit(true);
-				connection.close();
 			} catch (Exception e) {
+				LOGGER.error("信控结果保存异常",e);
 				try {
 					connection.rollback();
-					connection.setAutoCommit(true);
-					connection.close();
 					throw new OmcException("sendCommon","信控结果保存异常",e);
 				} catch (Exception e1) {
 					throw new OmcException("sendCommon","信控结果保存时发生数据库异常",e);
+				}
+			} finally {
+				try {
+					connection.setAutoCommit(true);
+					connection.close();
+				} catch (SQLException e) {
+					LOGGER.error("",e);
 				}
 			}
 	}
@@ -554,12 +552,10 @@ public final class NoticeProcessor extends BaseProcess {
 		if ((scoutLog == null)){
 			return;
 		}
-		
-		String breakpoint = "sendCommon.omcurgeStatus";
 		scoutLog.setLogid(SysSequence.getInstance().getSequence("SCO_SQUENCE"));
 		scoutLog.setScostatus("1");
 		if (scoutLogService.insertScoutLog(connection,scoutLog) <= 0){
-			throw new OmcException(breakpoint, "更新信控日志表异常");
+			throw new OmcException("sendCommon.omcurgeStatus", "更新信控日志表异常");
 		}
 	}
 	

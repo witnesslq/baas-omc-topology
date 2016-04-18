@@ -25,7 +25,7 @@ public final class NoticeProcessor extends BaseProcess {
 	private ScoutBmsInterfaceService scoutBmsInterfaceService;
 	private SgipSrcGsmService sgipSrcGsmService;
 	private ScoutLogService scoutLogService;
-	
+	private static final JdbcProxy DB_PROXY = JdbcProxy.getInstance();
 	private InformationProcessor info = null;
 	private RealTimeBalance realBalance;
 	
@@ -418,13 +418,12 @@ public final class NoticeProcessor extends BaseProcess {
 	private void sendCommon(
 			List<OmcBmsInterface> bmsinfs,List<SmsInf> smsinfs,List<ScoutStatus> scoutStatus,
 			List<OmcUrgeStatus> omcurgeStatus,ScoutLog scoutLog) throws OmcException{
-		
-			JdbcProxy dbproxy = JdbcProxy.getInstance();
-			Connection connection = dbproxy.getConnection();
+			Connection connection = DB_PROXY.getConnection();
 			
 			try {
-				connection.getAutoCommit();
-				connection.setAutoCommit(false);
+				if (connection.getAutoCommit())
+					connection.setAutoCommit(false);
+				connection.isValid(0);
 
 				//保存状态表
 				this.sendScoStatus(connection, scoutStatus);

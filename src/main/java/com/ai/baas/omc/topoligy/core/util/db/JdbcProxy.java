@@ -41,6 +41,7 @@ public final class JdbcProxy {
 	        config.setMaximumPoolSize(jdbcParam.getMaxConnections());
 			//超时时间 2分钟
 			config.setConnectionTimeout(120000);
+			config.setConnectionTestQuery("show tables");
 	         
 	        HikariDataSource ds = new HikariDataSource(config);
 	        //设置数据源

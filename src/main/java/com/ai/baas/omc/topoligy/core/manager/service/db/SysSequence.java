@@ -38,35 +38,34 @@ public final class SysSequence implements ISysSequenceCredit {
 
     public   List<Long>   getSequence(String name, int nCount) throws OmcException {
         List<Long> longList = new ArrayList<Long>();
-        try{
-	        Connection conn = dbproxy.getConnection();
+		Connection conn = null;
+		try{
+			conn = dbproxy.getConnection();
 	        SysSequenceCredit sequence = sysSequenceCreditDao.selectByKey(conn, name);
-	        
 	        if (sequence==null){
 	            throw  new OmcException("ERROR","序列名[" + name + "]没有定义,请对表sys_sequence_credit进行维护");
 	        }
-	        
+	        logger.info("start set sequence,the name is ["+name);
 	        //获取当前值
 	        long currvalue = sequence.getCurrentValue();
 	        long nextvalue = currvalue + nCount;
 	        sequence.setCurrentValue(nextvalue);
-	        
-	        Connection conn1 = dbproxy.getConnection();
-	        Boolean autocommitflag = conn1.getAutoCommit();
-	        
+
+			if (conn.isClosed())
+				conn = dbproxy.getConnection();
+	        Boolean autocommitflag = conn.getAutoCommit();
+	        //设置自动提交
 	        if (!autocommitflag){
-	        	conn1.setAutoCommit(true);
+				conn.setAutoCommit(true);
 	        }
 	        
-	        int nRet =  sysSequenceCreditDao.update(conn1, sequence);
-	
-	        if (nRet <= 0){
-	        	conn1.setAutoCommit(autocommitflag);
-	            throw  new OmcException("ERROR","序列["+name+"更新异常");
+	        if (sysSequenceCreditDao.update(conn, sequence) <= 0){
+				conn.setAutoCommit(autocommitflag);
+	            throw new OmcException("ERROR","序列["+name+"更新异常");
 	        }
 	
 	        if (!autocommitflag){
-	        	conn1.setAutoCommit(autocommitflag);
+				conn.setAutoCommit(autocommitflag);
 	        }
 	        
 	        for(long l=currvalue;l<nextvalue;l++){
@@ -75,8 +74,15 @@ public final class SysSequence implements ISysSequenceCredit {
         }catch(SQLException e){
         	logger.error("获取序列异常" + name,e);
         	throw new OmcException("获取序列异常" + name,e);
-        }
-        return longList;
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed())
+					conn.close();
+			} catch (SQLException e) {
+				logger.error("",e);
+			}
+		}
+		return longList;
     }
 
     public Long getSequence(String name) throws OmcException{

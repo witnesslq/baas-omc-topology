@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.ai.baas.omc.topoligy.core.exception.OmcException;
+import com.zaxxer.hikari.metrics.IMetricsTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.zaxxer.hikari.HikariConfig;
@@ -39,10 +40,6 @@ public final class JdbcProxy {
 	        config.setMinimumIdle(jdbcParam.getInitialConnections());
 	        //池中最大链接数量
 	        config.setMaximumPoolSize(jdbcParam.getMaxConnections());
-			//超时时间 2分钟
-			config.setConnectionTimeout(120000);
-			config.setConnectionTestQuery("show tables");
-			config.setMaxLifetime(0l);
 
 	        HikariDataSource ds = new HikariDataSource(config);
 	        //设置数据源
@@ -59,6 +56,13 @@ public final class JdbcProxy {
 		try{
 			return datasource.getConnection();
 		} catch(Exception e){
+			IMetricsTracker tracker = datasource.getMetricsTracker();
+			if (tracker != null)
+				logger.error("total=" + tracker.getTotalConnections()
+						+ ",active=" + tracker.getActiveConnections()
+						+ ",idel=" + tracker.getIdleConnections()
+						+ ",threadsAwaiting=" + tracker.getThreadsAwaitingConnection()
+				);
 			logger.error("",e);
 			throw new OmcException("获得连接异常",e);
 		}

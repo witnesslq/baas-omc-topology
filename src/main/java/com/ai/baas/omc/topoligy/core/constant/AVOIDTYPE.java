@@ -3,7 +3,7 @@ package com.ai.baas.omc.topoligy.core.constant;
 /**
  * 免催类型
  */
-public final class AvoidType {
+public final class AvoidType{
 	/**
 	 * AVOID_STOP 免停
 	 */

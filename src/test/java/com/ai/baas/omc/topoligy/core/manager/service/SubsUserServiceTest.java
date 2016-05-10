@@ -20,8 +20,10 @@ public class SubsUserServiceTest {
     @Before
     public void initCache() throws OmcException {
         Map<String,String> config = new HashMap<>();
-        config.put(CacheClient.CCS_APP_NAME,"aiopt-baas-dshm");
-        config.put(CacheClient.CCS_ZK_ADDRESS,"10.1.130.84:39181");
+        config.put(CacheClient.PAAS_AUTH_URL,"http://10.1.245.4:19811/service-portal-uac-web/service/auth");
+        config.put(CacheClient.PAAS_AUTH_PID,"87EA5A771D9647F1B5EBB600812E3067");
+        config.put(CacheClient.PAAS_CCS_SERVICEID,"CCS008");
+        config.put(CacheClient.PAAS_CCS_SERVICE_PASSWORD,"123456");
         CacheClient.loadResource(config);
         subsUserService = new SubsUserServiceImplShm();
     }

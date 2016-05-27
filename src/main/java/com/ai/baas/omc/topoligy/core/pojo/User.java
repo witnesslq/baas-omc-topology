@@ -24,6 +24,8 @@ public final class User{
 	private Timestamp activetime;
 	private Timestamp inactivetime;
 	private String factorcode;
+	//因变更获取信控策略而增加  update by 2016-05-17
+	private String policy_id;
 	
 	public String getSubsid() {
 		return subsid;
@@ -141,6 +143,13 @@ public final class User{
 	public void setFactorcode(String factorcode) {
 		this.factorcode = factorcode;
 	}
+	public String getPolicy_id() {
+		return policy_id;
+	}
+	public void setPolicy_id(String policy_id) {
+		this.policy_id = policy_id;
+	}
+	
 	@Override
 	public String toString() {
 		return "User [subsid=" + subsid + ", accountid=" + accountid + ", customerid=" + customerid + ", serviceId="
@@ -148,8 +157,9 @@ public final class User{
 				+ servicestatus + ", statuschgtype=" + statuschgtype + ", provincecode="
 				+ provincecode + ", citycode=" + citycode + ", tenantid=" + tenantid + ", systemid=" + systemid
 				+ ", servicetype=" + servicetype + ", activetime=" + activetime + ", inactivetime=" + inactivetime
-				+ ", factorcode=" + factorcode + "]";
+				+ ", factorcode=" + factorcode + ", policy_id=" + policy_id + "]";
 	}
+
 
 
 

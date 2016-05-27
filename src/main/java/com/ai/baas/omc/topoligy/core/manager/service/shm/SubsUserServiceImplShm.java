@@ -5,6 +5,7 @@ import com.ai.baas.omc.topoligy.core.manager.service.SubsUserService;
 import com.ai.baas.omc.topoligy.core.pojo.User;
 import com.ai.baas.omc.topoligy.core.util.CacheClient;
 import com.ai.baas.omc.topoligy.core.util.DateUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,6 +128,7 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 		String[] citycode =	StringUtils.split(result.get(0).get("city_code"),"#");
 		String[] activetime =	StringUtils.split(result.get(0).get("active_time"),"#");
 		String[] inactivetime =	StringUtils.split(result.get(0).get("inactive_time"),"#");
+		String[] policy_id =	StringUtils.split(result.get(0).get("policy_id"),"#");
 
 		List<User> users = new ArrayList<User>();
 		for (int i = 0; i < subsid.length; i++) {
@@ -152,6 +154,11 @@ public final class SubsUserServiceImplShm implements SubsUserService {
 			user.setActivetime(Timestamp.valueOf(s2));
 			String s3 = StringUtils.isBlank(inactivetime[i])?"1900-01-01 00:00:00.000":inactivetime[i];
 			user.setInactivetime(Timestamp.valueOf(s3));
+			if (policy_id!=null) {
+				if (policy_id.length>i) {
+					user.setPolicy_id(policy_id[i]);
+				}
+			}
 			users.add(user);
 		}
 		

@@ -36,9 +36,9 @@ dependencies{
     }
     compile 'org.apache.storm:storm-kafka:0.9.6'
 //    compile 'org.apache.hbase:hbase-client:1.1.2'
-    compile 'com.ai.baas.storm:baas-storm:0.1.1-SNAPSHOT'
-    compile 'com.ai.baas:baas-dshm-sdk:1.0.6-SNAPSHOT'
-    compile ('com.ai.opt.sdk:opt-sdk:1.0.2-SNAPSHOT'){
+    compile 'com.ai.baas.storm:baas-storm:0.1.2-SNAPSHOT'
+    compile 'com.ai.baas:baas-dshm-sdk:2.0-SNAPSHOT'
+    compile ('com.ai.opt.sdk:opt-sdk:2.0-SNAPSHOT'){
         exclude group:'org.slf4j',module:'slf4j-log4j12'
         exclude group:'com.esotericsoftware.kryo',module:'kryo'
     }

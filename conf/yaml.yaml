@@ -5,7 +5,7 @@ topology.name: "baas-omc"
 #topology.spout.parallel: 2
 
 kafka.spout.consumer.addr: "10.1.245.5:29181,10.1.245.6:29181,10.1.245.7:29181"
-kafka.spout.topic: "ECBCA29571714183B23A630E2311DD66_MDS002_1529549922"
+kafka.spout.topic: "ECBCA29571714183B23A630E2311DD66_MDS016_90080578"
 kafka.spout.zk.server: "10.1.245.5,10.1.245.6,10.1.245.7"
 kafka.spout.zk.port: "29181"
 kafka.spout.parallel.num: 1
